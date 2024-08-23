@@ -1,0 +1,116 @@
+.btn-hamburguer {
+    margin: 20px;
+    cursor: pointer;
+    border-radius: 100px;
+    display: none;
+}
+
+.btn-hamburguer:hover {
+    background-color: #ccc;
+
+}
+
+.toogleClose {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    cursor: pointer;
+
+}
+
+.auth-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 90px;
+    box-shadow: 2px 2px 2px 2px #ccc;
+    background-color: white;
+}
+
+.authbar-style {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.session-name {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 10px;
+}
+
+
+.side-link-routes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.side-link-routes a {
+    text-decoration: none;
+    color: black;
+    margin: 10px;
+}
+
+.side-link-routes a:hover{
+    color: #ccc;
+}
+
+.side-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.users-info{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 10px;
+
+}
+
+
+@media (max-width:990px) {
+    .btn-hamburguer {
+        display: block;
+        z-index: 3000;
+    }
+
+
+
+    .authbar-style {
+        position: fixed;
+        top: -90px;
+        transition: 0.3s ease-in;
+        opacity: 0;
+        box-shadow: 2px 2px 2px 2px #ccc;
+        z-index: 2000;
+        width: 100%;
+        background-color: white;
+        padding: 20px;
+        flex-direction: column;
+    }
+
+    .side-link-routes{
+        flex-direction: column;
+    }
+
+    .authbar-style.open {
+        top: 90px;
+        transition: 0.3s ease-in;
+        opacity: 1;
+      
+        
+
+    }
+
+}

@@ -1,0 +1,98 @@
+.footer-bar {
+    width: 100%;
+    height: 40vh;
+    padding: 10px 50px;
+    box-shadow: 4px 4px 4px 4px #ccc;
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    width: 25%;
+    padding: 5px 15px;
+    border-right: 0.5px black solid;
+    height: 70%;
+    text-align: center;
+    
+}
+
+.footer-text{
+    width: 100%;
+}
+
+.footer-logo {
+    margin: 5px;
+
+}
+
+.logo-text{
+    justify-content: center;
+    text-align: center;
+}
+
+
+.footer-card a{
+    text-decoration: none;
+    color: black;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+}
+
+.social-plataform{
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+}
+
+.social-plataform p{
+    margin: 0 3px;
+}
+
+.links ul li{
+    margin: 15px;
+}
+
+
+.social{
+    justify-content: space-around;
+}
+
+.links h2, .social h2{
+    font-size: 30px;
+}
+
+.location{
+    text-align: center;
+}
+
+.location a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+@media (max-width:990px) {
+    .footer-bar {
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .footer-card{
+        border-right: 0;
+        border-bottom: 1px solid black;
+        width: 100%;
+        padding: 20px;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+    }
+    
+}

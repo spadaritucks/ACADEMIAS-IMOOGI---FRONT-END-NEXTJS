@@ -1,0 +1,95 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.area-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 20px;
+    box-shadow: 6px 6px 6px 6px #ccc;
+    border-radius: 10px;
+    margin-top: 50px;
+
+}
+
+.crud-inputs{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.crud-form{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.form-component {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+}
+
+.form-component-login{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-name-input {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    margin: 10px;
+}
+
+.form-name-input input,
+.form-name-input select {
+    max-width: 100%;
+    min-width: 10%;
+    border-radius: 4px;
+    padding: 5px 10px;
+    border: 0.5px solid #ccc;
+
+}
+
+.form-name-input.disabled{
+    display: none;
+}
+
+.submit-button {
+    margin-top: 16px;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+
+}
+
+@media (max-width:990px) {
+    .form-component {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+
+}
+
+@media (max-width:700px) {
+    .form-component {
+        grid-template-columns: repeat(1, 1fr);
+        
+    }
+    .crud-form{
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+}

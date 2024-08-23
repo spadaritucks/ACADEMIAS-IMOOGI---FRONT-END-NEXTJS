@@ -1,0 +1,8 @@
+.modal-width{
+    max-width: 90%;
+    max-height: 300vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

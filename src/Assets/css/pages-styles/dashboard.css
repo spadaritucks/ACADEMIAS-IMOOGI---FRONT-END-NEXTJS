@@ -1,0 +1,124 @@
+.dashboard {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+a {
+    text-decoration: none;
+}
+
+.usuarios-list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    width: 80%;
+   
+}
+
+.search-bar-area {
+    width: 80%;
+
+}
+
+.search-input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 10px;
+    width: 100%;
+}
+
+.painel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    width: 100%;
+    box-shadow: 2px 2px 2px 2px #ccc;
+    height: 400px;
+    margin: 20px;
+    padding: 15px 10px;
+    overflow: auto;
+}
+
+
+
+.user-container {
+    display: block;
+    max-width: 100%;
+    overflow: auto;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.dash-button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 20px;
+    background-color: #0d6efd;
+    margin: 5px;
+    color: white;
+}
+
+
+
+.dash-button:hover {
+    background-color: #024dbf;
+}
+
+.pdf-link {
+    color: black;
+}
+
+.charts-area{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    margin: 10px;
+}
+
+.chart-container{
+    box-shadow: 3px 3px 3px 3px #ccc;
+    width: 400px;
+    height: 400px;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.chart-container span{
+    font-size: 25px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.number-alunos{
+    font-size: 120px;
+}
+
+
+
+
+Link {
+    text-decoration: none;
+
+}
+
+
+@media (max-width:990px) {
+    .usuarios-list {
+        flex-direction: column;
+    }
+
+    .charts-area{
+        flex-direction: column;
+    }
+
+}

@@ -1,0 +1,118 @@
+
+import api from './api';
+
+
+ export interface Contrato {
+  id: number;
+  usuario_id: number;
+  planos_id: number;
+  data_inicio: string;
+  data_renovacao: string;
+  data_vencimento: string;
+  desconto: string;
+  observacoes: string;
+  parcelas: number;
+  valor_plano: string;
+  nome_plano:string
+}
+
+ export interface UsuarioModalidade {
+  id: number;
+  usuario_id: number;
+  modalidade_id: number;
+  nome_modalidade: string;
+}
+
+export interface DadosFuncionario {
+  id: number;
+  usuario_id: number;
+  tipo_funcionario: string;
+  cargo: string;
+  atividades: string
+}
+
+export interface Usuario {
+  find(arg0: (user: any) => any): unknown;
+  id: number;
+  foto_usuario: string;
+  tipo_usuario: string;
+  nome: string;
+  email: string;
+  data_nascimento: string;
+  cpf: string;
+  rg: string;
+  telefone: string;
+  cep: string;
+  logradouro: string;
+  numero: number;
+  complemento: string;
+}
+// Função para buscar todos os usuários
+export const getUsers = async () => {
+  try {
+    const response = await api.get('/api/usuarios');
+    
+    return response.data.userData // Verifique se a resposta está correta
+  } catch (error) {
+    console.error('Failed to fetch users:', error);
+    return [];
+  }
+};
+
+// Função para buscar um usuário por ID
+export const getUserById = async (id: number) => {
+  try {
+    const response = await api.get(`/api/usuarios/${id}`);
+    return response.data.userData; // Verifique se a resposta está correta
+  } catch (error) {
+    console.error('Failed to fetch user by ID:', error);
+    throw error; // Relança o erro para que o chamador possa lidar com ele
+  }
+};
+
+// Função para criar um novo usuário
+export const createUser = async (userData: FormData): Promise<number> => {
+  try {
+    const response = await api.post('/api/usuarios', userData);
+    
+    return response.data.message;
+    
+  } catch (error) {
+    console.error('Failed to create user:', error);
+    throw error; // Relança o erro para que o chamador possa lidar com ele
+  }
+};
+
+// Função para atualizar um usuário existente
+export const updateUser = async (id: number, userData: FormData): Promise<number> => {
+  try {
+    const response = await api.post(`/api/usuarios/${id}?_method=PUT`, userData);
+    return response.data.message;
+  } catch (error) {
+    console.error('Failed to update user:', error);
+    throw error; // Relança o erro para que o chamador possa lidar com ele
+  }
+};
+
+// Função para deletar um usuário
+export const deleteUser = async (id: number): Promise<number> => {
+  try {
+    const response = await api.delete(`/api/usuarios/${id}`);
+    return response.data.message;
+  } catch (error) {
+    console.error('Failed to delete user:', error);
+    throw error; // Relança o erro para que o chamador possa lidar com ele
+  }
+};
+
+export const loginUser = async (userData:FormData)=>{
+  try{
+    const response = await api.post('/api/login', userData);
+    return response
+  }catch(error){
+    console.error('Login Failed', error);
+    throw error;
+    
+  }
+}
+

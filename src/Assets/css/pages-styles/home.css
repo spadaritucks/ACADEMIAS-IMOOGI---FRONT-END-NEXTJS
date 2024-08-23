@@ -1,0 +1,53 @@
+.doenca-seculo{
+    color: red;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.carrosel-area{
+    width: 100%;
+    height: auto;
+    padding: 0;
+    margin: 0;
+}
+
+.sobre {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 60vh;
+}
+
+.conteudo {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    margin: 10px 15px;
+    padding: 10px 15px;
+}
+
+.home-image {
+    border-radius: 60px;
+    width: 80%;
+    height: auto;
+    margin: 10px
+}
+
+@media (max-width:990px) {
+    .sobre {
+        flex-direction: column;
+        align-items: center;
+        justify-content: start;
+        height: 90vh;
+    }
+
+    .conteudo {
+        width: 80%;
+
+    }
+
+}
