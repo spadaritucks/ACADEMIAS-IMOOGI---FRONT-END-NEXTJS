@@ -126,11 +126,6 @@ export default function Modalidade() {
 
 
 
-    useEffect(() => {
-        handleShowRead()
-    }, [])
-
-
 
     return (
         <AdmMain>
