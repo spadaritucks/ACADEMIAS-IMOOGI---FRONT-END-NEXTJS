@@ -22,7 +22,7 @@ export default function Delete({ unidades, handleSubmitDelete, formRef }: Unidad
             <form action="" className="crud-form" onSubmit={handleSubmitDelete} ref ={formRef} >
                 <div className="form-name-input">
                     <span>Selecione a Unidade</span>
-                    <select name="modalidade_id" id="modalidade_id">
+                    <select name="unidade_id" id="unidade_id">
                         {unidades.map(unidade => (
                             <option value={unidade.id}>{unidade.nome_unidade}</option>
                         ))}
