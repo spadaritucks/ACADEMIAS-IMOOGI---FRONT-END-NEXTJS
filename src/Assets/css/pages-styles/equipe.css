@@ -13,11 +13,12 @@
 
 .membro{
     box-shadow: 4px 4px 4px 4px #ccc;
-    padding: 15px 20px;
+    padding: 10px 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    text-align: center;
 }
 
 .membro-image{
