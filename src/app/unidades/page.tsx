@@ -32,7 +32,7 @@ export default function unidades() {
                         <h2 className="unidade-title">{unidade.nome_unidade}</h2>
                         <p className="unidade-endereco">{unidade.endereco}</p>
                         <Link href={`${process.env.NEXT_PUBLIC_API_URL}/storage/${unidade.grade}`}><div className='pdf-link' ><PictureAsPdfIcon /> PDF GRADE HORARIA</div></Link>
-                        <p className="unidade-descricao">${unidade.descricao}</p>
+                        <p className="unidade-descricao">{unidade.descricao}</p>
                     </div>
                 ))}
 
