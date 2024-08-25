@@ -21,6 +21,7 @@
     border-radius: 20px;
     box-shadow: 2px 2px 2px 2px #ccc;
     margin: 10px 10px;
+    text-align: center;
 }
 
 .unidade-imagem, .modalidade-imagem{
