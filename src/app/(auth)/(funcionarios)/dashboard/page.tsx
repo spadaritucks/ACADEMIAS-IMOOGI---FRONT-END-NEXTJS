@@ -201,7 +201,7 @@ const DashboardContent = () => {
         setAtivos(ativosCount);
         setRenovacao(renovacaoCount);
         setVencidos(vencidosCount);
-        alunosCount = ativos + renovacao
+        alunosCount = ativosCount+renovacaoCount
 
         setNumAlunos(alunosCount)
 
