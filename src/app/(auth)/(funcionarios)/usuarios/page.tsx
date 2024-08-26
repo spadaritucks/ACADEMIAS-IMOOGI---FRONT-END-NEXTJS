@@ -44,7 +44,7 @@ export default function criarUsuarios() {
 
                     const response = await createUser(formData)
                     console.log(response)
-                    modalServer("Sucesso", response)
+                    modalServer("Sucesso", 'Usuario Cadastrado com Sucesso')
 
 
 
