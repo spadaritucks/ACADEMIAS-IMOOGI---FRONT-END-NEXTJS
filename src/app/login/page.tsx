@@ -19,7 +19,7 @@ function login() {
 
 
     const formRef = useRef<HTMLFormElement>(null);
-    const { showModal } = useModal()
+    const { modalServer } = useModal()
     const router = useRouter();
 
 
@@ -46,7 +46,7 @@ function login() {
                 if (response.status = 201) {
 
                     sessionStorage.setItem('user', JSON.stringify(response.data.user));
-                    showModal('Sucesso', response.data.message || 'Usuario Logado com Sucesso')
+                    modalServer('Sucesso', response.data.message || 'Usuario Logado com Sucesso')
                     setUser(response.data.user)
                     response.data.user.tipo_usuario === 'aluno' ? router.push('/area_aluno') : router.push('/dashboard');
 
@@ -54,7 +54,7 @@ function login() {
 
 
                 } else {
-                    showModal('Erro ao efetuar o Login', response.data?.message);
+                    modalServer('Erro ao efetuar o Login', response.data?.message);
                 }
 
             }

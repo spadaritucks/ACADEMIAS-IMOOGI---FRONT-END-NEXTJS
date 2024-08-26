@@ -16,11 +16,12 @@ export default function criarUsuarios() {
     const [selectType, setSelectType] = useState<string>('');
     const [showContratos, setShowContratos] = useState<boolean>(false);
     const [showFuncionario, setShowFuncionario] = useState<boolean>(false);
+  
 
 
 
 
-    const { showModal } = useModal();
+    const { modalServer } = useModal();
 
     const handleTypeUserChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const value = e.target.value;
@@ -42,10 +43,14 @@ export default function criarUsuarios() {
                     formData.delete('password_confirmation')
 
                     const response = await createUser(formData)
-                    showModal('Sucesso', 'Usuario Cadastrado')
                     console.log(response)
+                    modalServer("Sucesso", response)
+
+
+
+
                 } else {
-                    showModal('Usuario não cadastrado', 'Confirme sua senha corretamente')
+                    modalServer('Usuario não cadastrado', 'Confirme sua senha corretamente')
                 }
 
             }
@@ -58,7 +63,7 @@ export default function criarUsuarios() {
 
     }
 
-
+    
 
     return (
         <AdmMain>
