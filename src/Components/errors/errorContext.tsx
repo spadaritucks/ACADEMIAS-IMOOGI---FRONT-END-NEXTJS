@@ -5,7 +5,7 @@ interface ModalContextType {
     modalShow: boolean;
     modalTitle: string;
     modalBody: string;
-    showModal: (title: string, body: string) => void;
+    modalServer: (title: string, body: string) => void;
     hideModal: () => void;
 }
 
@@ -16,7 +16,7 @@ export const ModalProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [modalTitle, setModalTitle] = useState('');
     const [modalBody, setModalBody] = useState('');
 
-    const showModal = (title: string, body: string) => {
+    const modalServer = (title: string, body: string) => {
         setModalTitle(title);
         setModalBody(body);
         setModalShow(true);
@@ -25,7 +25,7 @@ export const ModalProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const hideModal = () => setModalShow(false);
 
     return (
-        <ModalContext.Provider value={{ modalShow, modalTitle, modalBody, showModal, hideModal }}>
+        <ModalContext.Provider value={{ modalShow, modalTitle, modalBody, modalServer, hideModal }}>
             {children}
         </ModalContext.Provider>
     );
