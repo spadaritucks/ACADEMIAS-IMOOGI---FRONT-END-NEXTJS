@@ -2,7 +2,7 @@
 import api from './api';
 
 
- export interface Contrato {
+export interface Contrato {
   id: number;
   usuario_id: number;
   planos_id: number;
@@ -13,10 +13,10 @@ import api from './api';
   observacoes: string;
   parcelas: number;
   valor_plano: string;
-  nome_plano:string
+  nome_plano: string
 }
 
- export interface UsuarioModalidade {
+export interface UsuarioModalidade {
   id: number;
   usuario_id: number;
   modalidade_id: number;
@@ -51,7 +51,7 @@ export interface Usuario {
 export const getUsers = async () => {
   try {
     const response = await api.get('/api/usuarios');
-    
+
     return response.data.userData // Verifique se a resposta está correta
   } catch (error) {
     console.error('Failed to fetch users:', error);
@@ -71,15 +71,14 @@ export const getUserById = async (id: number) => {
 };
 
 // Função para criar um novo usuário
-export const createUser = async (userData: FormData): Promise<number> => {
+export const createUser = async (userData: FormData) => {
   try {
     const response = await api.post('/api/usuarios', userData);
-    
-    return response.data.message;
-    
-  } catch (error) {
-    console.error('Failed to create user:', error);
-    throw error; // Relança o erro para que o chamador possa lidar com ele
+  
+    return response.data.message
+
+  } catch (error: any) {
+      return error.response.data.message
   }
 };
 
@@ -105,14 +104,14 @@ export const deleteUser = async (id: number): Promise<number> => {
   }
 };
 
-export const loginUser = async (userData:FormData)=>{
-  try{
+export const loginUser = async (userData: FormData) => {
+  try {
     const response = await api.post('/api/login', userData);
     return response
-  }catch(error){
+  } catch (error) {
     console.error('Login Failed', error);
     throw error;
-    
+
   }
 }
 

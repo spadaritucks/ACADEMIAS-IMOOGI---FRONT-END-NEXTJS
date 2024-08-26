@@ -71,7 +71,7 @@ export const deleteUnidade = async (id: FormDataEntryValue): Promise<number> => 
         return response.data.message
 
     } catch (error) {
-        console.error('Failed to fetch unit:', error);
+        console.error('Failed to delete unit:', error);
         throw error;
     }
 }

@@ -72,6 +72,7 @@ export const deletePlano = async (id: FormDataEntryValue): Promise<number> => {
   try {
     const response = await api.delete(`/api/planos/${id}`);
     return response.data.message;
+    
   } catch (error) {
     console.error('Failed to delete plano:', error);
     throw error; // Relança o erro para que o chamador possa lidar com ele
