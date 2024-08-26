@@ -37,7 +37,9 @@ export default function ClientMainNavbar() {
     };
 
     let fotoUsuario = user.foto_usuario;
-    let nomeUsuario = user.nome;
+    let nomeCompleto = user.nome;
+    let partesNome = nomeCompleto.split(' ')
+    let nome = partesNome.slice(0,2).join(' ')
 
     const url = `${process.env.NEXT_PUBLIC_API_URL}/storage/${fotoUsuario}`;
 
@@ -57,7 +59,7 @@ export default function ClientMainNavbar() {
                     </div>
 
                     <div className='users-info'>
-                        <p className='session-name'><Avatar src={`${url}`} sx={{ margin: 2 }} />{nomeUsuario}</p>
+                        <p className='session-name'><Avatar src={`${url}`} sx={{ margin: 2 }} />{nome}</p>
                         <p className='session-name' onClick={handleLogout}><LogoutIcon sx={{ margin: 0.5, fontSize: 30, cursor: 'pointer' }}></LogoutIcon>Logout</p>
                     </div>
                 </div>
