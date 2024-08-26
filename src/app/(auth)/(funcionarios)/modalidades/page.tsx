@@ -30,7 +30,7 @@ export default function Modalidade() {
 
 
     const formRef = useRef<HTMLFormElement>(null)
-    const { showModal } = useModal();
+    const { modalServer } = useModal();
 
     const handleShowCreate = () => {
         setShowCreate(!showCreate)
@@ -72,7 +72,7 @@ export default function Modalidade() {
             const formdata = new FormData(formRef.current)
             const sendFormdata = async () => {
                 const response: any = await createModalidade(formdata)
-                showModal('Sucesso', response)
+                modalServer('Sucesso', response)
                 console.log(response)
             }
 
@@ -92,7 +92,7 @@ export default function Modalidade() {
             if (id) {
                 const sendFormdata = async () => {
                     const response: any = await updateModalidade(id, formdata)
-                    showModal('Sucesso', response)
+                    modalServer('Sucesso', response)
                     console.log(response)
                 }
                 sendFormdata()
@@ -113,7 +113,7 @@ export default function Modalidade() {
             if (id) {
                 const sendFormdata = async () => {
                     const response: any = await deleteModalidade(id)
-                    showModal('Sucesso', response)
+                    modalServer('Sucesso', response)
                     console.log(response)
                 }
                 sendFormdata()
