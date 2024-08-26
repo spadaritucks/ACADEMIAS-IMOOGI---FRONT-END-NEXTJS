@@ -32,7 +32,7 @@ export default function Unidades() {
 
 
     const formRef = useRef<HTMLFormElement>(null)
-    const { showModal } = useModal();
+    const { modalServer } = useModal();
 
     const handleShowCreate = () => {
         setShowCreate(!showCreate)
@@ -70,7 +70,7 @@ export default function Unidades() {
             const formdata = new FormData(formRef.current)
             const sendFormdata = async () => {
                 const response: any = await createUnidade(formdata)
-                showModal('Sucesso', response)
+                modalServer('Sucesso', response)
                 console.log(response)
             }
 
@@ -90,7 +90,7 @@ export default function Unidades() {
             if (id) {
                 const sendFormdata = async () => {
                     const response: any = await updateUnidade(id, formdata)
-                    showModal('Sucesso', response)
+                    modalServer('Sucesso', response)
                     console.log(response)
                 }
                 sendFormdata()
@@ -111,7 +111,7 @@ export default function Unidades() {
             if (id) {
                 const sendFormdata = async () => {
                     const response: any = await deleteUnidade(id)
-                    showModal('Sucesso', response)
+                    modalServer('Sucesso', response)
                     console.log(response)
                 }
                 sendFormdata()

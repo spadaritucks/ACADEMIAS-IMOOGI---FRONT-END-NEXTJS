@@ -29,7 +29,7 @@ export default function Planos() {
 
 
     const formRef = useRef<HTMLFormElement>(null)
-    const { showModal } = useModal();
+    const { modalServer } = useModal();
 
     const handleShowCreate = () => {
         setShowCreate(!showCreate)
@@ -67,7 +67,7 @@ export default function Planos() {
             const formdata = new FormData(formRef.current)
             const sendFormdata = async () => {
                 const response: any = await createPlano(formdata)
-                showModal('Sucesso', response)
+                modalServer('Sucesso', response)
                 console.log(response)
             }
 
@@ -87,7 +87,7 @@ export default function Planos() {
             if (id) {
                 const sendFormdata = async () => {
                     const response: any = await updatePlano(id, formdata)
-                    showModal('Sucesso', response)
+                    modalServer('Sucesso', response)
                     console.log(response)
                 }
                 sendFormdata()
@@ -108,7 +108,7 @@ export default function Planos() {
             if (id) {
                 const sendFormdata = async () => {
                     const response: any = await deletePlano(id)
-                    showModal('Sucesso', response)
+                    modalServer('Sucesso', response)
                     console.log(response)
                 }
                 sendFormdata()
