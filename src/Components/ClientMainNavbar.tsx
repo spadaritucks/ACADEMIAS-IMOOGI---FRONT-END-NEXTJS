@@ -50,11 +50,9 @@ export default function ClientMainNavbar() {
                 <Image width={192} height={63} className="nav-bar-logo" src={Logo} alt="Imoogi" />
                 <div className={`authbar-style ${open ? 'open' : ''}`}>
                     <div className='side-link-routes'>
-                        <Link href='/dashboard'><div className='side-link'><DashboardIcon />Dashboard</div></Link>
-                        <Link href='/planos'><div className='side-link'><AccountBoxIcon />Planos e Contratos</div></Link>
-                        <Link href='modalidades'><div className='side-link'><SportsMartialArtsIcon />Modalidades</div></Link>
-                        <Link href='/unidade'> <div className='side-link'><LocationOnIcon />Unidades</div></Link>
-                        <Link href='/usuarios'> <div className='side-link'><NoteAltIcon />Cadastro de Usuarios</div></Link>
+                        <Link href='/area_aluno'><div className='side-link'><DashboardIcon />Menu</div></Link>
+                        <Link href='/carteira'><div className='side-link'><AccountBoxIcon />Carteira</div></Link>
+                        <Link href='/grade'><div className='side-link'><SportsMartialArtsIcon />Grade Horaria</div></Link>
 
                     </div>
 

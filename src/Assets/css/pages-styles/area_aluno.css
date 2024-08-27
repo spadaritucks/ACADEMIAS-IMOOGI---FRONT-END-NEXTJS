@@ -1,0 +1,85 @@
+h1{
+    text-align: center;
+    margin-top: 40px;
+    
+}
+
+.menu{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.dados{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    box-shadow: 4px 4px 4px 4px #ccc;
+    max-width: 400px;
+    text-align: center;
+    padding: 10px 10px;
+    margin: 15px;
+    height: 200px;
+}
+
+.dados h2{
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 25px;
+}
+
+.dado{
+    box-shadow: 1px 1px 1px 1px #ccc;
+    padding: 5px 10px;
+    margin: 5px;
+}
+
+span{
+    font-weight: bold;
+}
+
+.user-datas{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.date{
+    margin: 10px;
+}
+
+.area-carteira{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 4px 4px 4px 4px #ccc;
+    width: 450px;
+    padding: 20px 10px;
+    
+}
+
+.dados-carteira{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.foto-usuario{
+    border-radius: 100%;
+    border: 1px solid #ccc;
+}
+
+.dados-usuario-area{
+    margin: 10px
+}
+
+
+@media (max-width:990px){
+    .menu{
+        flex-direction: column;
+    }
+}
