@@ -41,7 +41,7 @@ export default function AreaDoAluno() {
         <ClientMain>
             <h1>Bem vindo(a) {nome}</h1>
 
-            <section className="menu">
+            <section className="menuAluno">
                 <div className="dados">
                     <h2>Informações do seu Plano</h2>
                     {contrato.map(userContrato => (

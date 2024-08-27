@@ -40,7 +40,7 @@ export default function carteiraAluno() {
     return (
         <ClientMain>
             <h1>Carteira do Aluno</h1>
-            <section className="menu">
+            <section className="menuAluno">
 
                 <div className="area-carteira">
                     <Image src={logo} alt="" width={200} height={150}></Image>
