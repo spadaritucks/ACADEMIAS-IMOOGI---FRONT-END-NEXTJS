@@ -13,6 +13,11 @@ import { Usuario } from '@/Components/api/UsuariosRequest';
 export const Contratos = () => {
     const [planos, setPlanos] = useState<Plano[]>([]);
     const [modalidades, setModalidades] = useState<Modalidade[]>([]);
+    const [inputModalidadeState, setInputModalidadeState] = useState<boolean>(false)
+
+    const toogleInputModalidade = () => {
+        setInputModalidadeState(!inputModalidadeState)
+    }
 
     useEffect(() => {
         const fetchPlanos = async () => {
@@ -52,18 +57,19 @@ export const Contratos = () => {
             </div>
 
             <div className="form-name-input">
-                <span>Modalidade</span>
-                <select name="modalidade_id" id="modalidade_id">
+                <span>Modalidade 1</span>
+                <select name="modalidade_id[]" id="modalidade_id">
                     {modalidades.map((modalidade) => (
                         <option value={modalidade.id}>
                         {modalidade.nome_modalidade}
                     </option>
                     ))}
                 </select>
+                <button type='reset' className='insertMoreOne' onClick={toogleInputModalidade}>Inserir mais uma Modalidade</button>
             </div>
-            <div className="form-name-input">
-                <span>Modalidade</span>
-                <select name="modalidade_id" id="modalidade_id">
+            <div className= {`form-name-input ${inputModalidadeState ? `flex` : 'none'}`} >
+                <span>Modalidade 2</span>
+                <select name="modalidade_id[]" id="modalidade_id">
                     {modalidades.map((modalidade) => (
                         <option value={modalidade.id}>
                         {modalidade.nome_modalidade}

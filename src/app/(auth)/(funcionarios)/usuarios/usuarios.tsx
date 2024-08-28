@@ -71,6 +71,7 @@ export const Usuarios: React.FC<UsuariosProps> = ({ formRef, user, contrato, mod
             <div className="form-name-input">
                 <span>Tipo de Usuario</span>
                 <select name="tipo_usuario" id="tipo_usuario" onChange={handleTypeUserChange}>
+                    <option value="0">Selecione</option>
                     <option value="aluno">Aluno</option>
                     <option value="funcionario">Funcionario</option>
                 </select>
