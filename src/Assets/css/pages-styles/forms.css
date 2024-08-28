@@ -51,7 +51,7 @@ body {
 
 .form-name-input input,
 .form-name-input select {
-    max-width: 100%;
+    max-width: 400px;
     min-width: 10%;
     border-radius: 4px;
     padding: 5px 10px;

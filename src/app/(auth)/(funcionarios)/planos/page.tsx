@@ -69,6 +69,7 @@ export default function Planos() {
                 const response: any = await createPlano(formdata)
                 modalServer('Sucesso', response)
                 console.log(response)
+                
             }
 
             sendFormdata()
