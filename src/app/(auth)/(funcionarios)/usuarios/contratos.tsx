@@ -74,7 +74,7 @@ export const Contratos: React.FC<UsuariosProps> = ({ user, contrato, modalidade,
 
             <div className={`form-name-input ${inputVisibility ? `disabled` : ''}`} >
                 <span>Modalidade 1</span>
-                <select name="modalidade_id[]" id="modalidade_id" disabled = {!inputModalidadeState} >
+                <select name="modalidade_id[]" id="modalidade_id" disabled = {inputVisibility} >
                     <option value="" >Selecione</option>
                     {modalidades.map((modalidade) => (
                         <option value={modalidade.id}>
