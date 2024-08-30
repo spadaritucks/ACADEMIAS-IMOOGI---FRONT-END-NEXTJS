@@ -93,6 +93,15 @@ export const updateUser = async (id: number, userData: FormData): Promise<number
   }
 };
 
+export const updateUserModalidade = async (id:number, userData: FormData) => {
+  try{
+    const response = await api.post(`/api/user_modalidade/${id}?_method=PUT`, userData);
+    return response.data.message
+  }catch(error:any){
+    return error.response.data.message
+  }
+}
+
 // Função para deletar um usuário
 export const deleteUser = async (id: number): Promise<number> => {
   try {

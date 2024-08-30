@@ -16,7 +16,7 @@ export default function criarUsuarios() {
     const [selectType, setSelectType] = useState<string>('');
     const [showContratos, setShowContratos] = useState<boolean>(false);
     const [showFuncionario, setShowFuncionario] = useState<boolean>(false);
-  
+
 
 
 
@@ -63,8 +63,12 @@ export default function criarUsuarios() {
 
     }
 
-    
 
+    const [inputModalidadeState, setInputModalidadeState] = useState<boolean>(false);
+    const toogleInputModalidade = () => {
+        setInputModalidadeState(!inputModalidadeState)
+
+    }
     return (
         <AdmMain>
             <div className='area-form'>
@@ -76,7 +80,7 @@ export default function criarUsuarios() {
                     </div>
 
                     <div className="form-component">
-                        {showContratos && <Contratos />}
+                        {showContratos && <Contratos toogleInputModalidade={toogleInputModalidade} setInputModalidadeState={setInputModalidadeState} inputModalidadeState={inputModalidadeState} />}
                         {showFuncionario && <Funcionario />}
 
                     </div>

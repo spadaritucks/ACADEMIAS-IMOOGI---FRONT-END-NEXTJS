@@ -1,6 +1,6 @@
 import { Modalidade } from "@/Components/api/ModalidadesRequest";
 import { Contrato, DadosFuncionario, Usuario, UsuarioModalidade } from "@/Components/api/UsuariosRequest";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 interface UsuariosProps {
     handleTypeUserChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
@@ -9,56 +9,25 @@ interface UsuariosProps {
     contrato?: Contrato;
     modalidade?: UsuarioModalidade[];
     funcionario?: DadosFuncionario;
+    handleInputClick?: () => void
+  
 }
 
 
-export const Usuarios: React.FC<UsuariosProps> = ({ formRef, user, contrato, modalidade, funcionario, handleTypeUserChange }) => {
+export const Usuarios: React.FC<UsuariosProps> = ({ handleInputClick,  user, contrato, modalidade, funcionario, handleTypeUserChange }) => {
 
     const [passwordInputState,setPasswordInputState] = useState<boolean>(false);
 
     const displayPasswordInput = () =>{
         setPasswordInputState(!passwordInputState)
     }
-
-
-    const handleInputClick = () => {
-        if (user && formRef?.current) {
-            const form = formRef.current;
-            (form['tipo_usuario'] as HTMLSelectElement).value = user.tipo_usuario.toString();
-            (form['nome'] as HTMLInputElement).value = user.nome.toString();
-            (form['email'] as HTMLInputElement).value = user.email.toString();
-            (form['data_nascimento'] as HTMLInputElement).value = user.data_nascimento.toString();
-            (form['cpf'] as HTMLInputElement).value = user.cpf.toString();
-            (form['rg'] as HTMLInputElement).value = user.rg.toString();
-            (form['telefone'] as HTMLInputElement).value = user.telefone.toString();
-            (form['cep'] as HTMLInputElement).value = user.cep.toString();
-            (form['logradouro'] as HTMLInputElement).value = user.logradouro.toString();
-            (form['numero'] as HTMLInputElement).value = user.numero.toString();
-            (form['complemento'] as HTMLInputElement).value = user.complemento.toString();
-            if (contrato && modalidade) {
-                (form['planos_id'] as HTMLSelectElement).value = contrato.planos_id.toString();
-                (form['data_inicio'] as HTMLInputElement).value = contrato.data_inicio.toString();
-                (form['data_renovacao'] as HTMLInputElement).value = contrato.data_renovacao.toString();
-                (form['data_vencimento'] as HTMLInputElement).value = contrato.data_vencimento.toString();
-                (form['valor_plano'] as HTMLInputElement).value = contrato.valor_plano.toString();
-                (form['desconto'] as HTMLInputElement).value = contrato.desconto.toString();
-                (form['parcelas'] as HTMLInputElement).value = contrato.parcelas.toString();
-                (form['observacoes'] as HTMLInputElement).value = contrato.observacoes.toString();
-            }
-            if (funcionario) {
-                (form['tipo_funcionario'] as HTMLSelectElement).value = funcionario.tipo_funcionario.toString();
-                (form['cargo'] as HTMLInputElement).value = funcionario.cargo.toString();
-                (form['atividades'] as HTMLInputElement).value = funcionario.atividades.toString();
-            }
-
-        }
-    }
+   
 
     useEffect(() => {
         if (user) {
-            handleInputClick();
             displayPasswordInput()
         }
+        
     }, [user, contrato,modalidade,funcionario]); // Executa sempre que 'user' mudar
 
 

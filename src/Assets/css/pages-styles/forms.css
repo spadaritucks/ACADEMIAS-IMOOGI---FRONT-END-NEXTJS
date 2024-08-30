@@ -55,6 +55,7 @@ body {
     border: none;
     margin-top: 4px;
     color: white;
+    max-width: 300px;
 }
 
 .form-name-input input,

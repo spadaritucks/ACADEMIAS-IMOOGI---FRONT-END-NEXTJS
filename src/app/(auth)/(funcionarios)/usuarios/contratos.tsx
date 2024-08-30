@@ -1,23 +1,39 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { getPlanos, Plano } from '@/Components/api/PlanosRequest';
 import { getModalidade, Modalidade } from '@/Components/api/ModalidadesRequest';
 import '../../../../Assets/css/pages-styles/forms.css'
-import { createUser } from '@/Components/api/UsuariosRequest';
+import { Contrato, createUser, UsuarioModalidade } from '@/Components/api/UsuariosRequest';
 import { useModal } from '@/Components/errors/errorContext';
 import { Usuario } from '@/Components/api/UsuariosRequest';
 
+interface UsuariosProps {
+    user?: Usuario //---> Verificação se o formulario é de edição
+    modalidade?: UsuarioModalidade[];
+    contrato?:Contrato;
+    handleInputClick?: () => void
+    toogleInputModalidade?: () => void
+    setInputModalidadeState?:  Dispatch<SetStateAction<boolean>>
+    inputModalidadeState?: boolean;
+}
 
 
 
-export const Contratos = () => {
+export const Contratos: React.FC<UsuariosProps> = ({user, contrato, modalidade,inputModalidadeState, setInputModalidadeState,  toogleInputModalidade }) => {
     const [planos, setPlanos] = useState<Plano[]>([]);
     const [modalidades, setModalidades] = useState<Modalidade[]>([]);
-    const [inputModalidadeState, setInputModalidadeState] = useState<boolean>(false)
+    const [inputVisibility, setInputVisibility] = useState<boolean>(false)
 
-    const toogleInputModalidade = () => {
-        setInputModalidadeState(!inputModalidadeState)
+    const inputModalidadeVisibility = () => {
+        setInputVisibility(!inputVisibility) //Visibilidade do Input das Modalidaddes
     }
+
+
+    useEffect(()=>{
+        if(user){
+            inputModalidadeVisibility()
+        }
+    },[user, contrato,modalidade])
 
     useEffect(() => {
         const fetchPlanos = async () => {
@@ -50,34 +66,34 @@ export const Contratos = () => {
                 <select name="planos_id" id="planos_id">
                     {planos.map((plano) => (
                         <option value={plano.id}>
-                        {plano.nome_plano}
-                    </option>
+                            {plano.nome_plano}
+                        </option>
                     ))}
                 </select>
             </div>
 
-            <div className="form-name-input">
+            <div className={`form-name-input ${inputVisibility  ? `disabled` : ''}`}>
                 <span>Modalidade 1</span>
                 <select name="modalidade_id[]" id="modalidade_id">
                     {modalidades.map((modalidade) => (
                         <option value={modalidade.id}>
-                        {modalidade.nome_modalidade}
-                    </option>
+                            {modalidade.nome_modalidade}
+                        </option>
                     ))}
                 </select>
-                <button type='reset' className='insertMoreOne' onClick={toogleInputModalidade}>Inserir mais uma Modalidade</button>
+                <button type='reset' className='insertMoreOne' onClick={toogleInputModalidade}>Insira ou Remova uma Modalidade</button>
             </div>
-            <div className= {`form-name-input ${inputModalidadeState ? `flex` : 'none'}`} >
+            <div className={`form-name-input ${inputModalidadeState  ? `flex` : 'none'}`} >
                 <span>Modalidade 2</span>
                 <select name="modalidade_id[]" id="modalidade_id">
                     {modalidades.map((modalidade) => (
                         <option value={modalidade.id}>
-                        {modalidade.nome_modalidade}
-                    </option>
+                            {modalidade.nome_modalidade}
+                        </option>
                     ))}
                 </select>
             </div>
-            
+
             <div className="form-name-input">
                 <span>Data de Inicio</span>
                 <input type="date" name='data_inicio' id="data_inicio" />

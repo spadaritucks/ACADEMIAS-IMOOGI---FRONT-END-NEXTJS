@@ -138,7 +138,7 @@ export default function Planos() {
                             <Table variant="simple">
                                 <Thead>
                                     <Tr>
-                                        <Th>Nome do Plano</Th>
+                                        <Th style={{ textAlign: "center" } }>Nome do Plano</Th>
                                         <Th>Duração(em meses)</Th>
                                         <Th>Matricula</Th>
                                         <Th>Valor Mensal</Th>
@@ -150,7 +150,7 @@ export default function Planos() {
                                 <Tbody>
                                     {showRead.map(planos => (
                                         <Tr key={planos.id}>
-                                            <Td>{planos.nome_plano}</Td>
+                                            <Td style={{ textAlign: "center" }}>{planos.nome_plano}</Td>
                                             <Td>{planos.duracao > 1 ? planos.duracao + ' meses' : planos.duracao + ' mês'}</Td>
                                             <Td>{'R$' + planos.valor_matricula}</Td>
                                             <Td>{'R$' + planos.valor_mensal}</Td>
