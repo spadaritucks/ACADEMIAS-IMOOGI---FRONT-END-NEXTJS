@@ -10,16 +10,16 @@ import { Usuario } from '@/Components/api/UsuariosRequest';
 interface UsuariosProps {
     user?: Usuario //---> Verificação se o formulario é de edição
     modalidade?: UsuarioModalidade[];
-    contrato?:Contrato;
+    contrato?: Contrato;
     handleInputClick?: () => void
     toogleInputModalidade?: () => void
-    setInputModalidadeState?:  Dispatch<SetStateAction<boolean>>
+    setInputModalidadeState?: Dispatch<SetStateAction<boolean>>
     inputModalidadeState?: boolean;
 }
 
 
 
-export const Contratos: React.FC<UsuariosProps> = ({user, contrato, modalidade,inputModalidadeState, setInputModalidadeState,  toogleInputModalidade }) => {
+export const Contratos: React.FC<UsuariosProps> = ({ user, contrato, modalidade, inputModalidadeState, setInputModalidadeState, toogleInputModalidade }) => {
     const [planos, setPlanos] = useState<Plano[]>([]);
     const [modalidades, setModalidades] = useState<Modalidade[]>([]);
     const [inputVisibility, setInputVisibility] = useState<boolean>(false)
@@ -29,11 +29,11 @@ export const Contratos: React.FC<UsuariosProps> = ({user, contrato, modalidade,i
     }
 
 
-    useEffect(()=>{
-        if(user){
+    useEffect(() => {
+        if (user) {
             inputModalidadeVisibility()
         }
-    },[user, contrato,modalidade])
+    }, [user, contrato, modalidade])
 
     useEffect(() => {
         const fetchPlanos = async () => {
@@ -72,9 +72,10 @@ export const Contratos: React.FC<UsuariosProps> = ({user, contrato, modalidade,i
                 </select>
             </div>
 
-            <div className={`form-name-input ${inputVisibility  ? `disabled` : ''}`}>
+            <div className={`form-name-input ${inputVisibility ? `disabled` : ''}`} >
                 <span>Modalidade 1</span>
-                <select name="modalidade_id[]" id="modalidade_id">
+                <select name="modalidade_id[]" id="modalidade_id" disabled = {!inputModalidadeState} >
+                    <option value="" >Selecione</option>
                     {modalidades.map((modalidade) => (
                         <option value={modalidade.id}>
                             {modalidade.nome_modalidade}
@@ -83,9 +84,10 @@ export const Contratos: React.FC<UsuariosProps> = ({user, contrato, modalidade,i
                 </select>
                 <button type='reset' className='insertMoreOne' onClick={toogleInputModalidade}>Insira ou Remova uma Modalidade</button>
             </div>
-            <div className={`form-name-input ${inputModalidadeState  ? `flex` : 'none'}`} >
+            <div className={`form-name-input ${inputModalidadeState ? `flex` : 'none'}`}  >
                 <span>Modalidade 2</span>
-                <select name="modalidade_id[]" id="modalidade_id">
+                <select name="modalidade_id[]" id="modalidade_id" disabled = {!inputModalidadeState}>
+                    <option value="" disabled>Selecione</option>
                     {modalidades.map((modalidade) => (
                         <option value={modalidade.id}>
                             {modalidade.nome_modalidade}

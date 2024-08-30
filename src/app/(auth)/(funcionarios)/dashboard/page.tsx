@@ -159,6 +159,7 @@ const DashboardContent = () => {
             if (formRef.current) {
                 const formdata = new FormData(formRef.current)
                 const id = user?.id
+                console.log(formdata)
                 formdata.append('_method', 'PUT')
 
                 if (id) {
@@ -464,7 +465,8 @@ const ModalidadeUserForm = ({ modalidade,handleSubmitUpdateModalidade,formRef }:
                 <div className="form-component">
                     <div className="form-name-input">
                         <span>Modalidade 1</span>
-                        <select name="modalidade_id[]" id="modalidade_id">
+                        <select name="modalidade_id[]" id="modalidade_id" >
+                        <option value="" >Selecione</option>
                             {modalidades.map((modalidade) => (
                                 <option value={modalidade.id}>
                                     {modalidade.nome_modalidade}
@@ -475,7 +477,8 @@ const ModalidadeUserForm = ({ modalidade,handleSubmitUpdateModalidade,formRef }:
                     </div>
                     <div className={`form-name-input ${inputModalidadeState ? `flex` : 'none'}`} >
                         <span>Modalidade 2</span>
-                        <select name="modalidade_id[]" id="modalidade_id">
+                        <select name="modalidade_id[]" id="modalidade_id" disabled = {!inputModalidadeState}>
+                        <option value="" >Selecione</option>
                             {modalidades.map((modalidade) => (
                                 <option value={modalidade.id}>
                                     {modalidade.nome_modalidade}

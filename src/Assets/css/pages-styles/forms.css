@@ -74,6 +74,8 @@ body {
 
 .form-name-input.disabled, .form-name-input.none{
     display: none ;
+    visibility: hidden;
+    position: absolute;
 }
 
 
