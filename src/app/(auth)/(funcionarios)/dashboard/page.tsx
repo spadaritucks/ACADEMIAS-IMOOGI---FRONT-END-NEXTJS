@@ -395,7 +395,7 @@ const UserForm = ({ selectType, user, contrato, modalidade, funcionario, formRef
             (form['cep'] as HTMLInputElement).value = user.cep.toString();
             (form['logradouro'] as HTMLInputElement).value = user.logradouro.toString();
             (form['numero'] as HTMLInputElement).value = user.numero.toString();
-            (form['complemento'] as HTMLInputElement).value = user.complemento.toString();
+            user.complemento ? (form['complemento'] as HTMLInputElement).value = user.complemento.toString() : ''
             if (contrato && modalidade) {
                 (form['planos_id'] as HTMLSelectElement).value = contrato.planos_id.toString();
                 (form['data_inicio'] as HTMLInputElement).value = contrato.data_inicio.toString();
