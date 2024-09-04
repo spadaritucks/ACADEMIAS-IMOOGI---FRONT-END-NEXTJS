@@ -24,7 +24,7 @@
     cursor: pointer;
     width: 200px;
     text-align: center;
-    font-size: 14px;
+    font-size: 12px;
     margin: 10px;
 }
 
@@ -49,7 +49,7 @@
 }
 
 .unidade{
-    height: 470px;
+    height: 570px;
 }
 
 .unidade h2, .modalidade h2{
