@@ -91,6 +91,10 @@ body {
 
 }
 
+.submit-button:hover{
+    background-color: blue;
+}
+
 @media (max-width:990px) {
     .form-component {
         grid-template-columns: repeat(2, 1fr);

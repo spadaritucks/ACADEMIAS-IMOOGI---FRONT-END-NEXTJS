@@ -34,15 +34,14 @@ export default function Footer() {
 
             <div className="footer-card social">
                 <h2>Redes Sociais</h2>
-                <a href="" className='social-plataform'><WhatsAppIcon /><p>WhatsApp</p></a>
-                <a href="" className='social-plataform'><EmailIcon /><p>Email</p></a>
-                <a href="" className='social-plataform'><InstagramIcon /><p>Instagram</p></a>
-                <a href="" className='social-plataform'><FacebookIcon /><p>Facebook</p></a>
+                <a href="https://api.whatsapp.com/send/?phone=11977010020&text&type=phone_number&app_absent=0" className='social-plataform'><WhatsAppIcon /><p>WhatsApp</p></a>
+                <a href="https://www.instagram.com/academiasimoogi_oficial/" className='social-plataform'><InstagramIcon /><p>Instagram</p></a>
+                <a href="https://www.facebook.com/mestre.jefersondasilva" className='social-plataform'><FacebookIcon /><p>Facebook</p></a>
             </div>
 
             <div className="footer-card location">
                 <h2>Localização</h2>
-                <a href=""><LocationOnIcon sx={{ margin: 0.5, fontSize: 30 }} /><p> Rua Marechal Deodoro 1815 - 2°Andar - São Bernardo do Campo - SP</p></a>
+                <LocationOnIcon sx={{ margin: 0.5, fontSize: 30 }} /><p> Rua Marechal Deodoro 1815 - 2°Andar - São Bernardo do Campo - SP</p>
             </div>
 
         </footer>

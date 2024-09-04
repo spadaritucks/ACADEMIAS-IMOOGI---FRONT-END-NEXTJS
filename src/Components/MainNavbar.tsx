@@ -40,7 +40,7 @@ export default function MainNavBar() {
 
 
                     <div className="nav-link-login">
-                        <button className='nav-btn-register'><Link href=''>Planos</Link></button>
+                        <button className='nav-btn-register'><Link href='catalogo'>Planos</Link></button>
                         <Link className="login-link-icon" href='login'><LoginIcon sx={{ margin: 0.5, fontSize: 30 }} />Login</Link>
                     </div>
 
