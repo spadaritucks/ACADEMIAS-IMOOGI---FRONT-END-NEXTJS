@@ -14,8 +14,8 @@ export default function Catalogo() {
 
     const fetchPlanos = async () => {
         const listaPlanos = await getPlanos();
-        listaPlanos.filter(listaPlanos => listaPlanos.status === 'Ativo')
-        setPlanos(listaPlanos)
+        const plano = listaPlanos.filter(listaPlanos => listaPlanos.status == "Ativo")
+        setPlanos(plano)
     }
 
     useEffect(() => {
