@@ -55,6 +55,10 @@
     justify-content: center;
 }
 
+.login-link-icon:hover{
+    transform: scale(110%);
+}
+
 .nav-link-login a {
     padding: 0 5px;
     text-decoration: none;
@@ -87,6 +91,12 @@
 .btn-toogle {
     display: none;
     cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+.btn-toogle:hover{
+    transform: scale(110%);
+    transition: 0.3s ease-in-out;
 }
 
 

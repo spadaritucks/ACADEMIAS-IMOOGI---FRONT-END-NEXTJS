@@ -14,6 +14,7 @@ import SportsMartialArtsIcon from '@mui/icons-material/SportsMartialArts';
 import MenuIcon from '@mui/icons-material/Menu';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { Avatar } from '@chakra-ui/react'
+import CloseSharpIcon from '@mui/icons-material/CloseSharp';
 
 
 export default function MainAdmNavbar() {
@@ -60,14 +61,14 @@ export default function MainAdmNavbar() {
 
                     <div className='users-info'>
                         <p className='session-name'><Avatar src={`${url}`} sx={{ margin: 2 }} />{nome}</p>
-                        <p className='session-name' onClick={handleLogout}><LogoutIcon sx={{ margin: 0.5, fontSize: 30, cursor: 'pointer' }}></LogoutIcon>Logout</p>
+                        <p className='logout' onClick={handleLogout}><LogoutIcon sx={{ margin: 0.5, fontSize: 30, cursor: 'pointer' }}></LogoutIcon>Logout</p>
                     </div>
                 </div>
 
 
 
                 <div className="btn-hamburguer" onClick={toggleMenu}>
-                    <MenuIcon sx={{ fontSize: 45 }} />
+                {!open ?  <MenuIcon sx={{ fontSize: 45 }}  /> :<CloseSharpIcon sx={{ fontSize: 45 }} />}
                 </div>
             </div>
 

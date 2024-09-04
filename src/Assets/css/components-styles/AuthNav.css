@@ -1,12 +1,12 @@
 .btn-hamburguer {
-    margin: 20px;
-    cursor: pointer;
-    border-radius: 100px;
     display: none;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
 }
 
 .btn-hamburguer:hover {
-    background-color: #ccc;
+    transform: scale(110%);
+    transition: 0.3s ease-in-out;
 
 }
 
@@ -42,6 +42,20 @@
     align-items: center;
     justify-content: center;
     margin: 0 10px;
+}
+
+.logout{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 10px;
+    cursor: pointer;
+
+}
+
+.logout:hover{
+    transform: scale(110%);
+    
 }
 
 
@@ -98,6 +112,7 @@
         background-color: white;
         padding: 20px;
         flex-direction: column;
+
     }
 
     .side-link-routes{

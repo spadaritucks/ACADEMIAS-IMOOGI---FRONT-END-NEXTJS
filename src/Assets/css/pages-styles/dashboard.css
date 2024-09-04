@@ -19,6 +19,34 @@ a {
    
 }
 
+.info-div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-image-modal{
+    border-radius: 20px;
+    margin: 10px;
+}
+
+.container-info{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin: 10px;
+}
+
+.info-name{
+    font-weight: bold;
+}
+
+.info{
+    box-shadow: 1px 1px 1px 1px #ccc;
+    border-radius: 8px;
+    padding: 5px 10px;
+    margin: 5px;
+}
+
 
 .search-bar-area {
     width: 80%;
@@ -107,6 +135,8 @@ a {
 
 
 
+
+
 Link {
     text-decoration: none;
 
@@ -122,4 +152,19 @@ Link {
         flex-direction: column;
     }
 
+    .info-div{
+        flex-direction: column;
+    }
+
+}
+
+
+@media (max-width:500px){
+
+    .container-info{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
 }

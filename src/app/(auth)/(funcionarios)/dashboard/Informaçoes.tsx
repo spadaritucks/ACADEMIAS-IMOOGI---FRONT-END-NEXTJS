@@ -1,42 +1,44 @@
 import { Contrato, DadosFuncionario, Usuario, UsuarioModalidade } from "@/Components/api/UsuariosRequest"
 import Image from "next/image";
 
-interface Informacoes{
+interface Informacoes {
     contrato?: Contrato;
     modalidade?: UsuarioModalidade[]
     funcionario?: DadosFuncionario
 }
 
-export const Informacoes:React.FC<Informacoes> = ({contrato,modalidade,funcionario}) => {
+export const Informacoes: React.FC<Informacoes> = ({ contrato, modalidade, funcionario }) => {
 
-    if(contrato && modalidade){
-        return(
+    if (contrato && modalidade) {
+        return (
             <div className='info-div'>
-            <p className='info'><span className='info-name'>Plano :  </span>{contrato.nome_plano}</p>
-            {modalidade.map((modalidade, index) => (
-                    <p key={index} className='info'><span className='info-name'>Modalidade {index + 1} :  </span>{modalidade.nome_modalidade}</p>
-                ))}
-            <p className='info'><span className='info-name'>Data de Inicio:  </span>{contrato.data_inicio}</p>
-            <p className='info'><span className='info-name'>Data de Renovação :  </span>{contrato.data_renovacao}</p>
-            <p className='info'><span className='info-name'>Data de Vencimento :  </span>{contrato.data_vencimento}</p>
-            <p className='info'><span className='info-name'>Valor do Plano :  </span>{contrato.valor_plano}</p>
-            <p className='info'><span className='info-name'>Desconto :  </span>{contrato.desconto}</p>
-            <p className='info'><span className='info-name'>Parcelas :  </span>{contrato.parcelas}</p>
-            <p className='info'><span className='info-name'>Observações :  </span>{contrato.observacoes}</p>
-        </div>
+                <div className="container-info">
+                    <p className='info'><span className='info-name'>Plano :  </span>{contrato.nome_plano}</p>
+                    {modalidade.map((modalidade, index) => (
+                        <p key={index} className='info'><span className='info-name'>Modalidade {index + 1} :  </span>{modalidade.nome_modalidade}</p>
+                    ))}
+                    <p className='info'><span className='info-name'>Data de Inicio:  </span>{contrato.data_inicio}</p>
+                    <p className='info'><span className='info-name'>Data de Renovação :  </span>{contrato.data_renovacao}</p>
+                    <p className='info'><span className='info-name'>Data de Vencimento :  </span>{contrato.data_vencimento}</p>
+                    <p className='info'><span className='info-name'>Valor do Plano :  </span>{contrato.valor_plano}</p>
+                    <p className='info'><span className='info-name'>Desconto :  </span>{contrato.desconto}</p>
+                    <p className='info'><span className='info-name'>Parcelas :  </span>{contrato.parcelas}</p>
+                    <p className='info'><span className='info-name'>Observações :  </span>{contrato.observacoes}</p>
+                </div>
+            </div>
         )
 
-    }else if(funcionario){
-       return( 
-       <div className='info-div'>
-        <p className='info'><span className='info-name'>Tipo do Funcionario :  </span>{funcionario.tipo_funcionario}</p>
-        <p className='info'><span className='info-name'>Cargo:  </span>{funcionario.cargo}</p>
-        <p className='info'><span className='info-name'>Atividades :  </span>{funcionario.atividades}</p>
-    </div>)
-    }else{
-        return(
+    } else if (funcionario) {
+        return (
+            <div className='info-div'>
+                <p className='info'><span className='info-name'>Tipo do Funcionario :  </span>{funcionario.tipo_funcionario}</p>
+                <p className='info'><span className='info-name'>Cargo:  </span>{funcionario.cargo}</p>
+                <p className='info'><span className='info-name'>Atividades :  </span>{funcionario.atividades}</p>
+            </div>)
+    } else {
+        return (
             <p>Nenhuma Informação Encontrada</p>
         )
     }
- 
+
 }

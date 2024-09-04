@@ -144,7 +144,7 @@ export default function Unidades() {
                                         <Th>Nome da Unidade</Th>
                                         <Th>Endereço</Th>
                                         <Th>Grade Horaria</Th>
-                                        <Th>Descrição da Modalidade</Th>
+                                        <Th>Descrição da Unidade</Th>
 
                                     </Tr>
                                 </Thead>

@@ -19,14 +19,14 @@ export default function Footer() {
                 <p className='footer-text'>DPU Krav Maga BR - Boxe - Kickboxing - Muay Thai - Taekwondo
                     - Hapkido - Hwarang Kumdo - Jiu-Jitsu - Capoeira - Aulas PCD
                 </p>
-                <p className='footer-text'>Sertanejo - Forro - Fit Dance - Vanera - Dança do Ventre
+                <p className='footer-text'>Fit Dance
                 </p>
             </div>
             <div className="footer-card links">
                 <h2>Links</h2>
-                <ul><li><Link href='/unidades'>Unidades</Link></li>
-                    <li><Link href='/lutas'>Lutas</Link></li>
-                    <li><Link href='/dança'>Dança</Link></li>
+                <ul><li><Link href='/unidade'>Unidades</Link></li>
+                    <li><Link href='/modalidade'>Modalidades</Link></li>
+                    <li><Link href='/equipe'>Equipe</Link></li>
                 </ul>
 
 
