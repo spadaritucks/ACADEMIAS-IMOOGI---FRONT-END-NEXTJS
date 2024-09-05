@@ -10,7 +10,8 @@ import Image from "next/image";
 import ReactPDF, { PDFDownloadLink } from '@react-pdf/renderer';
 import { border } from "@chakra-ui/react";
 
-import html2pdf from 'html2pdf.js';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 
 export default function carteiraAluno() {
@@ -36,31 +37,23 @@ export default function carteiraAluno() {
 
     }, [user])
 
-    const downloadPDF = async () => {
-        // Verifique se a imagem está carregada
-        if (!imgData) {
-            console.error('Imagem não carregada.');
-            return;
-        }
     
-        // Defina o elemento da área-carteira
-        const element = document.getElementById('area-carteira');
-    
-        if (element) {
-            const opt = {
-                margin: 1,
-                filename: 'carteira_aluno.pdf',
-                image: { type: 'jpeg', quality: 1 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
-    
-            // Use html2pdf para gerar o PDF
-            html2pdf().from(element).set(opt).save();
-        } else {
-            console.error('Elemento não encontrado.');
-        }
-    };
+const downloadPDF = () => {
+    const element = document.getElementById('area-carteira');
+    if (element) {
+        html2canvas(element).then((canvas) => {
+            const imgData = canvas.toDataURL('image/jpeg');
+            const pdf = new jsPDF('portrait', 'mm', 'a4');
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+            pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('carteira_aluno.pdf');
+        });
+    } else {
+        console.error('Elemento não encontrado.');
+    }
+};
 
     useEffect(() => {
 
