@@ -21,13 +21,17 @@ h1{
     text-align: center;
     padding: 10px 10px;
     margin: 15px;
-    height: 200px;
+    max-height: 600px;
 }
 
 .dados h2{
     font-weight: bold;
     text-transform: uppercase;
     font-size: 25px;
+}
+
+.dados h3{
+    font-size: 20px;
 }
 
 .dado{
@@ -50,16 +54,26 @@ span{
     margin: 10px;
 }
 
+.menuAluno{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 .area-carteira{
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     box-shadow: 4px 4px 4px 4px #ccc;
-    width: 450px;
+    background-color: white;
+    width: 406.4px;
+    height: 254.8px ;
     padding: 20px 10px;
     
 }
+
 
 .dados-carteira{
     display: flex;
@@ -68,13 +82,51 @@ span{
     margin-top: 10px;
 }
 
+.divDados{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin: 0;
+    
+}
+
+.foto-usuario-area{
+    width: 50%;
+}
+
 .foto-usuario{
-    border-radius: 100%;
+    border-radius: 20px;
     border: 1px solid #ccc;
+    width: 150px;
+    height: 150px;
 }
 
 .dados-usuario-area{
-    margin: 10px
+    margin: 10px;
+    height: 150px;
+    font-size: 11px;
+}
+
+.container-modalidades{
+    display: flex;
+}
+
+.nome-modalidade{
+    margin-left: 3px;
+}
+
+.btn-pdf{
+    background-color: #007BFF;
+    font-size: 15px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 20px;
+    color: white;
+    margin-top: 20px;
+}
+
+.btn-pdf:hover{
+    background-color: blue;
 }
 
 

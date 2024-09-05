@@ -27,7 +27,7 @@ export default function Home() {
 
                 Trabalhamos na melhoria continua da sáude fisica, sistema imunológico e ajudando familias brasileiras
                 no combate á obesidade, sedentarismo, Stress, Esquizofrenia, doenças cardiovasculares, alzheimer,
-                borderline, ansiedade e a maior doença do século<span className="doenca-seculo">A DEPRESSÃO.</span>
+                borderline, ansiedade e a maior doença do século<span className="doenca-seculo"> A DEPRESSÃO.</span>
               </p>
             </div>
             <div className="conteudo">
