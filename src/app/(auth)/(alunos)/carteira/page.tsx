@@ -10,8 +10,7 @@ import Image from "next/image";
 import ReactPDF, { PDFDownloadLink } from '@react-pdf/renderer';
 import { border } from "@chakra-ui/react";
 
-const html2pdf: any = require('html2pdf.js');
-
+import html2pdf from 'html2pdf.js';
 
 
 export default function carteiraAluno() {
