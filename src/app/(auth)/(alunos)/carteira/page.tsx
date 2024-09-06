@@ -87,7 +87,7 @@ const downloadPDF = () => {
             <h1>Carteira do Aluno</h1>
             <section className="menuAluno">
                 <div className="area-carteira" id="area-carteira">
-                    <Image src={logo} alt="" width={200} height={150}></Image>
+                    <Image src={logo} alt="" width={150} height={100}></Image>
                     <div className="dados-carteira">
                         <div className="foto-usuario-area">
                             <Image className="foto-usuario" src={imgData} alt="" width={150} height={150}></Image>
@@ -108,7 +108,7 @@ const downloadPDF = () => {
                                 <div className="container-modalidades">
                                     {modalidade.map(modalidade => (
 
-                                        <p className="nome-modalidade"> |{modalidade.nome_modalidade}| </p>
+                                        <p className="nome-modalidade">{modalidade.nome_modalidade}</p>
                                     ))}
                                 </div>
                             </div>
