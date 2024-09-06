@@ -41,8 +41,8 @@ export default function carteiraAluno() {
 const downloadPDF = () => {
     const element = document.getElementById('area-carteira');
     if (element) {
-        html2canvas(element).then((canvas) => {
-            const imgData = canvas.toDataURL('image/jpeg');
+        html2canvas(element,{scale: 3}).then((canvas) => {
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
             const pdf = new jsPDF('portrait', 'mm', 'a4');
             const imgProps = pdf.getImageProperties(imgData);
             const pdfWidth = pdf.internal.pageSize.getWidth();
