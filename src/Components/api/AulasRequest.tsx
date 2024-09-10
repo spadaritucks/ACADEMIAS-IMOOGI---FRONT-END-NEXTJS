@@ -1,6 +1,7 @@
 import api from './api'
 
 export interface Aula {
+    id:number;
     modalidade_id: number,
     nome_modalidade: string;
     horario: string;

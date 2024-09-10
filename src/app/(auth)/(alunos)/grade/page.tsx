@@ -4,7 +4,7 @@ import { ClientMain } from "@/Layouts/ClientMain"
 import { FC, useEffect, useState } from "react";
 import { Aula, getAulas } from "@/Components/api/AulasRequest";
 import '@/Assets/css/pages-styles/aulas.css'
-import { createReservas, getReservas, Reserva } from "@/Components/api/ReservasRequest";
+import { createReservas, deleteReserva, getReservas, Reserva } from "@/Components/api/ReservasRequest";
 import UserSession from "@/Components/api/UserSession";
 import { useModal } from "@/Components/errors/errorContext";
 import { Contrato, getUsers, UsuarioModalidade } from "@/Components/api/UsuariosRequest";
@@ -39,6 +39,10 @@ export default function GradeReservas() {
     const { modalServer } = useModal();
     const [userModalidades, setUserModalidades] = useState<UsuarioModalidade[]>([])
     const [contratos, setContratos] = useState<Contrato[]>([])
+
+    
+ 
+
 
 
     // Fetch aulas do banco de dados e ordenar e determinar verificações envolvendo as condições do usuario
@@ -154,6 +158,7 @@ export default function GradeReservas() {
         }
 
 
+
         const formdata = new FormData();
         formdata.append('usuario_id', user.id.toString());
         formdata.append('modalidade_id', modalidade_id.toString());
@@ -170,9 +175,17 @@ export default function GradeReservas() {
         }));
     };
 
-    if (!user) {
-        return null;
+
+    const clickDeleteReserva = async () => {
+
+        const reservaId = reservas.find(reserva => reserva.usuario_id === user.id)
+
+        if (reservaId) {
+            const response = await deleteReserva(reservaId.id);
+            modalServer("Reserva Excluida", response)
+        }
     }
+    
 
 
     // Agrupando as aulas por dia da semana
@@ -183,6 +196,10 @@ export default function GradeReservas() {
 
         };
     });
+
+    if (!user) {
+        return null;
+    }
 
     return (
         <ClientMain>
@@ -205,10 +222,14 @@ export default function GradeReservas() {
                                             >
                                                 Reservar
                                             </button>
+
                                             <p className="limiteAlunos">
                                                 {reservasPorAula[aulaKey] || 0}/{aula.limite_alunos}
                                             </p>
+
+
                                         </div>
+                                        {reservasPorAula[aulaKey] ? <button className="btn-delete-reserva" onClick={() => clickDeleteReserva()}>Desfazer</button> : ""}
                                     </div>
                                 );
                             }) : <p>Nenhuma Aula</p>}

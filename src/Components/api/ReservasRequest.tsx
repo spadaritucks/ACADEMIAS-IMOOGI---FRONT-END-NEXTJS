@@ -1,6 +1,7 @@
 import api from './api'
 
 export interface Reserva {
+    id:number;
     modalidade_id: number,
     usuario_id: number
     nome_modalidade: string;
