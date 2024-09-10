@@ -24,7 +24,7 @@ export default function Footer() {
             </div>
             <div className="footer-card links">
                 <h2>Links</h2>
-                <ul><li><Link href='/unidade'>Unidades</Link></li>
+                <ul><li><Link href='/unidades'>Unidades</Link></li>
                     <li><Link href='/modalidade'>Modalidades</Link></li>
                     <li><Link href='/equipe'>Equipe</Link></li>
                 </ul>

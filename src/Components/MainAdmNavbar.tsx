@@ -53,9 +53,10 @@ export default function MainAdmNavbar() {
                     <div className='side-link-routes'>
                         <Link href='/dashboard'><div className='side-link'><DashboardIcon />Dashboard</div></Link>
                         <Link href='/planos'><div className='side-link'><AccountBoxIcon />Planos e Contratos</div></Link>
-                        <Link href='modalidades'><div className='side-link'><SportsMartialArtsIcon />Modalidades</div></Link>
+                        <Link href='/modalidades'><div className='side-link'><SportsMartialArtsIcon />Modalidades</div></Link>
                         <Link href='/unidade'> <div className='side-link'><LocationOnIcon />Unidades</div></Link>
                         <Link href='/usuarios'> <div className='side-link'><NoteAltIcon />Cadastro de Usuarios</div></Link>
+                        <Link href='/aulas'> <div className='side-link'><NoteAltIcon />Aulas</div></Link>
 
                     </div>
 
