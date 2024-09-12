@@ -27,6 +27,7 @@ interface userForms {
     modalPassword?: () => void
     userModal?: () => void
     formref?: React.RefObject<HTMLFormElement>
+    formRefPassword? :React.RefObject<HTMLFormElement>
     user?: Usuario
 }
 
@@ -36,6 +37,7 @@ export default function ClientMainNavbar() {
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const formRef = useRef<HTMLFormElement>(null);
+    const formRefPassword = useRef<HTMLFormElement>(null);
     const { modalServer } = useModal();
     const { showModal } = useUserEditModal();
 
@@ -58,39 +60,52 @@ export default function ClientMainNavbar() {
         e.preventDefault()
 
         if (formRef.current) {
+            
             const formdata = new FormData(formRef.current)
-
-            const responsePassword = await updateUserClient(user.id, formdata)
-            if (responsePassword) {
-                if (responsePassword.status === 'false') {
-                    modalServer('Mensagem', responsePassword.message); // Aqui você acessa apenas a mensagem
-
-                } else {
-                    modalServer('Mensagem', responsePassword.message); // Aqui também
-
-
+            formdata.append('_method', 'PUT')
+           
+                
+                const response = await updateUserClient(user.id, formdata)
+                if (response) {
+                    if (response === 'false') {
+                        modalServer('Mensagem', response.message); // Aqui você acessa apenas a mensagem
+    
+                    } else {
+                        modalServer('Mensagem', response.message); // Aqui também
+    
+    
+                    }
                 }
+            else{
+                modalServer('Erro', 'Confirme corretamente a sua senha')
             }
+           
         }
     }
 
     const handleUpdatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        if (formRef.current) {
-            const formdata = new FormData(formRef.current)
-
-            const responsePassword = await updatePassword(user.id, formdata)
-            if (responsePassword) {
-                if (responsePassword.status === 'false') {
-                    modalServer('Mensagem', responsePassword.message); // Aqui você acessa apenas a mensagem
-
-                } else {
-                    modalServer('Mensagem', responsePassword.message); // Aqui também
-
-
+        if (formRefPassword.current) {
+            const formdata = new FormData(formRefPassword.current)
+            formdata.append('_method', 'PUT')
+            
+            if(formdata.get('password') === formdata.get('password_confirmation')){
+                formdata.delete('password_confirmation');
+                const responsePassword = await updatePassword(user.id, formdata)
+                console.log(formdata)
+                if (responsePassword) {
+                    if (responsePassword.status === 'false') {
+                        modalServer('Mensagem', responsePassword.message); // Aqui você acessa apenas a mensagem
+    
+                    } else {
+                        modalServer('Mensagem', responsePassword.message); // Aqui também
+    
+    
+                    }
                 }
             }
+          
         }
 
     }
@@ -100,7 +115,7 @@ export default function ClientMainNavbar() {
     }
 
     const modalPassword = () => {
-        showModal('Alterar Senha', <PasswordForm handleUpdatePassword={handleUpdatePassword} formref={formRef} />)
+        showModal('Alterar Senha', <PasswordForm handleUpdatePassword={handleUpdatePassword} formRefPassword={formRefPassword} />)
     }
 
     const handleUserArea = () => {
@@ -164,14 +179,10 @@ export const UserModal: React.FC<userForms> = ({ handleUpdatePassword, handleUpd
     )
 }
 
-export const PasswordForm: React.FC<userForms> = ({ handleUpdatePassword, formref }) => {
+export const PasswordForm: React.FC<userForms> = ({ handleUpdatePassword, formRefPassword }) => {
 
     return (
-        <form onSubmit={handleUpdatePassword} ref={formref} className='crud-form' >
-            <div className="form-name-input">
-                <span>Senha Anterior</span>
-                <input type="password" name="password_anterior" id='password_anterior' />
-            </div>
+        <form onSubmit={handleUpdatePassword} ref={formRefPassword} className='crud-form' >
             <div className="form-name-input">
                 <span>Nova Senha</span>
                 <input type="password" name="password" id='password' />

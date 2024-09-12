@@ -116,7 +116,7 @@ export const updateUserClient = async (id:number, userData: FormData) => {
 export const updatePassword = async (id:number, userData: FormData) => {
   try{
 
-    const response = await api.post(`/api/user_password/${id}`, userData)
+    const response = await api.post(`/api/user_password/${id}_method=PUT`, userData)
     return {
       status: 'true',
       message: response.data.message
