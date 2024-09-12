@@ -16,7 +16,8 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 60vh;
+    max-height: 120vh;
+    padding: 20px 30px;
 }
 
 .conteudo {
@@ -31,8 +32,8 @@
 }
 
 .home-image {
-    border-radius: 60px;
-    width: 80%;
+    border-radius: 20px;
+    width: 400px;
     height: auto;
     margin: 10px
 }
@@ -41,13 +42,13 @@
     .sobre {
         flex-direction: column;
         align-items: center;
-        justify-content: start;
-        height: 90vh;
+        justify-content: center;
+        height: 120vh;
     }
 
     .conteudo {
-        width: 80%;
-
+        width: 100%;
+       
     }
 
 }

@@ -26,6 +26,7 @@ import { Informacoes } from './Informaçoes';
 import { AdmMain } from '@/Layouts/AdmMain';
 import { Chart } from "react-google-charts";
 import { getModalidade, Modalidade } from '@/Components/api/ModalidadesRequest';
+import UserSession from '@/Components/api/UserSession';
 
 
 
@@ -74,6 +75,7 @@ const DashboardContent = () => {
     const [renovacao, setRenovacao] = useState<number>(0)
     const [vencidos, setVencidos] = useState<number>(0)
     const [numAlunos, setNumAlunos] = useState<number>(0)
+    const { user, setUser } = UserSession();
    
   
 
@@ -249,6 +251,11 @@ const DashboardContent = () => {
         setNumAlunos(alunosCount)
 
     }, [users, contratos]);
+
+    if (!user) {
+        return null;
+    }
+
 
     function charts() {
 

@@ -18,6 +18,7 @@ import { useModal } from '@/Components/errors/errorContext';
 import { createModalidade, deleteModalidade, getModalidade, updateModalidade } from '@/Components/api/ModalidadesRequest';
 import Image from 'next/image';
 import { AdmMain } from '@/Layouts/AdmMain';
+import UserSession from '@/Components/api/UserSession';
 
 
 
@@ -27,6 +28,7 @@ export default function Modalidade() {
     const [showUpdate, setShowUpdate] = useState<Boolean>(false);
     const [showRead, setShowRead] = useState<any[]>([]);
     const [showDelete, setShowDelete] = useState<Boolean>(false);
+    const { user, setUser } = UserSession();
 
 
     const formRef = useRef<HTMLFormElement>(null)
@@ -64,6 +66,11 @@ export default function Modalidade() {
     useEffect(()=>{
         handleShowRead()
     },[])
+
+    if (!user) {
+        return null;
+    }
+
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()

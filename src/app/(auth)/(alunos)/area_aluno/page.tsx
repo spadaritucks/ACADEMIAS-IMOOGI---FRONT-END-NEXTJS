@@ -18,6 +18,8 @@ export default function AreaDoAluno() {
     const [reservas, setReservas] = useState<Reserva>()
     const {modalServer} = useModal()
 
+    
+
     useEffect(() => {
 
         const handleContratos = async () => {
@@ -29,14 +31,22 @@ export default function AreaDoAluno() {
         handleContratos();
 
         const handleReservas = async () => {
+            if (!user) return;
+
             const reservasResponse = await getReservas();
             const userReserva = reservasResponse.find((reserva: Reserva) => reserva.usuario_id === user.id)
             setReservas(userReserva)
         }
 
-        handleReservas()
+        if(user){
+            handleReservas()
+        }
 
     }, [user])
+
+    if (!user) {
+        return null;
+    }
 
     const clickDeleteReserva = async () => {
         if (!user) return;
@@ -52,9 +62,7 @@ export default function AreaDoAluno() {
 
 
 
-    if (!user) {
-        return null;
-    }
+    
 
     const contrato = contratos.filter(contrato => contrato.usuario_id === user.id)
     const modalidade = modalidades.filter(modalidade => modalidade.usuario_id === user.id)

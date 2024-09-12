@@ -119,7 +119,7 @@ export default function ClientMainNavbar() {
     }
 
     const handleUserArea = () => {
-        showModal('Usuario', <UserModal handleUpdatePassword={handleUpdatePassword} formref={formRef} modalPassword={modalPassword} userModal={userModal} />)
+        showModal('Configurações', <UserModal handleUpdatePassword={handleUpdatePassword} formref={formRef} modalPassword={modalPassword} userModal={userModal} />)
     }
 
 

@@ -11,13 +11,14 @@ h1{
    
 }
 
+
 .aulas-list{
     box-shadow: 4px 4px 4px 4px #ccc;
     overflow-y: auto;
-    max-width: 700px;
+    width: 700px;
     height: 250px;
     margin: 0 30px;
-    padding: 10px 25px;
+    padding: 10px 35px;
     display: flex;
     flex-direction: column;
     align-items: first baseline;
@@ -133,15 +134,50 @@ h1{
 }
 
 
-@media (max-width:990px){
+@media (max-width: 1200px) {
+    .aulas-container {
+        grid-template-columns: repeat(4, 1fr); /* 4 colunas para telas grandes */
+    }
+
+    .aulas-list{
+        max-width: 400px;
+        
+    }
+    
     .gerenciamento-aulas{
         flex-direction: column;
     }
+}
+
+@media (max-width: 992px) {
+    .aulas-container {
+        grid-template-columns: repeat(3, 1fr); /* 3 colunas para tablets */
+    }
+}
+
+@media (max-width: 768px) {
+    .aulas-container {
+        grid-template-columns: repeat(2, 1fr); /* 2 colunas para tablets menores */
+    }
+}
+
+@media (max-width: 576px) {
+    .aulas-container {
+        grid-template-columns: 1fr; /* 1 coluna para telas de celular */
+    }
+}
+
+
+@media (max-width:990px){
+
+
 
     .aulas-list{
         max-width: 420px;
         margin: 20px 20px;
     }
+
+
 
 
 

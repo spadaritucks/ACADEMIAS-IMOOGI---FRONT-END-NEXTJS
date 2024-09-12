@@ -17,6 +17,7 @@ import Delete from './delete';
 import { createPlano, deletePlano, getPlanos, updatePlano } from '@/Components/api/PlanosRequest';
 import { useModal } from '@/Components/errors/errorContext';
 import { AdmMain } from '@/Layouts/AdmMain';
+import UserSession from '@/Components/api/UserSession';
 
 
 
@@ -26,7 +27,7 @@ export default function Planos() {
     const [showUpdate, setShowUpdate] = useState<Boolean>(false);
     const [showRead, setShowRead] = useState<any[]>([]);
     const [showDelete, setShowDelete] = useState<Boolean>(false);
-
+    const { user, setUser } = UserSession();
 
     const formRef = useRef<HTMLFormElement>(null)
     const { modalServer } = useModal();

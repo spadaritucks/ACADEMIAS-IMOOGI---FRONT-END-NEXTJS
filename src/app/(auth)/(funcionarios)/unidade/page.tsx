@@ -20,6 +20,7 @@ import { createUnidade, deleteUnidade, getUnidades, updateUnidade } from '@/Comp
 import Link from 'next/link';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { AdmMain } from '@/Layouts/AdmMain';
+import UserSession from '@/Components/api/UserSession';
 
 
 
@@ -29,6 +30,7 @@ export default function Unidades() {
     const [showUpdate, setShowUpdate] = useState<Boolean>(false);
     const [showRead, setShowRead] = useState<any[]>([]);
     const [showDelete, setShowDelete] = useState<Boolean>(false);
+    const { user, setUser } = UserSession();
 
 
     const formRef = useRef<HTMLFormElement>(null)

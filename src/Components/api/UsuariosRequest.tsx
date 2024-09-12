@@ -74,11 +74,12 @@ export const getUserById = async (id: number) => {
 export const createUser = async (userData: FormData) => {
   try {
     const response = await api.post('/api/usuarios', userData);
-  
+
     return response.data.message
 
+
   } catch (error: any) {
-      return error.response.data.message
+    return error.response.data.message
   }
 };
 
@@ -93,43 +94,51 @@ export const updateUser = async (id: number, userData: FormData): Promise<number
   }
 };
 
-export const updateUserModalidade = async (id:number, userData: FormData) => {
-  try{
+export const updateUserModalidade = async (id: number, userData: FormData) => {
+  try {
     const response = await api.post(`/api/user_modalidade/${id}?_method=PUT`, userData);
     return response.data.message
-  }catch(error:any){
+  } catch (error: any) {
     return error.response.data.message
   }
 }
 
 
-export const updateUserClient = async (id:number, userData: FormData) => {
-  try{
+export const updateUserClient = async (id: number, userData: FormData) => {
+  try {
     const response = await api.post(`/api/usuario_client/${id}?_method=PUT`, userData);
-    return response.data.message
-  }catch(error:any){
-    return error.response.data.message
+    return {
+      status: 'true',
+      message: response.data.message
+    };
+  } catch (error: any) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return {
+        status: 'false',
+        message: error.response.data.message
+      };
+    }
   }
 }
 
 
-export const updatePassword = async (id:number, userData: FormData) => {
-  try{
+export const updatePassword = async (id: number, userData: FormData) => {
+  try {
 
     const response = await api.post(`/api/user_password/${id}_method=PUT`, userData)
     return {
       status: 'true',
       message: response.data.message
-  };
+    };
 
-  }catch(error:any){
+  } catch (error: any) {
     if (error.response && error.response.data && error.response.data.message) {
-      return { 
-          status: 'false', 
-          message: error.response.data.message 
+      return {
+        status: 'false',
+        message: error.response.data.message
       };
-  }
-  
+    }
+
 
   }
 }
@@ -148,10 +157,19 @@ export const deleteUser = async (id: number): Promise<number> => {
 export const loginUser = async (userData: FormData) => {
   try {
     const response = await api.post('/api/login', userData);
-    return response
-  } catch (error) {
-    console.error('Login Failed', error);
-    throw error;
+
+    return {
+      status: 'true',
+      message: response.data.message,
+      user: response.data.user,
+    };
+  } catch (error: any) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return {
+        status: 'false',
+        message: error.response.data.message
+      };
+    }
 
   }
 }

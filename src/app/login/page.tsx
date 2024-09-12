@@ -6,6 +6,7 @@ import { useModal } from '@/Components/errors/errorContext';
 import { redirect, usePathname, useRouter } from 'next/navigation';
 import UserSession from '@/Components/api/UserSession';
 import { Main } from '@/Layouts/Main';
+import { Modal } from 'react-bootstrap';
 
 
 
@@ -40,22 +41,19 @@ function login() {
             const formdata = new FormData(formRef.current)
             const doingLogin = async () => {
 
-                const response: any = await loginUser(formdata)
+                const response = await loginUser(formdata)
 
-
-                if (response.status = 201) {
-
-                    sessionStorage.setItem('user', JSON.stringify(response.data.user));
-                    modalServer('Sucesso', response.data.message || 'Usuario Logado com Sucesso')
-                    setUser(response.data.user)
-                    response.data.user.tipo_usuario === 'aluno' ? router.push('/area_aluno') : router.push('/dashboard');
-
-
-
-
-                } else {
-                    modalServer('Erro ao efetuar o Login', response.data?.message);
+                if (response) {
+                    if (response.status === 'false') {
+                        modalServer('Erro', response.message)
+                    } else {
+                        sessionStorage.setItem('user', JSON.stringify(response.user));
+                        modalServer('Sucesso', response.message || 'Usuario Logado com Sucesso')
+                        setUser(response.user)
+                        response.user.tipo_usuario === 'aluno' ? router.push('/area_aluno') : router.push('/dashboard');
+                    }
                 }
+
 
             }
 

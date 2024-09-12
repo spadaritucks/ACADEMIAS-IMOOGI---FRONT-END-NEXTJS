@@ -23,13 +23,13 @@ h1{
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: start;
+    justify-content: center;
     box-shadow: 4px 4px 4px 4px #ccc;
     width: 400px;
     text-align: center;
     padding: 10px 10px;
-    margin: 15px;
-    height: 230px;
+    margin: 30px;
+    height: 300px;
 }
 
 .dados h2{

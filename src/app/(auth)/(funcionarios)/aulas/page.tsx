@@ -11,6 +11,7 @@ import '../../../../Assets/css/pages-styles/crud.css'
 import { useModal } from '@/Components/errors/errorContext';
 import '../../../../Assets/css/pages-styles/dashboard.css'
 import Create from './create';
+import UserSession from '@/Components/api/UserSession';
 
 // Definindo a ordem dos dias da semana
 const diasDaSemana = [
@@ -32,6 +33,7 @@ export default function Aulas() {
     const [aulas, setAulas] = useState<Aula[]>([]);
     const formRef = useRef<HTMLFormElement>(null);
     const { modalServer } = useModal();
+    const { user, setUser } = UserSession();
 
     useEffect(() => {
         const fetchAulas = async () => {
@@ -55,6 +57,10 @@ export default function Aulas() {
         fetchAulas();
 
     }, []);
+
+    if (!user) {
+        return null;
+    }
 
     
 
@@ -85,19 +91,19 @@ export default function Aulas() {
     return (
         <AdmMain>
             <section className='aulas-menu'>
-            <h1>Gerenciamenro de Aulas</h1>
+            <h1>Gerenciamento de Aulas</h1>
                 <div className='gerenciamento-aulas'>
                     <div className='aulas-list'>
                         {aulasPorDia.map(({ dia, aulas }) => (
                             <div className='aulas-area'>
-                                {aulas.map(aula => (
+                                {aulas ? aulas.map(aula => (
                                     <div className='aula-component' key={aula.modalidade_id}>
                                         <h3 className='modalidade_aula' style={{margin: '0 5px'}}>{aula.nome_modalidade}</h3>
                                         <p className='dia_semana' style={{margin: '0 5px'}}>{dia}</p>
                                         <p className='horario' style={{margin: '0 5px'}}>{aula.horario.substring(0, 5)}</p>
                                         <p className='limites_alunos' style={{margin: '0 5px'}}>Limite: {aula.limite_alunos} Alunos</p>
                                     </div>
-                                ))}
+                                )): <p>Nenhuma Aula Encontrada</p>}
                             </div>
                         ))}
 

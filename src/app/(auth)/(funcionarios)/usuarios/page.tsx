@@ -7,6 +7,7 @@ import { Contratos } from './contratos';
 import Funcionario from './funcionario';
 import { Usuarios } from './usuarios';
 import { AdmMain } from '@/Layouts/AdmMain';
+import UserSession from '@/Components/api/UserSession';
 
 
 
@@ -16,7 +17,7 @@ export default function criarUsuarios() {
     const [selectType, setSelectType] = useState<string>('');
     const [showContratos, setShowContratos] = useState<boolean>(false);
     const [showFuncionario, setShowFuncionario] = useState<boolean>(false);
-
+    const { user, setUser } = UserSession();
 
 
 
