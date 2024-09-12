@@ -67,7 +67,7 @@ export default function ClientMainNavbar() {
                 
                 const response = await updateUserClient(user.id, formdata)
                 if (response) {
-                    if (response === 'false') {
+                    if (response.status === 'false') {
                         modalServer('Mensagem', response.message); // Aqui você acessa apenas a mensagem
     
                     } else {
