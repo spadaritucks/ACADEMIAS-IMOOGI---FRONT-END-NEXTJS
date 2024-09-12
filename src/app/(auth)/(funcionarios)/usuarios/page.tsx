@@ -11,6 +11,7 @@ import UserSession from '@/Components/api/UserSession';
 
 
 
+
 export default function criarUsuarios() {
 
     const formRef = useRef<HTMLFormElement>(null);
@@ -18,6 +19,7 @@ export default function criarUsuarios() {
     const [showContratos, setShowContratos] = useState<boolean>(false);
     const [showFuncionario, setShowFuncionario] = useState<boolean>(false);
     const { user, setUser } = UserSession();
+    const [formErrors, setFormErros] = useState()
 
 
 
@@ -45,7 +47,20 @@ export default function criarUsuarios() {
 
                     const response = await createUser(formData)
                     console.log(response)
-                    modalServer("Sucesso", 'Usuario Cadastrado com Sucesso')
+                    if (response) {
+                        if (response.status === 'false') {
+                            if (typeof response.message === 'object') {
+                                const errorMessages = Object.entries(response.message as { [key: string]: string[] })
+                                .map(([field, messages]) => `${field}: ${messages.join(', ')}`)
+                                .join(''); // Forma uma string com todos os erros
+                                modalServer('Erros de Validação', errorMessages);
+                            } else {
+                                modalServer("Erro", response.message)
+                            }
+                        } else {
+                            modalServer("Erro", response.message)
+                        }
+                    }
 
 
 

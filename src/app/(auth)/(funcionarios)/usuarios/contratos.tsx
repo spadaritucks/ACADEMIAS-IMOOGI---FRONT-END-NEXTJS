@@ -82,7 +82,7 @@ export const Contratos: React.FC<UsuariosProps> = ({ user, contrato, modalidade,
                         </option>
                     ))}
                 </select>
-                <button type='reset' className='insertMoreOne' onClick={toogleInputModalidade}>+ 1 Modalidade</button>
+                <button type="button" className='insertMoreOne' onClick={toogleInputModalidade}>+ 1 Modalidade</button>
             </div>
             <div className={`form-name-input ${inputModalidadeState ? `flex` : 'none'}`}  >
                 <span>Modalidade 2</span>

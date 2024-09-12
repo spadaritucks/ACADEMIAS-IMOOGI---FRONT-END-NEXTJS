@@ -61,6 +61,10 @@ body {
     max-width: 300px;
 }
 
+.insertMoreOne:hover{
+    background-color: blue;
+}
+
 .form-name-input input,
 .form-name-input select {
     width: 225px;
