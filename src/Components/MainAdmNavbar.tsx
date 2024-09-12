@@ -24,6 +24,7 @@ interface userForms {
     handleUpdatePassword?: (e: React.FormEvent<HTMLFormElement>) => void;
     modalPassword?: () => void
     formref?: React.RefObject<HTMLFormElement>
+    formRefPassword? :React.RefObject<HTMLFormElement>
 
 }
 
@@ -33,6 +34,7 @@ export default function MainAdmNavbar() {
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const formRef = useRef<HTMLFormElement>(null);
+    const formRefPassword = useRef<HTMLFormElement>(null);
     const { modalServer } = useModal();
     const { showModal } = useUserEditModal();
 
@@ -54,20 +56,26 @@ export default function MainAdmNavbar() {
     const handleUpdatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        if (formRef.current) {
-            const formdata = new FormData(formRef.current)
-
-            const responsePassword = await updatePassword(user.id, formdata)
-            if (responsePassword) {
-                if (responsePassword.status === 'false') {
-                    modalServer('Mensagem', responsePassword.message); // Aqui você acessa apenas a mensagem
-
-                } else {
-                    modalServer('Mensagem', responsePassword.message); // Aqui também
-
-
+        if (formRefPassword.current) {
+            const formdata = new FormData(formRefPassword.current)
+            formdata.append('_method', 'PUT')
+            
+            if(formdata.get('password') === formdata.get('password_confirmation')){
+                formdata.delete('password_confirmation');
+                const responsePassword = await updatePassword(user.id, formdata)
+                console.log(formdata)
+                if (responsePassword) {
+                    if (responsePassword.status === 'false') {
+                        modalServer('Mensagem', responsePassword.message); // Aqui você acessa apenas a mensagem
+    
+                    } else {
+                        modalServer('Mensagem', responsePassword.message); // Aqui também
+    
+    
+                    }
                 }
             }
+          
         }
 
     }
@@ -75,7 +83,7 @@ export default function MainAdmNavbar() {
     
 
     const modalPassword = () => {
-        showModal('Alterar Senha', <PasswordForm handleUpdatePassword={handleUpdatePassword} formref={formRef} />)
+        showModal('Alterar Senha', <PasswordForm handleUpdatePassword={handleUpdatePassword} formRefPassword={formRefPassword} />)
     }
 
     const handleUserArea = () => {
@@ -137,14 +145,11 @@ export const UserModal: React.FC<userForms> = ({ handleUpdatePassword, formref, 
     )
 }
 
-export const PasswordForm: React.FC<userForms> = ({ handleUpdatePassword, formref }) => {
+export const PasswordForm: React.FC<userForms> = ({ handleUpdatePassword, formRefPassword }) => {
 
     return (
-        <form onSubmit={handleUpdatePassword} ref={formref} className='crud-form' >
-            <div className="form-name-input">
-                <span>Senha Anterior</span>
-                <input type="password" name="password_anterior" id='password_anterior' />
-            </div>
+        <form onSubmit={handleUpdatePassword} ref={formRefPassword} className='crud-form' >
+
             <div className="form-name-input">
                 <span>Nova Senha</span>
                 <input type="password" name="password" id='password' />
