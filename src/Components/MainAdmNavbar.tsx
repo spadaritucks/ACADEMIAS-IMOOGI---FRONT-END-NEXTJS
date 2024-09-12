@@ -87,7 +87,7 @@ export default function MainAdmNavbar() {
     }
 
     const handleUserArea = () => {
-        showModal('Usuario', <UserModal handleUpdatePassword={handleUpdatePassword} formref={formRef} modalPassword={modalPassword} />)
+        showModal('Configurações', <UserModal handleUpdatePassword={handleUpdatePassword} formref={formRef} modalPassword={modalPassword} />)
     }
 
 
