@@ -252,9 +252,7 @@ const DashboardContent = () => {
 
     }, [users, contratos]);
 
-    if (!user) {
-        return null;
-    }
+   
 
 
     function charts() {
