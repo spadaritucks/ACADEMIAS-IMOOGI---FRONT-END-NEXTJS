@@ -102,6 +102,38 @@ export const updateUserModalidade = async (id:number, userData: FormData) => {
   }
 }
 
+
+export const updateUserClient = async (id:number, userData: FormData) => {
+  try{
+    const response = await api.post(`/api/usuario_client/${id}?_method=PUT`, userData);
+    return response.data.message
+  }catch(error:any){
+    return error.response.data.message
+  }
+}
+
+
+export const updatePassword = async (id:number, userData: FormData) => {
+  try{
+
+    const response = await api.post(`/api/user_password/${id}`, userData)
+    return {
+      status: 'true',
+      message: response.data.message
+  };
+
+  }catch(error:any){
+    if (error.response && error.response.data && error.response.data.message) {
+      return { 
+          status: 'false', 
+          message: error.response.data.message 
+      };
+  }
+  
+
+  }
+}
+
 // Função para deletar um usuário
 export const deleteUser = async (id: number): Promise<number> => {
   try {

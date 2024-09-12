@@ -5,6 +5,8 @@ import { ClientMain } from "@/Layouts/ClientMain";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import '@/Assets/css/pages-styles/area_aluno.css'
+import { deleteReserva, getReservas, Reserva } from "@/Components/api/ReservasRequest";
+import { useModal } from "@/Components/errors/errorContext";
 
 
 
@@ -13,6 +15,8 @@ export default function AreaDoAluno() {
     const { user, setUser } = UserSession();
     const [contratos, setContratos] = useState<Contrato[]>([])
     const [modalidades, setModalidades] = useState<UsuarioModalidade[]>([])
+    const [reservas, setReservas] = useState<Reserva>()
+    const {modalServer} = useModal()
 
     useEffect(() => {
 
@@ -24,7 +28,29 @@ export default function AreaDoAluno() {
         }
         handleContratos();
 
-    }, [])
+        const handleReservas = async () => {
+            const reservasResponse = await getReservas();
+            const userReserva = reservasResponse.find((reserva: Reserva) => reserva.usuario_id === user.id)
+            setReservas(userReserva)
+        }
+
+        handleReservas()
+
+    }, [user])
+
+    const clickDeleteReserva = async () => {
+        if (!user) return;
+    
+        if (reservas) {
+            const response = await deleteReserva(reservas.id);
+            modalServer("Reserva Excluida", response);
+    
+            // Atualize o estado de reservas para forçar a re-renderização
+            setReservas(undefined); // Ou null, dependendo do que você preferir
+        }
+    }
+
+
 
     if (!user) {
         return null;
@@ -36,6 +62,7 @@ export default function AreaDoAluno() {
     let nomeCompleto = user.nome;
     let partesNome = nomeCompleto.split(' ')
     let nome = partesNome.slice(0, 2).join(' ')
+
 
     return (
         <ClientMain>
@@ -58,14 +85,32 @@ export default function AreaDoAluno() {
                 <div className="dados">
                     <h2>Modalidades Permitidas</h2>
                     <div className="user-modalidades">
-                        {modalidade.map((userModalidade,index) => (
+                        {modalidade.map((userModalidade, index) => (
                             <>
-                             <p key={index} className="dado"> <span>Modalidade {index + 1} : </span>{userModalidade.nome_modalidade}</p>
-                             
+                                <p key={index} className="dado"> <span>Modalidade {index + 1} : </span>{userModalidade.nome_modalidade}</p>
+
                             </>
                         ))}
                     </div>
+
+                    <div className="reservasContainer">
+                        <h2>Reservas</h2>
+                        <div className="reserva-dados">
+                            {reservas ?
+                                <>
+                                <p className="modalidade-reserva" style={{margin : "5px"}}>{reservas?.nome_modalidade} - </p>
+                                <p className="dia_semana_reserva"style={{margin : "5px"}}>{reservas?.dia_semana} - </p>
+                                <p className="horario-reserva"style={{margin : "5px"}}>{reservas?.horario.substring(0,5)} - </p>
+                                <button className="btn-delete-reserva" onClick={() => clickDeleteReserva()}>Desfazer</button>
+                                </>:
+                                <p>Nenhum agendamento feito</p>
+                            }
+                           
+                        </div>
+                    </div>
                 </div>
+
+
             </section>
         </ClientMain>
     )

@@ -85,7 +85,7 @@ const downloadPDF = () => {
     return (
         <ClientMain>
             <h1>Carteira do Aluno</h1>
-            <section className="menuAluno">
+            <section className="menuCarteira">
                 <div className="area-carteira" id="area-carteira">
                     <Image src={logo} alt="" width={150} height={100}></Image>
                     <div className="dados-carteira">

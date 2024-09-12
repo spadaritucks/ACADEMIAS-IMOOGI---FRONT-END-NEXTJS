@@ -26,9 +26,19 @@ export const createReservas = async (userData: FormData) => {
     try{
         const response = await api.post('/api/reservas', userData);
 
-        return response.data.message
-    }catch(error){
+        return {
+            status: 'true',
+            message: response.data.message
+        };
+    }catch(error:any){
         console.error("Erro ao criar a reserva" + error)
+        if (error.response && error.response.data && error.response.data.message) {
+            return { 
+                status: 'false', 
+                message: error.response.data.message 
+            };
+        }
+        
         throw error
     }
 }

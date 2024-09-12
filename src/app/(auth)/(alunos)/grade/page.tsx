@@ -166,25 +166,21 @@ export default function GradeReservas() {
         formdata.append('dia_semana', dia_semana);
 
         const response = await createReservas(formdata);
-        modalServer('Aula Agendada', response);
-
+        if (response.status === 'false') {
+            modalServer('Mensagem', response.message); // Aqui você acessa apenas a mensagem
+            
+        } else {
+            modalServer('Mensagem', response.message); // Aqui também
+            setReservasPorAula(prevState => ({
+                ...prevState,
+                [aulaKey]: reservasAtual + 1
+            }));
+            
+        }
         // Atualiza as reservas após criar nova reserva
-        setReservasPorAula(prevState => ({
-            ...prevState,
-            [aulaKey]: reservasAtual + 1
-        }));
+      
     };
 
-
-    const clickDeleteReserva = async () => {
-
-        const reservaId = reservas.find(reserva => reserva.usuario_id === user.id)
-
-        if (reservaId) {
-            const response = await deleteReserva(reservaId.id);
-            modalServer("Reserva Excluida", response)
-        }
-    }
     
 
 
@@ -229,7 +225,7 @@ export default function GradeReservas() {
 
 
                                         </div>
-                                        {reservasPorAula[aulaKey] ? <button className="btn-delete-reserva" onClick={() => clickDeleteReserva()}>Desfazer</button> : ""}
+                                        
                                     </div>
                                 );
                             }) : <p>Nenhuma Aula</p>}

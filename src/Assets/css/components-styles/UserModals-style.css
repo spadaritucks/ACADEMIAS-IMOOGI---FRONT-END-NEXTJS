@@ -1,9 +1,17 @@
 .modal-width{
-    max-width: 90%;
+    max-width: 60%;
     max-height: 300vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 0;
+}
+
+
+@media (max-width:990px) {
+    
+    .modal-width{
+        max-width: 90%;
+    }
 }

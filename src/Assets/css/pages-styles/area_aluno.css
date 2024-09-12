@@ -11,17 +11,25 @@ h1{
     margin-top: 40px;
 }
 
+.menuCarteira{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 40px;
+}
+
 .dados{
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: start;
     box-shadow: 4px 4px 4px 4px #ccc;
-    max-width: 400px;
+    width: 400px;
     text-align: center;
     padding: 10px 10px;
     margin: 15px;
-    max-height: 600px;
+    height: 230px;
 }
 
 .dados h2{
@@ -54,12 +62,6 @@ span{
     margin: 10px;
 }
 
-.menuAluno{
-    display:flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
 
 .area-carteira{
     display: flex;
@@ -135,9 +137,35 @@ span{
     background-color: blue;
 }
 
+.reservasContainer{
+    margin-top: 10px;
+}
+
+.reserva-dados{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-delete-reserva{
+    padding: 0 5px;
+    background-color: #f21c1c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 14px;
+    margin: 0 3px;
+}
+
+.btn-delete-reserva:hover{
+    background-color: red;
+}
+
 
 @media (max-width:990px){
-    .menu{
+    .menuAluno{
         flex-direction: column;
     }
 }

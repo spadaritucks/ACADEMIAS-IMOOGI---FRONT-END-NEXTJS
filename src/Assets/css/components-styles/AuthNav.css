@@ -92,6 +92,28 @@
 
 }
 
+.user-menu{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-userDados, .btn-password{
+    padding: 0 5px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 18px;
+    margin: 0 3px;
+}
+
+.btn-userDados:hover, .btn-password:hover{
+    background-color: blue;
+}
+
 
 @media (max-width:990px) {
     .btn-hamburguer {

@@ -350,7 +350,7 @@ const DashboardContent = () => {
                                                 <button className="dash-button" onClick={() => handleEditClickWithType(users.id, 'Editar Usuarios')}>
                                                     Editar</button>
                                                 {users.tipo_usuario === 'aluno' &&
-                                                 <button className= "dash-button " onClick={() => handleUserModalidadeEdit(users.id, 'userModalidade Vinculadas')}>
+                                                 <button className= "dash-button " onClick={() => handleUserModalidadeEdit(users.id, 'Modalidade Vinculadas')}>
                                                 Modalidades</button>}
                                                 <button className="dash-button" onClick={() => handleDeleteButton(users.id)}>Excluir</button>
                                             </Td>
@@ -462,7 +462,7 @@ const ModalidadeUserForm = ({ modalidade,handleSubmitUpdateModalidade,formRef }:
     return (
         <>
             <form className="register-form" onSubmit={handleSubmitUpdateModalidade} ref={formRef} >
-                <div className="form-component">
+                <div className="form-component" style={{display:'flex', alignItems:'flex-start', justifyContent:'flex-start'}}>
                     <div className="form-name-input">
                         <span>Modalidade 1</span>
                         <select name="modalidade_id[]" id="modalidade_id" >
@@ -473,9 +473,9 @@ const ModalidadeUserForm = ({ modalidade,handleSubmitUpdateModalidade,formRef }:
                                 </option>
                             ))}
                         </select>
-                        <button type='reset' className='insertMoreOne' onClick={toogleInputModalidade}>Insira ou Remova uma Modalidade</button>
+                        <button type='reset' className='insertMoreOne' onClick={toogleInputModalidade}> + 1 Modalidade</button>
                     </div>
-                    <div className={`form-name-input ${inputModalidadeState ? `flex` : 'none'}`} >
+                    <div className={`form-name-input modalidadeForm ${inputModalidadeState ? `flex` : 'none'}`} >
                         <span>Modalidade 2</span>
                         <select name="modalidade_id[]" id="modalidade_id" disabled = {!inputModalidadeState}>
                         <option value="" >Selecione</option>
@@ -486,10 +486,11 @@ const ModalidadeUserForm = ({ modalidade,handleSubmitUpdateModalidade,formRef }:
                             ))}
                         </select>
                     </div>
-                    <div className="form-name-input" style={{ gridColumn: '1 / -1' }}>
+                   
+                </div>
+                <div className="form-name-input" style={{ gridColumn: '1 / -1' }}>
                         <button type='submit' className='submit-button'>Enviar</button>
                     </div>
-                </div>
             </form>
         </>
     )
