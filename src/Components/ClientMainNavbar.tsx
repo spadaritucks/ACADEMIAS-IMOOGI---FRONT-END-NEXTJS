@@ -29,6 +29,7 @@ interface userForms {
     formref?: React.RefObject<HTMLFormElement>
     formRefPassword? :React.RefObject<HTMLFormElement>
     user?: Usuario
+    formErrors?: { [key: string] : string[]}
 }
 
 
@@ -40,6 +41,7 @@ export default function ClientMainNavbar() {
     const formRefPassword = useRef<HTMLFormElement>(null);
     const { modalServer } = useModal();
     const { showModal } = useUserEditModal();
+    const [formErrors, setFormErros] = useState<{ [key: string] : string[]}>({})
 
 
     const toggleMenu = () => {
@@ -68,12 +70,17 @@ export default function ClientMainNavbar() {
                 const response = await updateUserClient(user.id, formdata)
                 if (response) {
                     if (response.status === 'false') {
-                        modalServer('Mensagem', response.message); // Aqui você acessa apenas a mensagem
-    
+                        if (typeof response.message === 'object') {
+                            
+                            setFormErros(response.message)
+                            
+                            modalServer("Erro", 'Preencha os campos necessarios!')
+                          
+                        } else {
+                            modalServer("Erro", response.message)
+                        }
                     } else {
-                        modalServer('Mensagem', response.message); // Aqui também
-    
-    
+                        modalServer("Erro", response.message)
                     }
                 }
             else{
@@ -111,7 +118,7 @@ export default function ClientMainNavbar() {
     }
 
     const userModal = () => {
-        showModal('Editar Usuario', <UserDadosForm formref={formRef} handleUpdateSubmit={handleUpdateSubmit} user={user} />)
+        showModal('Editar Usuario', <UserDadosForm formErrors={formErrors} formref={formRef} handleUpdateSubmit={handleUpdateSubmit} user={user} />)
     }
 
     const modalPassword = () => {
@@ -185,11 +192,11 @@ export const PasswordForm: React.FC<userForms> = ({ handleUpdatePassword, formRe
         <form onSubmit={handleUpdatePassword} ref={formRefPassword} className='crud-form' >
             <div className="form-name-input">
                 <span>Nova Senha</span>
-                <input type="password" name="password" id='password' />
+                <input type="password" name="password" id='password' placeholder='Nova Senha' />
             </div>
             <div className="form-name-input">
                 <span>Confirme sua Senha</span>
-                <input type="password" name="password_confirmation" id='password_confirmation' />
+                <input type="password" name="password_confirmation" id='password_confirmation' placeholder='Confirme a Senha' />
             </div>
 
             <div className="form-name-input" style={{ gridColumn: '1 / -1' }}>
@@ -199,7 +206,7 @@ export const PasswordForm: React.FC<userForms> = ({ handleUpdatePassword, formRe
     )
 }
 
-export const UserDadosForm: React.FC<userForms> = ({ handleUpdateSubmit, formref, user }) => {
+export const UserDadosForm: React.FC<userForms> = ({ handleUpdateSubmit, formref, user, formErrors}) => {
 
     
 
@@ -224,55 +231,64 @@ export const UserDadosForm: React.FC<userForms> = ({ handleUpdateSubmit, formref
     useEffect(() => {
         handleInputClick();
     }, [user])
-
-
+  
 
 
     return (
         <form onSubmit={handleUpdateSubmit} ref={formref} className='crud-form' >
             <div className="form-name-input">
-                <span>Foto do Usuario</span>
+                <span>Insira sua Foto</span>
                 <input type="file" name="foto_usuario" id='foto_usuario' />
             </div>
             <div className="form-name-input">
                 <span>Nome Completo</span>
                 <input type="text" name='nome' id="nome" placeholder="Nome Completo" />
+                {formErrors && formErrors.nome ? <small className="error-message">{formErrors.nome[0]}</small> : ""}
             </div>
             <div className="form-name-input">
                 <span>Email</span>
                 <input type="text" name='email' id="email" placeholder="Email" />
+                {formErrors && formErrors.email ? <small className="error-message">{formErrors.email[0]}</small> : ""}
             </div>
             <div className="form-name-input">
                 <span>Data de Nascimento</span>
                 <input type="date" name='data_nascimento' id="data_nascimento" />
+                {formErrors && formErrors.data_nascimento ? <small className="error-message">{formErrors.data_nascimento[0]}</small> : ""}
             </div>
             <div className="form-name-input">
                 <span>CPF</span>
                 <input type="text" name='cpf' id="cpf" placeholder="CPF" />
+                {formErrors && formErrors.cpf ? <small className="error-message">{formErrors.cpf[0]}</small> : ""}
             </div>
             <div className="form-name-input">
                 <span>RG</span>
                 <input type="text" name='rg' id="rg" placeholder="RG" />
+                {formErrors && formErrors.rg ? <small className="error-message">{formErrors.rg[0]}</small> : ""}
             </div>
             <div className="form-name-input">
                 <span>Telefone</span>
                 <input type="text" name='telefone' id="telefone" placeholder="Telefone" />
+                {formErrors && formErrors.telefone ? <small className="error-message">{formErrors.telefone[0]}</small> : ""}
             </div>
             <div className="form-name-input">
                 <span>CEP</span>
                 <input type="text" name='cep' id="cep" placeholder="CEP" />
+                {formErrors && formErrors.cep ? <small className="error-message">{formErrors.cep[0]}</small> : ""}
             </div>
             <div className="form-name-input">
                 <span>Logradouro</span>
                 <input type="text" name='logradouro' id="logradouro" placeholder="Logradouro" />
+                {formErrors && formErrors.logradouro ? <small className="error-message">{formErrors.logradouro[0]}</small> : ""}
             </div>
             <div className="form-name-input">
                 <span>Numero da Residencia</span>
                 <input type="text" name='numero' id="numero" placeholder="Numero da Residencia" />
+                {formErrors && formErrors.numero ? <small className="error-message">{formErrors.numero[0]}</small> : ""}
             </div>
             <div className="form-name-input">
                 <span>Complemento (Opcional)</span>
                 <input type="text" name='complemento' id="complemento" placeholder="Complemento" />
+                {formErrors && formErrors.complemento ? <small className="error-message">{formErrors.complemento[0]}</small> : ""}
             </div>
 
             <div className="form-name-input" style={{ gridColumn: '1 / -1' }}>

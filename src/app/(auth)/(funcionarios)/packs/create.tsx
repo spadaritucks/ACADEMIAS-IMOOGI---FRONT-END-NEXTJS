@@ -13,10 +13,10 @@ export default function Create({handleSubmit,formRef}:createProps) {
 
     return (
         <>
-        <h2>Criar Contratos</h2>
+        <h2>Criar Packs</h2>
             <form action="" className="crud-form" onSubmit={handleSubmit} ref={formRef} >
                 <div className="form-name-input">
-                    <span>Nome do Plano</span>
+                    <span>Nome do Pack</span>
                     <input type="text" name="nome_plano" id='nome_plano' />
                 </div>
                 <div className="form-name-input">
@@ -45,7 +45,7 @@ export default function Create({handleSubmit,formRef}:createProps) {
 
                 </div>
                 <div className="form-name-input">
-                    <span>Status do Plano</span>
+                    <span>Status do Pack</span>
                     <select name="status" id="status">
                         <option selected>Selecione</option>
                         <option value="Ativo">Ativo</option>
@@ -56,7 +56,7 @@ export default function Create({handleSubmit,formRef}:createProps) {
 
                 <div className="form-name-input">
                     <span>Numero de Check-in Permitidos</span>
-                    <input type="text" name="number_checkins" id='number_checkins' />
+                    <input type="text" name="number_checkins_especial" id='number_checkins_especial' />
                 </div>
 
                    <div className="form-name-input" style={{ gridColumn: '1 / -1' }}>

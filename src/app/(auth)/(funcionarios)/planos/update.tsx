@@ -3,22 +3,22 @@
 import '../../../../Assets/css/pages-styles/forms.css'
 import { Plano } from '@/Components/api/PlanosRequest'
 
-interface PlanosProps{
-    planos:Plano[];
+interface PlanosProps {
+    planos: Plano[];
     handleSubmitUpdate: (e: React.FormEvent<HTMLFormElement>) => void;
     formRef: React.RefObject<HTMLFormElement>
 }
 
 
-export default function Update({planos,handleSubmitUpdate,formRef} : PlanosProps) {
+export default function Update({ planos, handleSubmitUpdate, formRef }: PlanosProps) {
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement>)=>{
-        const id= e.target.value
+    const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const id = e.target.value
         const selectedPlano = planos.find(plano => plano.id === parseInt(id));
-        if(selectedPlano && formRef.current){
-            
+        if (selectedPlano && formRef.current) {
+
             const form = formRef.current;
-            
+
             // Atualize os campos do formulário com os dados do plano selecionado
             (form['nome_plano'] as HTMLInputElement).value = selectedPlano.nome_plano.toString();
             (form['duracao'] as HTMLInputElement).value = selectedPlano.duracao.toString();
@@ -27,23 +27,25 @@ export default function Update({planos,handleSubmitUpdate,formRef} : PlanosProps
             (form['valor_total'] as HTMLInputElement).value = selectedPlano.valor_total.toString();
             (form['num_modalidades'] as HTMLSelectElement).value = selectedPlano.num_modalidades.toString();
             (form['status'] as HTMLSelectElement).value = selectedPlano.status;
+            (form['number_checkins'] as HTMLInputElement).value = selectedPlano.number_checkins.toString();
         }
 
 
     }
-     
+
 
     return (
         <>
-        <h2>Alterar Contratos</h2>
-            <form action="" className="crud-form" onSubmit={handleSubmitUpdate} ref = {formRef}>
-               
+            <h2>Alterar Contratos</h2>
+            <form action="" className="crud-form" onSubmit={handleSubmitUpdate} ref={formRef}>
+
                 <div className="form-name-input">
                     <span>Selecione o Plano</span>
                     <select name="planos_id" id="planos_id" onChange={handleInputChange}>
+                        <option value="" disabled selected >Selecione</option>
                         {planos.map(planos => (
                             <option value={planos.id}>{planos.nome_plano}</option>
-                            
+
                         ))}
                     </select>
                 </div>
@@ -86,6 +88,12 @@ export default function Update({planos,handleSubmitUpdate,formRef} : PlanosProps
                     </select>
 
                 </div>
+
+                <div className="form-name-input">
+                    <span>Numero de Check-in Permitidos</span>
+                    <input type="text" name="number_checkins" id='number_checkins' />
+                </div>
+
                 <div className="form-name-input" style={{ gridColumn: '1 / -1' }}>
                     <button type='submit' className='submit-button'>Enviar</button>
                 </div>

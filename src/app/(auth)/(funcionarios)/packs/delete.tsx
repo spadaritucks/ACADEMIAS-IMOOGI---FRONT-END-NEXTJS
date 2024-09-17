@@ -1,31 +1,30 @@
 'use client'
 
-
+import { Packs, Plano } from '@/Components/api/PlanosRequest';
 import '../../../../Assets/css/pages-styles/forms.css'
-import { Modalidade } from '@/Components/api/ModalidadesRequest';
 
 
-interface ModalidadeProps {
-    modalidades: Modalidade[];
+interface PlanosProps {
+    packs: Packs[];
     handleSubmitDelete: (e: React.FormEvent<HTMLFormElement>) => void
     formRef: React.RefObject<HTMLFormElement>
 }
 
 
 
-export default function Delete({ modalidades, handleSubmitDelete, formRef }: ModalidadeProps) {
+export default function Delete({packs, handleSubmitDelete, formRef }: PlanosProps) {
 
     return (
         <>
-            <h2>Deletar Modalidade</h2>
+            <h2>Deletar Contratos</h2>
             <form action="" className="crud-form" onSubmit={handleSubmitDelete} ref={formRef} >
                 <div className="form-name-input">
-                    <span>Selecione a Modalidade</span>
-
-                    <select name="modalidade_id" id="modalidade_id">
-                        <option value="" disabled selected >Selecione</option>
-                        {modalidades.map(modalidade => (
-                            <option value={modalidade.id}>{modalidade.nome_modalidade}</option>
+                   
+                    <span>Selecione o Plano</span>
+                    <select name="planos_id" id="planos_id">
+                    <option value="" disabled selected >Selecione</option>
+                        {packs.map(packs => (
+                            <option value={packs.id}>{packs.nome_plano}</option>
                         ))}
                     </select>
                 </div>

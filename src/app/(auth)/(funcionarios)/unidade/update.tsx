@@ -33,7 +33,7 @@ export default function Update({ unidades, handleSubmitUpdate, formRef }: Unidad
             setPreviewImage(selectedUnidade.imagem_unidade);
             (form['nome_unidade'] as HTMLInputElement).value = selectedUnidade.nome_unidade.toString();
             (form['endereco'] as HTMLInputElement).value = selectedUnidade.endereco.toString();
-             setPreviewGrade(selectedUnidade.grade);
+            setPreviewGrade(selectedUnidade.grade);
             (form['descricao'] as HTMLInputElement).value = selectedUnidade.descricao.toString();
 
         }
@@ -47,14 +47,15 @@ export default function Update({ unidades, handleSubmitUpdate, formRef }: Unidad
         <>
             <h2>Alterar Unidade</h2>
             {previewImage && (
-                    <Image src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${previewImage}`} alt="Prévia da Imagem da Modalidade" width={200} height={200} style={{ gridColumn: '1 / -1' }} />
-                )}
+                <Image src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${previewImage}`} alt="Prévia da Imagem da Modalidade" width={200} height={200} style={{ gridColumn: '1 / -1' }} />
+            )}
 
             <form action="" className="crud-form" onSubmit={handleSubmitUpdate} ref={formRef}>
 
                 <div className="form-name-input">
                     <span>Selecione a Unidade</span>
                     <select name="unidade_id" id="unidade_id" onChange={handleInputChange}>
+                        <option value="" disabled selected >Selecione</option>
                         {unidades.map(unidades => (
                             <option value={unidades.id}>{unidades.nome_unidade}</option>
 

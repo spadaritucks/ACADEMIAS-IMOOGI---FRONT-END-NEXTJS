@@ -6,8 +6,8 @@ import '../../../../Assets/css/pages-styles/forms.css'
 
 interface PlanosProps {
     planos: Plano[];
-    handleSubmitDelete: (e:React.FormEvent<HTMLFormElement>) => void
-    formRef: React.RefObject<HTMLFormElement> 
+    handleSubmitDelete: (e: React.FormEvent<HTMLFormElement>) => void
+    formRef: React.RefObject<HTMLFormElement>
 }
 
 
@@ -16,11 +16,13 @@ export default function Delete({ planos, handleSubmitDelete, formRef }: PlanosPr
 
     return (
         <>
-        <h2>Deletar Contratos</h2>
-            <form action="" className="crud-form" onSubmit={handleSubmitDelete} ref ={formRef} >
+            <h2>Deletar Contratos</h2>
+            <form action="" className="crud-form" onSubmit={handleSubmitDelete} ref={formRef} >
                 <div className="form-name-input">
+                   
                     <span>Selecione o Plano</span>
                     <select name="planos_id" id="planos_id">
+                    <option value="" disabled selected >Selecione</option>
                         {planos.map(planos => (
                             <option value={planos.id}>{planos.nome_plano}</option>
                         ))}

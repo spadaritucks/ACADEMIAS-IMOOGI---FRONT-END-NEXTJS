@@ -17,7 +17,7 @@ import EditUserModal from '@/Components/user-modals-edit/EditUserModal';
 import { Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from 'react';
 import { Usuarios } from '../usuarios/usuarios';
 import { Contratos } from '../usuarios/contratos';
-import Funcionario from '../usuarios/funcionario';
+import {Funcionario} from '../usuarios/funcionario';
 import '../../../../Assets/css/pages-styles/forms.css'
 import { Contrato, DadosFuncionario, deleteUser, getUsers, updateUser, updateUserModalidade, Usuario, UsuarioModalidade } from '@/Components/api/UsuariosRequest';
 import Image from 'next/image';
@@ -27,6 +27,7 @@ import { AdmMain } from '@/Layouts/AdmMain';
 import { Chart } from "react-google-charts";
 import { getModalidade, Modalidade } from '@/Components/api/ModalidadesRequest';
 import UserSession from '@/Components/api/UserSession';
+import { getPacks, Packs } from '@/Components/api/PlanosRequest';
 
 
 
@@ -47,6 +48,7 @@ export interface UserFormProps {
     contrato?: Contrato;
     funcionario?: DadosFuncionario;
     modalidade?: UsuarioModalidade[];
+    pack?: Packs;
     formRef: React.RefObject<HTMLFormElement>;
     handleSubmitUpdate: (e: React.FormEvent<HTMLFormElement>) => void;
 }
@@ -68,6 +70,7 @@ const DashboardContent = () => {
     const [contratos, setContratos] = useState<Contrato[]>([])
     const [userModalidade, setUserModalidade] = useState<UsuarioModalidade[]>([])
     const [funcionarios, setFuncionarios] = useState<DadosFuncionario[]>([])
+    const [packs, setPacks] = useState<Packs[]>([])
     const [search, setSearch] = useState<string>('')
     const [openDadosPessoais, setOpenDadosPessoais] = useState<boolean>(false)
     const [openInfo, setOpenInfo] = useState<boolean>(false);
@@ -82,10 +85,12 @@ const DashboardContent = () => {
 
     const getUsersFunction = async () => {
         const response = await getUsers();
+        const responsePacks = await getPacks();
         setUsers(response.usuarios)
         setContratos(response.contratos)
         setUserModalidade(response.modalidades)
         setFuncionarios(response.funcionarios)
+        setPacks(responsePacks)
 
 
     }
@@ -108,7 +113,10 @@ const DashboardContent = () => {
         const contrato = contratos.find(contrato => contrato.usuario_id === id);
         const funcionario = funcionarios.find(funcionario => funcionario?.usuario_id === id)
         const modalidade = userModalidade.filter(modalidade => modalidade.usuario_id === id)
-        showModal('Informações do Usuario', <Informacoes contrato={contrato} funcionario={funcionario} modalidade={modalidade} />)
+        const pack = packs.find(pack => pack.id === contrato?.packs_id);
+        
+        
+        showModal('Informações do Usuario', <Informacoes pack={pack} contrato={contrato} funcionario={funcionario} modalidade={modalidade} />)
 
     }
 
@@ -119,6 +127,7 @@ const DashboardContent = () => {
         const contrato = contratos.find(contrato => contrato.usuario_id === id)
         const modalidade = userModalidade.filter(modalidade => modalidade.usuario_id === id)
         const funcionario = funcionarios.find(funcionario => funcionario.usuario_id === id)
+        const pack = packs.find(pack => pack.id === contrato?.packs_id);
 
         const handleSubmitUpdate = (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault()
@@ -146,7 +155,7 @@ const DashboardContent = () => {
             setSelectType(user.tipo_usuario);
             showModal(title, (
                 <UserForm selectType={user.tipo_usuario} user={user} formRef={formRef} contrato={contrato} funcionario={funcionario}
-                    modalidade={modalidade} handleSubmitUpdate={handleSubmitUpdate} />
+                    modalidade={modalidade} handleSubmitUpdate={handleSubmitUpdate} pack={pack} />
             ));
         }
     }
@@ -385,7 +394,7 @@ const DashboardContent = () => {
 
 };
 
-const UserForm = ({ selectType, user, contrato, modalidade, funcionario, formRef, handleSubmitUpdate }: UserFormProps) => {
+const UserForm = ({ selectType, user, contrato, modalidade, funcionario, pack, formRef, handleSubmitUpdate }: UserFormProps) => {
 
     const handleInputClick = () => {
         if (user && formRef?.current) {
@@ -403,6 +412,7 @@ const UserForm = ({ selectType, user, contrato, modalidade, funcionario, formRef
             user.complemento ? (form['complemento'] as HTMLInputElement).value = user.complemento.toString() : ''
             if (contrato && modalidade) {
                 (form['planos_id'] as HTMLSelectElement).value = contrato.planos_id.toString();
+                {pack ? (form['packs_id'] as HTMLSelectElement).value = contrato.packs_id.toString() : ''}
                 (form['data_inicio'] as HTMLInputElement).value = contrato.data_inicio.toString();
                 (form['data_renovacao'] as HTMLInputElement).value = contrato.data_renovacao.toString();
                 (form['data_vencimento'] as HTMLInputElement).value = contrato.data_vencimento.toString();
@@ -429,7 +439,7 @@ const UserForm = ({ selectType, user, contrato, modalidade, funcionario, formRef
     return (
         <form className="register-form" ref={formRef} onSubmit={handleSubmitUpdate}>
             <div className="form-component">
-                <Usuarios handleInputClick={handleInputClick} formRef={formRef} user={user} contrato={contrato} modalidade={modalidade}
+                <Usuarios  handleInputClick={handleInputClick} formRef={formRef} user={user} contrato={contrato} modalidade={modalidade}
                     funcionario={funcionario} /> {/* Manter aqui apenas se necessário */}
             </div>
             <div className="form-component">

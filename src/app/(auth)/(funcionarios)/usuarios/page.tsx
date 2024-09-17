@@ -4,7 +4,7 @@ import '../../../../Assets/css/pages-styles/forms.css'
 import { useModal } from '@/Components/errors/errorContext';
 import { createUser } from '@/Components/api/UsuariosRequest';
 import { Contratos } from './contratos';
-import Funcionario from './funcionario';
+import {Funcionario} from './funcionario';
 import { Usuarios } from './usuarios';
 import { AdmMain } from '@/Layouts/AdmMain';
 import UserSession from '@/Components/api/UserSession';
@@ -19,7 +19,7 @@ export default function criarUsuarios() {
     const [showContratos, setShowContratos] = useState<boolean>(false);
     const [showFuncionario, setShowFuncionario] = useState<boolean>(false);
     const { user, setUser } = UserSession();
-    const [formErrors, setFormErros] = useState()
+    const [formErrors, setFormErros] = useState<{ [key: string] : string[]}>({})
 
 
 
@@ -50,10 +50,10 @@ export default function criarUsuarios() {
                     if (response) {
                         if (response.status === 'false') {
                             if (typeof response.message === 'object') {
-                                const errorMessages = Object.entries(response.message as { [key: string]: string[] })
-                                .map(([field, messages]) => `${field}: ${messages.join(', ')}`)
-                                .join(''); // Forma uma string com todos os erros
-                                modalServer('Erros de Validação', errorMessages);
+                                
+                                setFormErros(response.message)
+                                modalServer("Erro", 'Preencha os campos necessarios!')
+                              
                             } else {
                                 modalServer("Erro", response.message)
                             }
@@ -92,12 +92,12 @@ export default function criarUsuarios() {
                 <form action="" className='register-form' onSubmit={handleSubmit} ref={formRef}>
 
                     <div className="form-component">
-                        {<Usuarios handleTypeUserChange={handleTypeUserChange} />}
+                        {<Usuarios handleTypeUserChange={handleTypeUserChange} formErrors={formErrors} />}
                     </div>
 
                     <div className="form-component">
-                        {showContratos && <Contratos toogleInputModalidade={toogleInputModalidade} setInputModalidadeState={setInputModalidadeState} inputModalidadeState={inputModalidadeState} />}
-                        {showFuncionario && <Funcionario />}
+                        {showContratos && <Contratos formErrors={formErrors} toogleInputModalidade={toogleInputModalidade} setInputModalidadeState={setInputModalidadeState} inputModalidadeState={inputModalidadeState} />}
+                        {showFuncionario && <Funcionario formErrors={formErrors}  />}
 
                     </div>
 

@@ -6,6 +6,7 @@ export interface Contrato {
   id: number;
   usuario_id: number;
   planos_id: number;
+  packs_id: number;
   data_inicio: string;
   data_renovacao: string;
   data_vencimento: string;

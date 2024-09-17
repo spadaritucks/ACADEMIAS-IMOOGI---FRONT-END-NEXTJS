@@ -34,7 +34,7 @@ export default function Create({ handleSubmit, formRef, diasDaSemana }: createPr
                 <div className="form-name-input">
                     <span>Modalidade Praticada</span>
                     <select name="modalidade_id" id="modalidade_id">
-                        <option value="" disabled>Selecione</option>
+                    <option value="" disabled selected >Selecione</option>
                         {modalidades.map(modalidade => (
                             <option value={modalidade.id}>{modalidade.nome_modalidade}</option>
                         ))}
@@ -43,6 +43,7 @@ export default function Create({ handleSubmit, formRef, diasDaSemana }: createPr
                 <div className="form-name-input">
                     <span>Selecione o Dia da Semana</span>
                     <select name="dia_semana" id="dia_semana">
+                    <option value="" disabled selected >Selecione</option>
                         {diasDaSemana?.map(dia => (
                             <option value= {dia}>{dia}</option>
                         ))}

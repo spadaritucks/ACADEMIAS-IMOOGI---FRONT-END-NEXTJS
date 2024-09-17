@@ -14,14 +14,14 @@ import '../../../../Assets/css/pages-styles/crud.css'
 import Create from './create';
 import Update from './update';
 import Delete from './delete';
-import { createPlano, deletePlano, getPlanos, updatePlano } from '@/Components/api/PlanosRequest';
+import {getPacks,createPack,deletePack,updatePack} from '@/Components/api/PlanosRequest';
 import { useModal } from '@/Components/errors/errorContext';
 import { AdmMain } from '@/Layouts/AdmMain';
 import UserSession from '@/Components/api/UserSession';
 
 
 
-export default function Planos() {
+export default function Packs() {
 
     const [showCreate, setShowCreate] = useState<Boolean>(false);
     const [showUpdate, setShowUpdate] = useState<Boolean>(false);
@@ -53,7 +53,7 @@ export default function Planos() {
     const handleShowRead = () => {
 
         const request = async () => {
-            const response = await getPlanos()
+            const response = await getPacks()
             setShowRead(response)
 
         }
@@ -67,7 +67,7 @@ export default function Planos() {
         if (formRef.current) {
             const formdata = new FormData(formRef.current)
             const sendFormdata = async () => {
-                const response: any = await createPlano(formdata)
+                const response: any = await createPack(formdata)
                 modalServer('Sucesso', response)
                 console.log(response)
                 
@@ -83,12 +83,12 @@ export default function Planos() {
 
         if (formRef.current) {
             const formdata = new FormData(formRef.current)
-            const id = formdata.get('planos_id')
+            const id = formdata.get('pack_id')
             formdata.append('_method', 'PUT')
 
             if (id) {
                 const sendFormdata = async () => {
-                    const response: any = await updatePlano(id, formdata)
+                    const response: any = await updatePack(id, formdata)
                     modalServer('Sucesso', response)
                     console.log(response)
                 }
@@ -104,12 +104,12 @@ export default function Planos() {
         e.preventDefault();
         if (formRef.current) {
             const formdata = new FormData(formRef.current)
-            const id = formdata.get('planos_id')
+            const id = formdata.get('pack_id')
 
 
             if (id) {
                 const sendFormdata = async () => {
-                    const response: any = await deletePlano(id)
+                    const response: any = await deletePack(id)
                     modalServer('Sucesso', response)
                     console.log(response)
                 }
@@ -132,14 +132,14 @@ export default function Planos() {
     return (
         <AdmMain>
             <>
-                <h1>Painel de Planos e Contratos</h1>
+                <h1>Painel de Packs Especiais</h1>
                 <section className="painel-crud">
                     <div className="tabela-crud">
                         <TableContainer>
                             <Table variant="simple">
                                 <Thead>
                                     <Tr>
-                                        <Th style={{ textAlign: "center" } }>Nome do Plano</Th>
+                                        <Th style={{ textAlign: "center" } }>Nome do Pack</Th>
                                         <Th>Duração(em meses)</Th>
                                         <Th>Matricula</Th>
                                         <Th>Valor Mensal</Th>
@@ -150,16 +150,16 @@ export default function Planos() {
                                     </Tr>
                                 </Thead>
                                 <Tbody>
-                                    {showRead.map(planos => (
-                                        <Tr key={planos.id}>
-                                            <Td style={{ textAlign: "center" }}>{planos.nome_plano}</Td>
-                                            <Td>{planos.duracao > 1 ? planos.duracao + ' meses' : planos.duracao + ' mês'}</Td>
-                                            <Td>{'R$' + planos.valor_matricula}</Td>
-                                            <Td>{'R$' + planos.valor_mensal}</Td>
-                                            <Td>{'R$' + planos.valor_total}</Td>
-                                            <Td>{planos.num_modalidades > 1 ? planos.num_modalidades + ' modalidades' : planos.num_modalidades + ' modalidade'}</Td>
-                                            <Td>{planos.status}</Td>
-                                            <Td>{planos.number_checkins}</Td>
+                                    {showRead.map(pack => (
+                                        <Tr key={pack.id}>
+                                            <Td style={{ textAlign: "center" }}>{pack.nome_plano}</Td>
+                                            <Td>{pack.duracao > 1 ? pack.duracao + ' meses' : pack.duracao + ' mês'}</Td>
+                                            <Td>{'R$' + pack.valor_matricula}</Td>
+                                            <Td>{'R$' + pack.valor_mensal}</Td>
+                                            <Td>{'R$' + pack.valor_total}</Td>
+                                            <Td>{pack.num_modalidades > 1 ? pack.num_modalidades + ' modalidades' : pack.num_modalidades + ' modalidade'}</Td>
+                                            <Td>{pack.status}</Td>
+                                            <Td>{pack.number_checkins}</Td>
                                         </Tr>
                                     ))}
                                 </Tbody>
@@ -168,14 +168,14 @@ export default function Planos() {
                     </div>
                     <div className="crud-operations">
                         <div className='crud-buttons'>
-                            <button className="dash-button" onClick={handleShowCreate}>Criar Plano</button>
-                            <button className="dash-button" onClick={handleShowUpdate}>Atualizar Plano</button>
-                            <button className="dash-button" onClick={handleShowDelete}>Deletar Plano</button>
+                            <button className="dash-button" onClick={handleShowCreate}>Criar Pack</button>
+                            <button className="dash-button" onClick={handleShowUpdate}>Atualizar Pack</button>
+                            <button className="dash-button" onClick={handleShowDelete}>Deletar Pack</button>
                         </div>
                         <div className="crud-inputs">
                             {showCreate && <Create handleSubmit={handleSubmit} formRef={formRef} />}
-                            {showUpdate && <Update handleSubmitUpdate={handleSubmitUpdate} formRef={formRef} planos={showRead} />}
-                            {showDelete && <Delete planos={showRead} handleSubmitDelete={handleSubmitDelete} formRef={formRef} />}
+                            {showUpdate && <Update handleSubmitUpdate={handleSubmitUpdate} formRef={formRef} packs={showRead} />}
+                            {showDelete && <Delete packs={showRead} handleSubmitDelete={handleSubmitDelete} formRef={formRef} />}
 
                         </div>
 

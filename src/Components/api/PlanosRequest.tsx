@@ -10,6 +10,19 @@ export interface Plano {
   valor_total: number;
   num_modalidades: number;
   status: string;
+  number_checkins: number
+}
+
+export interface Packs {
+  id: number;
+  nome_plano: string;
+  duracao: number;
+  valor_matricula: number;
+  valor_mensal: number;
+  valor_total: number;
+  num_modalidades: number;
+  status: string;
+  number_checkins_especial: number;
 }
 
 
@@ -78,5 +91,51 @@ export const deletePlano = async (id: FormDataEntryValue): Promise<number> => {
     throw error; // Relança o erro para que o chamador possa lidar com ele
   }
 };
+
+export const getPacks = async (): Promise<Packs[]> => {
+  try {
+    const response = await api.get('/api/packs');
+    return response.data.packs
+  } catch (error) {
+    console.error('Failed to fetch packs:', error);
+    return [];
+  }
+};
+
+export const createPack = async (packData: FormData): Promise<number> => {
+  try {
+    const response = await api.post('/api/packs', packData);
+    return response.data.message
+  } catch (error) {
+    console.error('Failed to create pack:', error);
+    throw error; // Relança o erro para que o chamador possa lidar com ele
+  }
+};
+
+export const updatePack = async (id: FormDataEntryValue, packData: FormData): Promise<number> => {
+  try {
+    const response = await api.post(`/api/packs/${id}?_method=PUT`, packData,{
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+    },
+    });
+        return response.data.message
+  }catch(error){
+    console.error('Failed to update pack:', error);
+    throw error; // Relança o erro para que o chamador possa lidar com ele  
+  } 
+};
+
+export const deletePack = async (id: FormDataEntryValue): Promise<number> => {
+  try {
+    const response = await api.delete(`/api/packs/${id}`);
+    return response.data.message;
+  } catch (error) {
+    console.error('Failed to delete pack:', error);
+    throw error; // Relança o erro para que o chamador possa lidar com ele
+  }
+};
+
 
 

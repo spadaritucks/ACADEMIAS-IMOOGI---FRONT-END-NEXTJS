@@ -107,10 +107,12 @@ export default function MainAdmNavbar() {
                     <div className='side-link-routes'>
                         <Link href='/dashboard'><div className='side-link'><DashboardIcon />Dashboard</div></Link>
                         <Link href='/planos'><div className='side-link'><AccountBoxIcon />Planos e Contratos</div></Link>
+                        <Link href='/packs'><div className='side-link'><AccountBoxIcon />Packs</div></Link>
                         <Link href='/modalidades'><div className='side-link'><SportsMartialArtsIcon />Modalidades</div></Link>
                         <Link href='/unidade'> <div className='side-link'><LocationOnIcon />Unidades</div></Link>
                         <Link href='/usuarios'> <div className='side-link'><NoteAltIcon />Cadastro de Usuarios</div></Link>
                         <Link href='/aulas'> <div className='side-link'><NoteAltIcon />Aulas</div></Link>
+                       
 
                     </div>
 
@@ -152,11 +154,11 @@ export const PasswordForm: React.FC<userForms> = ({ handleUpdatePassword, formRe
 
             <div className="form-name-input">
                 <span>Nova Senha</span>
-                <input type="password" name="password" id='password' />
+                <input type="password" name="password" id='password' placeholder='Nova Senha' />
             </div>
             <div className="form-name-input">
                 <span>Confirme sua Senha</span>
-                <input type="password" name="password_confirmation" id='password_confirmation' />
+                <input type="password" name="password_confirmation" id='password_confirmation' placeholder='Confirme a Senha' />
             </div>
 
             <div className="form-name-input" style={{ gridColumn: '1 / -1' }}>

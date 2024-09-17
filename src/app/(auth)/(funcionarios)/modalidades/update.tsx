@@ -40,14 +40,15 @@ export default function Update({ modalidades, handleSubmitUpdate, formRef }: Mod
         <>
             <h2>Alterar Modalidade</h2>
             {previewImage && (
-                    <Image src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${previewImage}`} alt="Prévia da Imagem da Modalidade" width={200} height={200} style={{ gridColumn: '1 / -1' }} />
-                )}
+                <Image src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${previewImage}`} alt="Prévia da Imagem da Modalidade" width={200} height={200} style={{ gridColumn: '1 / -1' }} />
+            )}
 
             <form action="" className="crud-form" onSubmit={handleSubmitUpdate} ref={formRef}>
 
                 <div className="form-name-input">
                     <span>Selecione a Modalidade</span>
                     <select name="modalidade_id" id="modalidade_id" onChange={handleInputChange}>
+                        <option value="" disabled selected >Selecione</option>
                         {modalidades.map(modalidades => (
                             <option value={modalidades.id}>{modalidades.nome_modalidade}</option>
 
