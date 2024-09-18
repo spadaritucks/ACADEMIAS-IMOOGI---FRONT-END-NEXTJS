@@ -16,7 +16,7 @@ export default function Delete({packs, handleSubmitDelete, formRef }: PlanosProp
 
     return (
         <>
-            <h2>Deletar Contratos</h2>
+            <h2>Deletar Pack</h2>
             <form action="" className="crud-form" onSubmit={handleSubmitDelete} ref={formRef} >
                 <div className="form-name-input">
                    

@@ -76,12 +76,12 @@
     padding: 5px 10px;
     border: none;
     border-radius: 10px;
-    background-color: #42b5f4;
+    background-color: orange;
 }
 
 .nav-btn-register:hover {
     cursor: pointer;
-    background-color: #098ad0;
+    background-color: orangered
 }
 
 .nav-btn-register a {

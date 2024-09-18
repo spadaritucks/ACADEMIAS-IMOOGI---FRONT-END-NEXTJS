@@ -36,7 +36,7 @@ export default function Update({ packs, handleSubmitUpdate, formRef }: PlanosPro
 
     return (
         <>
-            <h2>Alterar Contratos</h2>
+            <h2>Alterar Pack</h2>
             <form action="" className="crud-form" onSubmit={handleSubmitUpdate} ref={formRef}>
 
                 <div className="form-name-input">
