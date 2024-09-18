@@ -1,13 +1,14 @@
 'use client'
 import {
     Table,
-    Thead,
-    Tbody,
-    Tr,
-    Th,
-    Td,
-    TableContainer,
-} from '@chakra-ui/react';
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/Components/ui/table"
+import { Button } from "@/Components/ui/button"
 import { useEffect, useRef, useState } from 'react';
 import '../../../../Assets/css/pages-styles/dashboard.css'
 import '../../../../Assets/css/pages-styles/crud.css'
@@ -135,42 +136,41 @@ export default function Packs() {
                 <h1>Painel de Packs Especiais</h1>
                 <section className="painel-crud">
                     <div className="tabela-crud">
-                        <TableContainer>
-                            <Table variant="simple">
-                                <Thead>
-                                    <Tr>
-                                        <Th style={{ textAlign: "center" } }>Nome do Pack</Th>
-                                        <Th>Duração(em meses)</Th>
-                                        <Th>Matricula</Th>
-                                        <Th>Valor Mensal</Th>
-                                        <Th>Valor Total</Th>
-                                        <Th>N°Modalidades</Th>
-                                        <Th>Status</Th>
-                                        <Th>Numero de Checkins</Th>
-                                    </Tr>
-                                </Thead>
-                                <Tbody>
-                                    {showRead.map(pack => (
-                                        <Tr key={pack.id}>
-                                            <Td style={{ textAlign: "center" }}>{pack.nome_plano}</Td>
-                                            <Td>{pack.duracao > 1 ? pack.duracao + ' meses' : pack.duracao + ' mês'}</Td>
-                                            <Td>{'R$' + pack.valor_matricula}</Td>
-                                            <Td>{'R$' + pack.valor_mensal}</Td>
-                                            <Td>{'R$' + pack.valor_total}</Td>
-                                            <Td>{pack.num_modalidades > 1 ? pack.num_modalidades + ' modalidades' : pack.num_modalidades + ' modalidade'}</Td>
-                                            <Td>{pack.status}</Td>
-                                            <Td>{pack.number_checkins}</Td>
-                                        </Tr>
-                                    ))}
-                                </Tbody>
-                            </Table>
-                        </TableContainer>
+                        <Table>
+                            <TableCaption>Lista de Packs Especiais</TableCaption>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="text-center">Nome do Pack</TableHead>
+                                    <TableHead>Duração(em meses)</TableHead>
+                                    <TableHead>Matricula</TableHead>
+                                    <TableHead>Valor Mensal</TableHead>
+                                    <TableHead>Valor Total</TableHead>
+                                    <TableHead>N°Modalidades</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead>Numero de Checkins</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {showRead.map(pack => (
+                                    <TableRow key={pack.id}>
+                                        <TableCell className="text-center">{pack.nome_plano}</TableCell>
+                                        <TableCell>{pack.duracao > 1 ? pack.duracao + ' meses' : pack.duracao + ' mês'}</TableCell>
+                                        <TableCell>{'R$' + pack.valor_matricula}</TableCell>
+                                        <TableCell>{'R$' + pack.valor_mensal}</TableCell>
+                                        <TableCell>{'R$' + pack.valor_total}</TableCell>
+                                        <TableCell>{pack.num_modalidades > 1 ? pack.num_modalidades + ' modalidades' : pack.num_modalidades + ' modalidade'}</TableCell>
+                                        <TableCell>{pack.status}</TableCell>
+                                        <TableCell>{pack.number_checkins}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
                     </div>
                     <div className="crud-operations">
                         <div className='crud-buttons'>
-                            <button className="dash-button" onClick={handleShowCreate}>Criar Pack</button>
-                            <button className="dash-button" onClick={handleShowUpdate}>Atualizar Pack</button>
-                            <button className="dash-button" onClick={handleShowDelete}>Deletar Pack</button>
+                            <Button variant="imoogi" onClick={handleShowCreate}>Criar Pack</Button>
+                            <Button variant="imoogi" onClick={handleShowUpdate}>Atualizar Pack</Button>
+                            <Button variant="imoogi" onClick={handleShowDelete}>Deletar Pack</Button>
                         </div>
                         <div className="crud-inputs">
                             {showCreate && <Create handleSubmit={handleSubmit} formRef={formRef} />}

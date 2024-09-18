@@ -1,13 +1,14 @@
 'use client'
 import {
     Table,
-    Thead,
-    Tbody,
-    Tr,
-    Th,
-    Td,
-    TableContainer,
-} from '@chakra-ui/react';
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/Components/ui/table"
+import { Button } from "@/Components/ui/button"
 import { useEffect, useRef, useState } from 'react';
 import '../../../../Assets/css/pages-styles/dashboard.css'
 import '../../../../Assets/css/pages-styles/crud.css'
@@ -22,8 +23,6 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { AdmMain } from '@/Layouts/AdmMain';
 import UserSession from '@/Components/api/UserSession';
 
-
-
 export default function Unidades() {
 
     const [showCreate, setShowCreate] = useState<Boolean>(false);
@@ -31,7 +30,6 @@ export default function Unidades() {
     const [showRead, setShowRead] = useState<any[]>([]);
     const [showDelete, setShowDelete] = useState<Boolean>(false);
     const { user, setUser } = UserSession();
-
 
     const formRef = useRef<HTMLFormElement>(null)
     const { modalServer } = useModal();
@@ -138,38 +136,39 @@ export default function Unidades() {
                 <h1>Painel de Unidades</h1>
                 <section className="painel-crud">
                     <div className="tabela-crud">
-                        <TableContainer>
-                            <Table variant="simple">
-                                <Thead>
-                                    <Tr>
-                                        <Th>Foto da Unidade</Th>
-                                        <Th>Nome da Unidade</Th>
-                                        <Th>Endereço</Th>
-                                        <Th>Grade Horaria</Th>
-                                        <Th>Descrição da Unidade</Th>
-
-                                    </Tr>
-                                    
-                                </Thead>
-                                <Tbody>
-                                    {showRead.map(unidade => (
-                                        <Tr key={unidade.id}>
-                                            <Td> <Image width={70} height={70} src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${unidade.imagem_unidade}`} alt=""></Image></Td>
-                                            <Td>{unidade.nome_unidade}</Td>
-                                            <Td>{unidade.endereco}</Td>
-                                            <Td><Link href={`${process.env.NEXT_PUBLIC_API_URL}/storage/${unidade.grade}`}><div className='pdf-link' ><PictureAsPdfIcon /> PDF GRADE HORARIA</div></Link></Td>
-                                            <Td>{unidade.descricao}</Td>
-                                        </Tr>
-                                    ))}
-                                </Tbody>
-                            </Table>
-                        </TableContainer>
+                        <Table>
+                            <TableCaption>Lista de Unidades</TableCaption>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Foto da Unidade</TableHead>
+                                    <TableHead>Nome da Unidade</TableHead>
+                                    <TableHead>Endereço</TableHead>
+                                    <TableHead>Grade Horaria</TableHead>
+                                    <TableHead>Descrição da Unidade</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {showRead.map(unidade => (
+                                    <TableRow key={unidade.id}>
+                                        <TableCell>
+                                            <Image width={70} height={70} src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${unidade.imagem_unidade}`} alt=""></Image></TableCell>
+                                        <TableCell>{unidade.nome_unidade}</TableCell>
+                                        <TableCell>{unidade.endereco}</TableCell>
+                                        <TableCell>
+                                            <Link href={`${process.env.NEXT_PUBLIC_API_URL}/storage/${unidade.grade}`}>
+                                                <div className='pdf-link' ><PictureAsPdfIcon /> PDF GRADE HORARIA</div></Link>
+                                        </TableCell>
+                                        <TableCell>{unidade.descricao}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
                     </div>
                     <div className="crud-operations">
                         <div className='crud-buttons'>
-                            <button className="dash-button" onClick={handleShowCreate}>Criar Unidade</button>
-                            <button className="dash-button" onClick={handleShowUpdate}>Atualizar Unidade</button>
-                            <button className="dash-button" onClick={handleShowDelete}>Deletar Unidade</button>
+                            <Button variant="imoogi" onClick={handleShowCreate}>Criar Unidade</Button>
+                            <Button variant="imoogi" onClick={handleShowUpdate}>Atualizar Unidade</Button>
+                            <Button variant="imoogi" onClick={handleShowDelete}>Deletar Unidade</Button>
                         </div>
                         <div className="crud-inputs">
                             {showCreate && <Create handleSubmit={handleSubmit} formRef={formRef} />}

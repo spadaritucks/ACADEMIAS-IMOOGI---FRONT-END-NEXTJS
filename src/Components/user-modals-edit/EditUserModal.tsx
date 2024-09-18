@@ -1,26 +1,28 @@
 'use client'
-import { Modal, Button } from 'react-bootstrap';
+import { Button } from "@/Components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/Components/ui/dialog"
 import { useUserEditModal } from './EditUserContext';
 import '../../Assets/css/components-styles/UserModals-style.css'
 
-
-
 const EditUserModal = () => {
     const { modalShow, modalTitle, modalBody, hideModal } = useUserEditModal();
-    
 
     return (
-        <Modal style={{zIndex:3000, display: 'flex', flexDirection:'column', alignItems:'center'}} dialogClassName="modal-width" show={modalShow} onHide={hideModal}>
-            <Modal.Header>
-                <Modal.Title>{modalTitle}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>{modalBody}</Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={hideModal}>
-                    Fechar
-                </Button>
-            </Modal.Footer>
-        </Modal>
+        <Dialog open={modalShow} onOpenChange={hideModal}>
+            <DialogContent >
+                <DialogHeader>
+                    <DialogTitle>{modalTitle}</DialogTitle>
+                </DialogHeader>
+                {modalBody}
+              
+            </DialogContent>
+        </Dialog>
     );
 };
 

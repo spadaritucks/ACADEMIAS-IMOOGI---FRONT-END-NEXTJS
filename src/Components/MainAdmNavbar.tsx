@@ -4,7 +4,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useRouter } from 'next/navigation';
 import '@/Assets/css/components-styles/AuthNav.css'
 import { useRef, useState } from 'react';
-import Logo from '../../public/sistema imoogi.jpeg'
+import Logo from '../../public/logo imoogi novo sem  fundo.png'
 import Link from 'next/link';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -102,7 +102,7 @@ export default function MainAdmNavbar() {
         <>
 
             <div className="auth-bar">
-                <Image width={192} height={63} className="nav-bar-logo" src={Logo} alt="Imoogi" />
+                <Image width={162} height={33} className="nav-bar-logo" src={Logo} alt="Imoogi" />
                 <div className={`authbar-style ${open ? 'open' : ''}`}>
                     <div className='side-link-routes'>
                         <Link href='/dashboard'><div className='side-link'><DashboardIcon />Dashboard</div></Link>

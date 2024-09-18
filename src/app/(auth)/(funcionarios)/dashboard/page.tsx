@@ -3,14 +3,14 @@
 import '../../../../Assets/css/pages-styles/dashboard.css';
 import {
     Table,
-    Thead,
-    Tbody,
-    Tr,
-    Th,
-    Td,
-    TableContainer,
-    Center,
-} from '@chakra-ui/react';
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/Components/ui/table"
+import { Button } from "@/Components/ui/button"
 
 import { ModalEditUserProvider, useUserEditModal } from '@/Components/user-modals-edit/EditUserContext';
 import EditUserModal from '@/Components/user-modals-edit/EditUserModal';
@@ -80,9 +80,6 @@ const DashboardContent = () => {
     const [numAlunos, setNumAlunos] = useState<number>(0)
     const { user, setUser } = UserSession();
    
-  
-
-
     const getUsersFunction = async () => {
         const response = await getUsers();
         const responsePacks = await getPacks();
@@ -91,8 +88,6 @@ const DashboardContent = () => {
         setUserModalidade(response.modalidades)
         setFuncionarios(response.funcionarios)
         setPacks(responsePacks)
-
-
     }
 
     useEffect(() => {
@@ -104,7 +99,6 @@ const DashboardContent = () => {
         setOpenInfo(false)
         const user = users.find(user => user.id === id);
         showModal('Dados Pessoais', <DadosPessoais user={user} />)
-
     }
 
     const handleInformacoes = (id: number) => {
@@ -115,12 +109,8 @@ const DashboardContent = () => {
         const modalidade = userModalidade.filter(modalidade => modalidade.usuario_id === id)
         const pack = packs.find(pack => pack.id === contrato?.packs_id);
         
-        
         showModal('Informações do Usuario', <Informacoes pack={pack} contrato={contrato} funcionario={funcionario} modalidade={modalidade} />)
-
     }
-
-
 
     const handleEditClickWithType = (id: number, title: string) => {
         const user = users.find(user => user.id === id);
@@ -145,8 +135,6 @@ const DashboardContent = () => {
                     }
                     sendFormdata()
                 }
-
-
             }
             getUsersFunction()
         }
@@ -181,17 +169,12 @@ const DashboardContent = () => {
                     }
                     sendFormdata()
                 }
-
-
             }
             getUsersFunction()
         }
         
-
         showModal(title, <ModalidadeUserForm modalidade={modalidade} handleSubmitUpdateModalidade={handleSubmitUpdateModalidade} formRef={formRef} />)
-
     }
-
 
     const handleDeleteButton = async (id: number) => {
         const response = await deleteUser(id)
@@ -220,8 +203,6 @@ const DashboardContent = () => {
             return 'Colaborador';
         }
     };
-
-
 
     //Prenchimento dos Graficos
     useEffect(() => {
@@ -261,11 +242,7 @@ const DashboardContent = () => {
 
     }, [users, contratos]);
 
-   
-
-
     function charts() {
-
         const dataBars = [
             ["Indice", "Planos Ativos", "Planos Renovação", "Planos Vencidos"],
             ["Planos", ativos, renovacao, vencidos],
@@ -290,7 +267,6 @@ const DashboardContent = () => {
         };
         return (
             <>
-
                 <div className="chart-container">
                     <Chart
                         chartType="Bar"
@@ -307,9 +283,6 @@ const DashboardContent = () => {
                         width={"400px"}
                         height={"400px"} />
                 </div>
-
-
-
             </>
         );
     }
@@ -323,11 +296,6 @@ const DashboardContent = () => {
         user.nome.toLowerCase().includes(search.toLowerCase())
     );
 
-
-
-
-
-
     return (
         <section className="dashboard">
             <div className="usuarios-list">
@@ -338,46 +306,41 @@ const DashboardContent = () => {
                         <input type="text" placeholder="Pesquisar" className="search-input" onChange={(e) => setSearch(e.target.value)} />
                     </div>
                     <div className="user-container alunos">
-                        <TableContainer>
-                            <Table variant="simple">
-                                <Thead>
-                                    <Tr>
-                                        <Th style={{ textAlign: "center" }}>ID</Th>
-                                        <Th style={{ textAlign: "center" }}>Nome do Aluno</Th>
-                                        <Th style={{ textAlign: "center" }}>Tipo do Usuario</Th>
-                                        <Th style={{ textAlign: "center" }} >Ações</Th>
-                                        <Th style={{ textAlign: "center" }}>Status</Th>
-                                    </Tr>
-                                </Thead>
-                                <Tbody>
-
-                                    {filteredUsers.map(users => (
-                                        <Tr key={users.id} style={{ textAlign: "center" }}>
-                                            <Td>{users.id}</Td>
-                                            <Td style={{ textAlign: "center" }}>{users.nome}</Td>
-                                            <Td style={{ textAlign: "center" }}>{users.tipo_usuario}</Td>
-                                            <Td style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                                                <button className="dash-button" onClick={() => handleDadosPessoais(users.id)}>Dados Pessoais</button>
-
-                                                <button className='dash-button' onClick={() => handleInformacoes(users.id)}>Informações</button>
-
-                                                <button className="dash-button" onClick={() => handleEditClickWithType(users.id, 'Editar Usuarios')}>
-                                                    Editar</button>
-                                                {users.tipo_usuario === 'aluno' &&
-                                                 <button className= "dash-button " onClick={() => handleUserModalidadeEdit(users.id, 'Modalidade Vinculadas')}>
-                                                Modalidades</button>}
-                                                <button className="dash-button" onClick={() => handleDeleteButton(users.id)}>Excluir</button>
-                                            </Td>
-                                            <Td style={{ textAlign: "center" }}>{handleStatusUser(users.id)}</Td>
-                                        </Tr>
-                                    ))}
-
-                                </Tbody>
-                            </Table>
-                        </TableContainer>
+                        <Table>
+                            <TableCaption>Lista de usuários</TableCaption>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="text-center">ID</TableHead>
+                                    <TableHead className="text-center">Nome do Aluno</TableHead>
+                                    <TableHead className="text-center">Tipo do Usuario</TableHead>
+                                    <TableHead className="text-center">Ações</TableHead>
+                                    <TableHead className="text-center">Status</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {filteredUsers.map(user => (
+                                    <TableRow key={user.id}>
+                                        <TableCell className="text-center">{user.id}</TableCell>
+                                        <TableCell className="text-center">{user.nome}</TableCell>
+                                        <TableCell className="text-center">{user.tipo_usuario}</TableCell>
+                                        <TableCell className="text-center">
+                                            <div className="flex justify-center space-x-2">
+                                                <Button variant="imoogi" size="sm" onClick={() => handleDadosPessoais(user.id)}>Dados Pessoais</Button>
+                                                <Button variant="imoogi" size="sm" onClick={() => handleInformacoes(user.id)}>Informações</Button>
+                                                <Button variant="imoogi" size="sm" onClick={() => handleEditClickWithType(user.id, 'Editar Usuarios')}>Editar</Button>
+                                                {user.tipo_usuario === 'aluno' && (
+                                                    <Button variant="imoogi" size="sm" onClick={() => handleUserModalidadeEdit(user.id, 'Modalidade Vinculadas')}>Modalidades</Button>
+                                                )}
+                                                <Button variant="imoogi" size="sm" onClick={() => handleDeleteButton(user.id)}>Excluir</Button>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="text-center">{handleStatusUser(user.id)}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
                     </div>
                 </div>
-
             </div>
 
             <div className='charts-area'>
@@ -386,12 +349,9 @@ const DashboardContent = () => {
                     <span>Numero de Alunos</span>
                     <p className='number-alunos'>{numAlunos}</p>
                 </div>
-
             </div>
         </section>
-
     );
-
 };
 
 const UserForm = ({ selectType, user, contrato, modalidade, funcionario, pack, formRef, handleSubmitUpdate }: UserFormProps) => {

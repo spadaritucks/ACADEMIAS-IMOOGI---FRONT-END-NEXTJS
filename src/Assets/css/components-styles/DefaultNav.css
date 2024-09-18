@@ -5,7 +5,8 @@
     width: 100%;
     height: 90px;
     padding: 0 10px;
-    box-shadow: 3px 3px 3px 3px #ccc;
+    background-color: rgb(52, 46, 46);
+    border-bottom: 8px solid orange;
     
 }
 
@@ -34,19 +35,21 @@
     
 }
 
-.nav-link-routes a {
+
+
+.nav-bar-link {
     padding: 0 5px;
     text-decoration: none;
-    color: black;
+    color: white;
     cursor: pointer;
     text-align: center;
     display: flex;
     align-items: center;
-
+    margin: 5px 5px;
 }
 
-.nav-link-routes a:hover{
-    color: #ccc;
+.nav-bar-link:hover{
+    border-bottom: 2px solid orange  ;
 }
 
 .nav-link-login {
@@ -62,7 +65,7 @@
 .nav-link-login a {
     padding: 0 5px;
     text-decoration: none;
-    color: black;
+    color: white;
     cursor: pointer;
     text-align: center;
     display: flex;
@@ -86,12 +89,17 @@
     font-weight: bold;
     text-transform: uppercase;
     font-size: 13px;
+    
 }
 
 .btn-toogle {
     display: none;
     cursor: pointer;
     transition: 0.3s ease-in-out;
+}
+
+.btn-toogle svg{
+    color: white;
 }
 
 .btn-toogle:hover{
@@ -117,8 +125,8 @@
 
     .nav-itens {
         width: 100%;
-        background-color: #fbfdff;
-        box-shadow: 4px 4px 4px 4px #ccc;
+        background-color: rgb(52, 46, 46);
+        border-bottom: 8px solid orange;
         opacity: 0;
         flex-direction: column;
         transition: 0.3s ease-in;

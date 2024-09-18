@@ -63,22 +63,25 @@ function login() {
 
     return (
         <Main>
-            <div className="area-form">
-                <h2>Login do Usuario</h2>
-                <form action="" onSubmit={handleSubmit} ref={formRef}>
-                    <div className="form-component-login">
-                        <div className="form-name-input">
-                            <span>Insira o seu CPF</span>
-                            <input type="text" name="cpf" id='cpf' placeholder='CPF' />
+            <section className="menu-login">
+                <div className="area-form">
+                    <h2>Login do Usuario</h2>
+                    <form action="" onSubmit={handleSubmit} ref={formRef}>
+                        <div className="form-component-login">
+                            <div className="form-name-input">
+                                <span>Insira o seu CPF</span>
+                                <input type="text" name="cpf" id='cpf' placeholder='CPF' />
+                            </div>
+                            <div className="form-name-input">
+                                <span>Insira sua Senha</span>
+                                <input type="password" name="password" id='password' placeholder='Senha' />
+                            </div>
+                            <button type='submit' className='submit-button'>Enviar</button>
                         </div>
-                        <div className="form-name-input">
-                            <span>Insira sua Senha</span>
-                            <input type="password" name="password" id='password' placeholder='Senha' />
-                        </div>
-                        <button type='submit' className='submit-button'>Enviar</button>
-                    </div>
-                </form>
-            </div>
+                    </form>
+                </div>
+            </section>
+
         </Main>
     )
 }

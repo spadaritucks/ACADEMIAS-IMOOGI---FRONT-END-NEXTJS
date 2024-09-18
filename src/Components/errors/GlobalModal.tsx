@@ -1,23 +1,31 @@
 'use client'
-import { Modal, Button } from 'react-bootstrap';
+import { Button } from "@/Components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/Components/ui/dialog"
 import { useModal } from './errorContext';
-
 
 const GlobalModal = () => {
     const { modalShow, modalTitle, modalBody, hideModal } = useModal();
 
     return (
-        <Modal show={modalShow} onHide={hideModal} style={{zIndex:3000, display: 'flex', flexDirection:'column', alignItems:'center'}}>
-            <Modal.Header>
-                <Modal.Title>{modalTitle}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>{modalBody}</Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={hideModal}>
-                    Fechar
-                </Button>
-            </Modal.Footer>
-        </Modal>
+        <Dialog open={modalShow} onOpenChange={hideModal}>
+            <DialogContent className="sm:max-w-[425px] w-[60vw] min-w-[300px] max-w-[90vw] p-6 sm:p-4 sm:w-[90vw]">
+                <DialogHeader>
+                    <DialogTitle>{modalTitle}</DialogTitle>
+                </DialogHeader>
+                <div>{modalBody}</div>
+                <DialogFooter>
+                    <Button variant="imoogi" onClick={hideModal}>
+                        Fechar
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 };
 

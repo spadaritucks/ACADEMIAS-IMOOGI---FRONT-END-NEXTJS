@@ -1,4 +1,4 @@
-
+import './globals.css'
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Footer from "../Components/Footer";
@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { ModalProvider } from '@/Components/errors/errorContext';
 import GlobalModal from "@/Components/errors/GlobalModal";
 import { ChakraProvider } from '@chakra-ui/react'
-import './globals.css'
+
 
 
 const inter = Inter({ subsets: ["latin"] });

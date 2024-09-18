@@ -1,13 +1,14 @@
 'use client'
 import {
     Table,
-    Thead,
-    Tbody,
-    Tr,
-    Th,
-    Td,
-    TableContainer,
-} from '@chakra-ui/react';
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/Components/ui/table"
+import { Button } from "@/Components/ui/button"
 import { useEffect, useRef, useState } from 'react';
 import '../../../../Assets/css/pages-styles/dashboard.css'
 import '../../../../Assets/css/pages-styles/crud.css'
@@ -18,8 +19,6 @@ import { createPlano, deletePlano, getPlanos, updatePlano } from '@/Components/a
 import { useModal } from '@/Components/errors/errorContext';
 import { AdmMain } from '@/Layouts/AdmMain';
 import UserSession from '@/Components/api/UserSession';
-
-
 
 export default function Planos() {
 
@@ -135,42 +134,41 @@ export default function Planos() {
                 <h1>Painel de Planos e Contratos</h1>
                 <section className="painel-crud">
                     <div className="tabela-crud">
-                        <TableContainer>
-                            <Table variant="simple">
-                                <Thead>
-                                    <Tr>
-                                        <Th style={{ textAlign: "center" } }>Nome do Plano</Th>
-                                        <Th>Duração(em meses)</Th>
-                                        <Th>Matricula</Th>
-                                        <Th>Valor Mensal</Th>
-                                        <Th>Valor Total</Th>
-                                        <Th>N°Modalidades</Th>
-                                        <Th>Status</Th>
-                                        <Th>Numero de Checkins</Th>
-                                    </Tr>
-                                </Thead>
-                                <Tbody>
-                                    {showRead.map(planos => (
-                                        <Tr key={planos.id}>
-                                            <Td style={{ textAlign: "center" }}>{planos.nome_plano}</Td>
-                                            <Td>{planos.duracao > 1 ? planos.duracao + ' meses' : planos.duracao + ' mês'}</Td>
-                                            <Td>{'R$' + planos.valor_matricula}</Td>
-                                            <Td>{'R$' + planos.valor_mensal}</Td>
-                                            <Td>{'R$' + planos.valor_total}</Td>
-                                            <Td>{planos.num_modalidades > 1 ? planos.num_modalidades + ' modalidades' : planos.num_modalidades + ' modalidade'}</Td>
-                                            <Td>{planos.status}</Td>
-                                            <Td>{planos.number_checkins}</Td>
-                                        </Tr>
-                                    ))}
-                                </Tbody>
-                            </Table>
-                        </TableContainer>
+                        <Table>
+                            <TableCaption>Lista de Planos e Contratos</TableCaption>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="text-center">Nome do Plano</TableHead>
+                                    <TableHead>Duração(em meses)</TableHead>
+                                    <TableHead>Matricula</TableHead>
+                                    <TableHead>Valor Mensal</TableHead>
+                                    <TableHead>Valor Total</TableHead>
+                                    <TableHead>N°Modalidades</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead>Numero de Checkins</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {showRead.map(planos => (
+                                    <TableRow key={planos.id}>
+                                        <TableCell className="text-center">{planos.nome_plano}</TableCell>
+                                        <TableCell>{planos.duracao > 1 ? planos.duracao + ' meses' : planos.duracao + ' mês'}</TableCell>
+                                        <TableCell>{'R$' + planos.valor_matricula}</TableCell>
+                                        <TableCell>{'R$' + planos.valor_mensal}</TableCell>
+                                        <TableCell>{'R$' + planos.valor_total}</TableCell>
+                                        <TableCell>{planos.num_modalidades > 1 ? planos.num_modalidades + ' modalidades' : planos.num_modalidades + ' modalidade'}</TableCell>
+                                        <TableCell>{planos.status}</TableCell>
+                                        <TableCell>{planos.number_checkins}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
                     </div>
                     <div className="crud-operations">
                         <div className='crud-buttons'>
-                            <button className="dash-button" onClick={handleShowCreate}>Criar Plano</button>
-                            <button className="dash-button" onClick={handleShowUpdate}>Atualizar Plano</button>
-                            <button className="dash-button" onClick={handleShowDelete}>Deletar Plano</button>
+                            <Button variant="imoogi" onClick={handleShowCreate}>Criar Plano</Button>
+                            <Button variant="imoogi" onClick={handleShowUpdate}>Atualizar Plano</Button>
+                            <Button variant="imoogi" onClick={handleShowDelete}>Deletar Plano</Button>
                         </div>
                         <div className="crud-inputs">
                             {showCreate && <Create handleSubmit={handleSubmit} formRef={formRef} />}

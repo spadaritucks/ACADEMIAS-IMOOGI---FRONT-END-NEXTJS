@@ -7,7 +7,7 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Link from "next/link";
 import Image from 'next/image';
-import Logo from '../../public/sistema imoogi.jpeg'
+import Logo from '../../public/logo imoogi novo sem  fundo.png'
 
 
 export default function Footer() {
@@ -15,7 +15,7 @@ export default function Footer() {
     return (
         <footer className='footer-bar'>
             <div className='footer-card logo-text '>
-                <Image width={288.3} height={94.5} src={Logo} alt="" className='footer-logo'></Image>
+                <Image width={258.3} height={64.5} src={Logo} alt="" className='footer-logo'></Image>
                 <p className='footer-text'>DPU Krav Maga BR - Boxe - Kickboxing - Muay Thai - Taekwondo
                     - Hapkido - Hwarang Kumdo - Jiu-Jitsu - Capoeira - Aulas PCD
                 </p>

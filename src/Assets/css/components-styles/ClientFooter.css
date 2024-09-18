@@ -2,7 +2,8 @@
     width: 100%;
     height: 40vh;
     padding: 10px 50px;
-    box-shadow: 4px 4px 4px 4px #ccc;
+    background-color: rgb(52, 46, 46);
+    border-top: 8px solid orange;
     margin-top: 30px;
     display: flex;
     align-items: center;
@@ -16,7 +17,7 @@
     justify-content: start;
     width: 25%;
     padding: 5px 15px;
-    border-right: 0.5px black solid;
+    border-right: 0.5px white solid;
     height: 70%;
     text-align: center;
     
@@ -34,12 +35,13 @@
 .logo-text{
     justify-content: center;
     text-align: center;
+    color: white;
 }
 
 
 .footer-card a{
     text-decoration: none;
-    color: black;
+    color: white;
     font-size: 18px;
     display: flex;
     align-items: center;
@@ -70,14 +72,16 @@
 
 .links h2, .social h2{
     font-size: 30px;
+    color: white;
 }
 
 .links a:hover{
-    color: #ccc;
+    border-bottom: 2px solid orange  ;
 }
 
 .location{
     text-align: center;
+    color: white;
 }
 
 .location a{
@@ -95,7 +99,7 @@
 
     .footer-card{
         border-right: 0;
-        border-bottom: 1px solid black;
+        border-bottom: 1px solid white;
         width: 100%;
         padding: 20px;
         text-align: center;

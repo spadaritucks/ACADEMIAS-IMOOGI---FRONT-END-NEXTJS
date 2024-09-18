@@ -1,13 +1,14 @@
 'use client'
 import {
     Table,
-    Thead,
-    Tbody,
-    Tr,
-    Th,
-    Td,
-    TableContainer,
-} from '@chakra-ui/react';
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/Components/ui/table"
+import { Button } from "@/Components/ui/button"
 import { useEffect, useRef, useState } from 'react';
 import '../../../../Assets/css/pages-styles/dashboard.css'
 import '../../../../Assets/css/pages-styles/crud.css'
@@ -20,8 +21,6 @@ import Image from 'next/image';
 import { AdmMain } from '@/Layouts/AdmMain';
 import UserSession from '@/Components/api/UserSession';
 
-
-
 export default function Modalidade() {
 
     const [showCreate, setShowCreate] = useState<Boolean>(false);
@@ -29,7 +28,6 @@ export default function Modalidade() {
     const [showRead, setShowRead] = useState<any[]>([]);
     const [showDelete, setShowDelete] = useState<Boolean>(false);
     const { user, setUser } = UserSession();
-
 
     const formRef = useRef<HTMLFormElement>(null)
     const { modalServer } = useModal();
@@ -70,7 +68,6 @@ export default function Modalidade() {
     if (!user) {
         return null;
     }
-
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -131,56 +128,48 @@ export default function Modalidade() {
 
     }
 
-
-
-
     return (
         <AdmMain>
             <>
                 <h1>Painel de Modalidades</h1>
                 <section className="painel-crud">
                     <div className="tabela-crud">
-                        <TableContainer>
-                            <Table variant="simple">
-                                <Thead>
-                                    <Tr>
-                                        <Th>Foto da Modalidade</Th>
-                                        <Th>Nome da Modaliade</Th>
-                                        <Th>Descrição da Modalidade</Th>
-
-                                    </Tr>
-                                </Thead>
-                                <Tbody>
-                                    {showRead.map(modalidades => (
-                                        <Tr key={modalidades.id}>
-                                            <Td> <Image width={70} height={70} src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${modalidades.foto_modalidade}`} alt=""></Image></Td>
-                                            <Td>{modalidades.nome_modalidade}</Td>
-                                            <Td>{modalidades.descricao_modalidade}</Td>
-                                        </Tr>
-                                    ))}
-                                </Tbody>
-                            </Table>
-                        </TableContainer>
+                        <Table>
+                            <TableCaption>Lista de Modalidades</TableCaption>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Foto da Modalidade</TableHead>
+                                    <TableHead>Nome da Modalidade</TableHead>
+                                    <TableHead>Descrição da Modalidade</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {showRead.map(modalidades => (
+                                    <TableRow key={modalidades.id}>
+                                        <TableCell>
+                                            <Image width={70} height={70} src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${modalidades.foto_modalidade}`} alt=""></Image>
+                                        </TableCell>
+                                        <TableCell>{modalidades.nome_modalidade}</TableCell>
+                                        <TableCell>{modalidades.descricao_modalidade}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
                     </div>
                     <div className="crud-operations">
                         <div className='crud-buttons'>
-                            <button className="dash-button" onClick={handleShowCreate}>Criar Modalidade</button>
-                            <button className="dash-button" onClick={handleShowUpdate}>Atualizar Modalidade</button>
-                            <button className="dash-button" onClick={handleShowDelete}>Deletar Modalidade</button>
+                            <Button variant="imoogi" onClick={handleShowCreate}>Criar Modalidade</Button>
+                            <Button variant="imoogi" onClick={handleShowUpdate}>Atualizar Modalidade</Button>
+                            <Button variant="imoogi" onClick={handleShowDelete}>Deletar Modalidade</Button>
                         </div>
                         <div className="crud-inputs">
                             {showCreate && <Create handleSubmit={handleSubmit} formRef={formRef} />}
                             {showUpdate && <Update handleSubmitUpdate={handleSubmitUpdate} formRef={formRef} modalidades={showRead} />}
                             {showDelete && <Delete modalidades={showRead} handleSubmitDelete={handleSubmitDelete} formRef={formRef} />}
-
                         </div>
-
                     </div>
                 </section>
             </>
         </AdmMain>
-
     )
-
-
 }

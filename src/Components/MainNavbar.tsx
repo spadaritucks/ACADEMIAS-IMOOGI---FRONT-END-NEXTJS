@@ -2,12 +2,22 @@
 import Link from "next/link";
 import Image from 'next/image';
 import { useState } from "react";
-import Logo from '../../public/sistema imoogi.jpeg'
+import Logo from '../../public/logo imoogi novo sem  fundo.png'
 import MenuIcon from '@mui/icons-material/Menu';
 import LoginIcon from '@mui/icons-material/Login';
 import '@/Assets/css/components-styles/DefaultNav.css'
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+  } from "@/Components/ui/dropdown-menu"
+  
+    
 
 export default function MainNavBar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false); // Menu começa fechado
@@ -24,18 +34,26 @@ export default function MainNavBar() {
         <>
 
             <nav className='navbar-style'>
-                <Link href='/'><Image width={192} height={63} className="nav-bar-logo" src={Logo} alt="Imoogi" /></Link>
+                <Link href='/'><Image width={162} height={33} className="nav-bar-logo" src={Logo} alt="Imoogi" /></Link>
 
                 <div className={`nav-itens ${isMenuOpen ? 'open' : ''}`}>
                     <div className="nav-link-routes">
-                        <Link href='/unidades'>Unidades</Link>
-                        <Link href='/modalidade'>Modalidades</Link>
+                        <Link className="nav-bar-link" href='/unidades'>Unidades</Link>
+                        <Link className="nav-bar-link" href='/modalidade'>Modalidades</Link>
 
-                        <NavDropdown title="Colaboradores" id="nav-dropdown" className="nav-dropdown">
-                            <NavDropdown.Item ><Link href='/equipe'>Equipe</Link></NavDropdown.Item>
-                            <NavDropdown.Item ><Link href='/gympass'>Gympass</Link></NavDropdown.Item>
-                            <NavDropdown.Item ><Link href='/totalpass'>TotalPass</Link></NavDropdown.Item>
-                        </NavDropdown>
+
+                        <DropdownMenu>
+                            <DropdownMenuTrigger>Colaboradores</DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuLabel>Colaboradores</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem><Link href='/equipe' className="nav-bar-link">Equipe</Link></DropdownMenuItem>
+                                <DropdownMenuItem><Link href='/gympass' className="nav-bar-link">Gympass</Link></DropdownMenuItem>
+                                <DropdownMenuItem><Link href='/totalpass' className="nav-bar-link">TotalPass</Link></DropdownMenuItem>
+                               
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        
                     </div>
 
 
