@@ -31,7 +31,24 @@ h1{
     padding: 10px 10px;
     margin: 30px;
     height: 300px;
+    overflow-x: auto;
 }
+
+.pagamentos_container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    box-shadow: 4px 4px 4px 4px #ccc;
+    width: 400px;
+    text-align: center;
+    padding: 20px 10px;
+    margin: 30px;
+    height: 300px;
+    overflow-x: auto;
+}
+
+
 
 .dados h2{
     font-weight: bold;
@@ -164,9 +181,61 @@ span{
     background-color: red;
 }
 
+.pagamentos-comprovantes{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    width: 400px;
+    
+    
+}
+
+.container_pagamento{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 1px 1px 1px 1px #ccc;
+    margin-top: 10px;
+    padding: 0 10px;
+    
+}
+
+
+.dados_pagamento{
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   box-shadow: 1px 1px 1px 1px #ccc;
+   margin-top: 10px;
+}
+
+.dado-pagamento{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 20px;
+    text-align: center;
+
+}
+
+.modal_pagamentos_dados{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+}
+
 
 @media (max-width:990px){
     .menuAluno{
+        flex-direction: column;
+    }
+
+    .modal_pagamentos_dados{
         flex-direction: column;
     }
 }

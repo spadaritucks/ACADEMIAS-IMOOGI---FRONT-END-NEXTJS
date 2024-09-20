@@ -11,23 +11,33 @@ import {
     TableRow,
 } from "@/Components/ui/table"
 import { Button } from "@/Components/ui/button"
-
 import { ModalEditUserProvider, useUserEditModal } from '@/Components/user-modals-edit/EditUserContext';
 import EditUserModal from '@/Components/user-modals-edit/EditUserModal';
 import { Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from 'react';
 import { Usuarios } from '../usuarios/usuarios';
 import { Contratos } from '../usuarios/contratos';
-import {Funcionario} from '../usuarios/funcionario';
+import { Funcionario } from '../usuarios/funcionario';
 import '../../../../Assets/css/pages-styles/forms.css'
 import { Contrato, DadosFuncionario, deleteUser, getUsers, updateUser, updateUserModalidade, Usuario, UsuarioModalidade } from '@/Components/api/UsuariosRequest';
-import Image from 'next/image';
 import { DadosPessoais } from './DadosPessoais';
 import { Informacoes } from './Informaçoes';
 import { AdmMain } from '@/Layouts/AdmMain';
 import { Chart } from "react-google-charts";
 import { getModalidade, Modalidade } from '@/Components/api/ModalidadesRequest';
 import UserSession from '@/Components/api/UserSession';
-import { getPacks, Packs } from '@/Components/api/PlanosRequest';
+import { getPacks, getPlanos, Packs, Plano } from '@/Components/api/PlanosRequest';
+import { useModal } from '@/Components/errors/errorContext';
+import Link from 'next/link';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/Components/ui/dropdown-menu"
+import { getPagamentosMensais, PagamentoMensal, putPagamentosMensais } from '@/Components/api/PagamentosRequest';
+
 
 
 
@@ -62,6 +72,7 @@ interface UserModalidadesProp {
 
 const DashboardContent = () => {
     const { showModal } = useUserEditModal();
+    const { modalServer } = useModal()
     const formRef = useRef<HTMLFormElement>(null);
     const [selectType, setSelectType] = useState<string>('');
     const [showContratos, setShowContratos] = useState<boolean>(false);
@@ -70,7 +81,10 @@ const DashboardContent = () => {
     const [contratos, setContratos] = useState<Contrato[]>([])
     const [userModalidade, setUserModalidade] = useState<UsuarioModalidade[]>([])
     const [funcionarios, setFuncionarios] = useState<DadosFuncionario[]>([])
+    const [pagamentos, setPagamentos] = useState<PagamentoMensal[]>([])
+    const [planos, setPlanos] = useState<Plano[]>([])
     const [packs, setPacks] = useState<Packs[]>([])
+
     const [search, setSearch] = useState<string>('')
     const [openDadosPessoais, setOpenDadosPessoais] = useState<boolean>(false)
     const [openInfo, setOpenInfo] = useState<boolean>(false);
@@ -79,15 +93,19 @@ const DashboardContent = () => {
     const [vencidos, setVencidos] = useState<number>(0)
     const [numAlunos, setNumAlunos] = useState<number>(0)
     const { user, setUser } = UserSession();
-   
+
     const getUsersFunction = async () => {
         const response = await getUsers();
         const responsePacks = await getPacks();
+        const responsePlanos = await getPlanos();
+        const responsePagamentos = await getPagamentosMensais();
         setUsers(response.usuarios)
         setContratos(response.contratos)
         setUserModalidade(response.modalidades)
         setFuncionarios(response.funcionarios)
         setPacks(responsePacks)
+        setPlanos(responsePlanos)
+        setPagamentos(responsePagamentos)
     }
 
     useEffect(() => {
@@ -108,7 +126,7 @@ const DashboardContent = () => {
         const funcionario = funcionarios.find(funcionario => funcionario?.usuario_id === id)
         const modalidade = userModalidade.filter(modalidade => modalidade.usuario_id === id)
         const pack = packs.find(pack => pack.id === contrato?.packs_id);
-        
+
         showModal('Informações do Usuario', <Informacoes pack={pack} contrato={contrato} funcionario={funcionario} modalidade={modalidade} />)
     }
 
@@ -172,7 +190,7 @@ const DashboardContent = () => {
             }
             getUsersFunction()
         }
-        
+
         showModal(title, <ModalidadeUserForm modalidade={modalidade} handleSubmitUpdateModalidade={handleSubmitUpdateModalidade} formRef={formRef} />)
     }
 
@@ -203,6 +221,113 @@ const DashboardContent = () => {
             return 'Colaborador';
         }
     };
+
+    const handleMensalidade = () => {
+        const planoMensal = planos.find(plano => plano.duracao === 1);
+        const contratosMensais = contratos.filter(contrato => contrato.planos_id === planoMensal?.id);
+
+        if (contratosMensais && planoMensal) {
+            return contratosMensais.map((contrato) => {
+                const user = users.find(user => user.id === contrato.usuario_id)
+                const dataVencimento = new Date(contrato.data_vencimento || '')
+                const dataAtual = new Date()
+                const diffInTime = dataVencimento.getTime() - dataAtual.getTime();
+                const dias = Math.ceil(diffInTime / (1000 * 3600 * 24));
+                return (
+                    <div key={contrato.id} className={`mensal-container ${dias <= 10 ? 'bg-red-200' : ''}`}>
+                        <p className='mensal-nome'>{user?.nome.split(' ').slice(0, 2).join(' ')}</p>
+                        <Button variant='imoogi' onClick={() => modalAlunosMensais(planoMensal, dataVencimento, dias)}>Informações</Button>
+                        <Button variant='imoogi'><Link href={`https://wa.me/${user?.telefone}`}>Telefone</Link></Button>
+
+
+
+                    </div>
+                )
+            })
+        }
+
+        return null; // Retorna null se não houver contratos mensais ou plano mensal
+    };
+
+    const handleComprovantes = (id: number) => {
+        const userPagamentos = pagamentos.filter(pagamento => pagamento.usuario_id === id)
+        showModal('Comprovantes',
+            <div>
+                {userPagamentos.map(pagamento => (
+                    <div key={pagamento.id} className='aluno-pagamentosModal'>
+                        <Button variant='imoogi'><Link href={`${process.env.NEXT_PUBLIC_API_URL}/storage/${pagamento.comprovante}`}>Comprovante</Link></Button>
+                        
+                        <p className="dado-pagamento m-4 text-center w-40 "> <span> Valor Pago </span> R$ {pagamento.valor_pago}</p>
+                        <p className="dado-pagamento m-4 text-center w-40 "> <span>Data do Pagamento </span> {pagamento.data_pagamento}</p>
+                        <p className="dado-pagamento m-4 text-center w-25 "><span>Comentario </span>{pagamento.comentario}  <Button variant = 'link' onClick={() => handleAddComentario(pagamento.id)}>Adicionar Comentario</Button></p>
+                       
+                    </div>
+
+                ))}
+            </div>
+        )
+    }
+
+    const handleAddComentario  = (pagamento_id: number) => {
+        showModal('Adicionar Comentario',  
+            <form onSubmit={handleSubmitComentario(pagamento_id)} ref={formRef}>
+               <div className="form-name-input">
+                   <span>Comentario sobre Pagamento</span>
+                   <textarea name="comentario_adm" id="comentario_adm" rows={4} cols={25}></textarea>
+               </div>
+
+               <div className="form-name-input" style={{ gridColumn: '1 / -1' }}>
+                   <button type='submit' className='submit-button'>Enviar</button>
+               </div>
+            </form>
+        )
+    }
+
+    const handleSubmitComentario = (pagamento_id: number) => async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        if (formRef.current) {
+            const formdata = new FormData(formRef.current);
+            formdata.append('_method', 'PUT');
+            
+            try {
+                const response = await putPagamentosMensais(pagamento_id, formdata);
+                if(response){
+                    if(response.status == 'false'){
+                        if( typeof response.message == 'object'){
+                            modalServer('Erro', 'Preencha todos os campos')
+                    }if(typeof response.message == 'string'){
+                        modalServer('Erro', response.message)
+                    }
+                }else{
+                    console.log(pagamento_id)
+                    console.log(formdata)
+                    modalServer('Sucesso', response.message)
+                }
+
+            }
+                getUsersFunction();
+
+            } catch (error) {
+                console.error('Erro ao enviar comentário:', error);
+            }
+        }
+    };
+
+    
+
+    const modalAlunosMensais = (planoMensal: Plano, dataVencimento: Date, dias: number) => {
+
+
+        showModal('Informações',
+            <div className='alunos_mensais_info'>
+                <p className='mensal-plano'>{planoMensal.nome_plano}</p>
+                <p className='mensal-vencimento'>Vence em {dataVencimento.toLocaleDateString()}</p>
+                <p className='mensal-dias'>{dias} dias restantes</p>
+            </div>
+        )
+    }
+
 
     //Prenchimento dos Graficos
     useEffect(() => {
@@ -325,13 +450,25 @@ const DashboardContent = () => {
                                         <TableCell className="text-center">{user.tipo_usuario}</TableCell>
                                         <TableCell className="text-center">
                                             <div className="flex justify-center space-x-2">
-                                                <Button variant="imoogi" size="sm" onClick={() => handleDadosPessoais(user.id)}>Dados Pessoais</Button>
-                                                <Button variant="imoogi" size="sm" onClick={() => handleInformacoes(user.id)}>Informações</Button>
-                                                <Button variant="imoogi" size="sm" onClick={() => handleEditClickWithType(user.id, 'Editar Usuarios')}>Editar</Button>
-                                                {user.tipo_usuario === 'aluno' && (
-                                                    <Button variant="imoogi" size="sm" onClick={() => handleUserModalidadeEdit(user.id, 'Modalidade Vinculadas')}>Modalidades</Button>
-                                                )}
-                                                <Button variant="imoogi" size="sm" onClick={() => handleDeleteButton(user.id)}>Excluir</Button>
+                                                <>
+                                                    {user.tipo_usuario === 'aluno' && (
+                                                        <Button variant='imoogi' onClick={() => handleComprovantes(user.id)}>Comprovantes</Button>
+                                                    )}
+                                                    <DropdownMenu>
+
+                                                        <DropdownMenuTrigger><Button variant='imoogi'>Ações</Button></DropdownMenuTrigger>
+                                                        <DropdownMenuContent>
+                                                            <DropdownMenuItem onClick={() => handleDadosPessoais(user.id)}>Dados Pessoais</DropdownMenuItem>
+                                                            <DropdownMenuItem onClick={() => handleInformacoes(user.id)}>Informações</DropdownMenuItem>
+                                                            <DropdownMenuItem onClick={() => handleEditClickWithType(user.id, 'Editar Usuarios')}>Editar</DropdownMenuItem>
+                                                            {user.tipo_usuario === 'aluno' && (
+                                                                <DropdownMenuItem onClick={() => handleUserModalidadeEdit(user.id, 'Modalidade Vinculadas')}>Modalidades</DropdownMenuItem>
+                                                            )}
+
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                    <Button variant='imoogi' onClick={() => handleDeleteButton(user.id)}>Excluir</Button>
+                                                </>
                                             </div>
                                         </TableCell>
                                         <TableCell className="text-center">{handleStatusUser(user.id)}</TableCell>
@@ -350,8 +487,17 @@ const DashboardContent = () => {
                     <p className='number-alunos'>{numAlunos}</p>
                 </div>
             </div>
+
+            <div className='mensal-area'>
+                <h2>Alunos Mensalistas</h2>
+                <div className='mensal-list'>
+                    {handleMensalidade()}
+                </div>
+
+            </div>
         </section>
     );
+
 };
 
 const UserForm = ({ selectType, user, contrato, modalidade, funcionario, pack, formRef, handleSubmitUpdate }: UserFormProps) => {
@@ -372,7 +518,7 @@ const UserForm = ({ selectType, user, contrato, modalidade, funcionario, pack, f
             user.complemento ? (form['complemento'] as HTMLInputElement).value = user.complemento.toString() : ''
             if (contrato && modalidade) {
                 (form['planos_id'] as HTMLSelectElement).value = contrato.planos_id.toString();
-                {pack ? (form['packs_id'] as HTMLSelectElement).value = contrato.packs_id.toString() : ''}
+                { pack ? (form['packs_id'] as HTMLSelectElement).value = contrato.packs_id.toString() : '' }
                 (form['data_inicio'] as HTMLInputElement).value = contrato.data_inicio.toString();
                 (form['data_renovacao'] as HTMLInputElement).value = contrato.data_renovacao.toString();
                 (form['data_vencimento'] as HTMLInputElement).value = contrato.data_vencimento.toString();
@@ -399,7 +545,7 @@ const UserForm = ({ selectType, user, contrato, modalidade, funcionario, pack, f
     return (
         <form className="register-form" ref={formRef} onSubmit={handleSubmitUpdate}>
             <div className="form-component">
-                <Usuarios  handleInputClick={handleInputClick} formRef={formRef} user={user} contrato={contrato} modalidade={modalidade}
+                <Usuarios handleInputClick={handleInputClick} formRef={formRef} user={user} contrato={contrato} modalidade={modalidade}
                     funcionario={funcionario} /> {/* Manter aqui apenas se necessário */}
             </div>
             <div className="form-component">
@@ -413,7 +559,7 @@ const UserForm = ({ selectType, user, contrato, modalidade, funcionario, pack, f
     );
 }
 
-const ModalidadeUserForm = ({ modalidade,handleSubmitUpdateModalidade,formRef }: UserModalidadesProp) => {
+const ModalidadeUserForm = ({ modalidade, handleSubmitUpdateModalidade, formRef }: UserModalidadesProp) => {
 
     const [modalidades, setModalidades] = useState<Modalidade[]>([])
     const [inputModalidadeState, setInputModalidadeState] = useState<boolean>(false)
@@ -437,11 +583,11 @@ const ModalidadeUserForm = ({ modalidade,handleSubmitUpdateModalidade,formRef }:
     return (
         <>
             <form className="register-form" onSubmit={handleSubmitUpdateModalidade} ref={formRef} >
-                <div className="form-component" style={{display:'flex', alignItems:'flex-start', justifyContent:'flex-start'}}>
+                <div className="form-component" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
                     <div className="form-name-input">
                         <span>Modalidade 1</span>
                         <select name="modalidade_id[]" id="modalidade_id" >
-                        <option value="" >Selecione</option>
+                            <option value="" >Selecione</option>
                             {modalidades.map((modalidade) => (
                                 <option value={modalidade.id}>
                                     {modalidade.nome_modalidade}
@@ -452,8 +598,8 @@ const ModalidadeUserForm = ({ modalidade,handleSubmitUpdateModalidade,formRef }:
                     </div>
                     <div className={`form-name-input modalidadeForm ${inputModalidadeState ? `flex` : 'none'}`} >
                         <span>Modalidade 2</span>
-                        <select name="modalidade_id[]" id="modalidade_id" disabled = {!inputModalidadeState}>
-                        <option value="" >Selecione</option>
+                        <select name="modalidade_id[]" id="modalidade_id" disabled={!inputModalidadeState}>
+                            <option value="" >Selecione</option>
                             {modalidades.map((modalidade) => (
                                 <option value={modalidade.id}>
                                     {modalidade.nome_modalidade}
@@ -461,15 +607,18 @@ const ModalidadeUserForm = ({ modalidade,handleSubmitUpdateModalidade,formRef }:
                             ))}
                         </select>
                     </div>
-                   
+
                 </div>
                 <div className="form-name-input" style={{ gridColumn: '1 / -1' }}>
-                        <button type='submit' className='submit-button'>Enviar</button>
-                    </div>
+                    <button type='submit' className='submit-button'>Enviar</button>
+                </div>
             </form>
         </>
     )
+
 }
+
+
 
 
 
