@@ -290,24 +290,28 @@ const DashboardContent = () => {
             return <p>Nenhum plano fidelidade disponível.</p>
         }
 
-        const contratosFidelidade = contratos.filter(contrato =>
-            planosFidelidade.some(plano => plano.id === contrato.planos_id)
-        )
+        const dataAtual = new Date();
+        const contratosFidelidade = contratos.filter(contrato => {
+            const planoFidelidade = planosFidelidade.some(plano => plano.id === contrato.planos_id);
+            const dataRenovacao = new Date(contrato.data_renovacao || '');
+            const diffInTime = dataRenovacao.getTime() - dataAtual.getTime();
+            const dias = Math.ceil(diffInTime / (1000 * 3600 * 24));
+            return planoFidelidade && dias <= 30 && dias > 0;
+        });
 
         if (contratosFidelidade.length === 0) {
-            return <p>Nenhum contrato fidelidade encontrado.</p>
+            return <p>Nenhum contrato fidelidade próximo da renovação encontrado.</p>
         }
 
         return contratosFidelidade.map((contrato) => {
             const user = users.find(user => user.id === contrato.usuario_id);
             const planoFidelidade = planosFidelidade.find(plano => plano.id === contrato.planos_id);
             const dataRenovacao = new Date(contrato.data_renovacao || '');
-            const dataAtual = new Date();
             const diffInTime = dataRenovacao.getTime() - dataAtual.getTime();
             const dias = Math.ceil(diffInTime / (1000 * 3600 * 24));
 
             return (
-                <div key={contrato.id} className={`planosVencimento-container ${dias <= 30 ? 'bg-red-200' : 'bg-stone-50'}`}>
+                <div key={contrato.id} className="planosVencimento-container bg-yellow-200">
                     <p className='planosVencimento-nome'>{user?.nome.split(' ').slice(0, 2).join(' ')}</p>
                     <Button variant='imoogi' onClick={() => modalPlanosVencimento(planoFidelidade, dataRenovacao, dias)}>Informações</Button>
                     <Button variant='imoogi'><Link className='text-white decoration-none' href={`https://wa.me/${user?.telefone}`}>Telefone</Link></Button>
