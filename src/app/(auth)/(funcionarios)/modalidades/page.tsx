@@ -28,6 +28,7 @@ export default function Modalidade() {
     const [showRead, setShowRead] = useState<any[]>([]);
     const [showDelete, setShowDelete] = useState<Boolean>(false);
     const { user, setUser } = UserSession();
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const formRef = useRef<HTMLFormElement>(null)
     const { modalServer } = useModal();
@@ -51,14 +52,20 @@ export default function Modalidade() {
     }
 
     const handleShowRead = () => {
-
-        const request = async () => {
-            const response = await getModalidade()
-            setShowRead(response)
-
+        setIsLoading(true);
+        try{
+            const request = async () => {
+                const response = await getModalidade()
+                setShowRead(response)
+    
+            }
+    
+            request()
+        }catch(error){
+            console.error("Erro ao carregar dados:", error);
+        }finally{
+            setIsLoading(false)
         }
-
-        request()
     }
 
     useEffect(()=>{
@@ -126,6 +133,16 @@ export default function Modalidade() {
             handleShowRead()
         }
 
+
+    }
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
+                <p className="ml-2">Carregando dados...</p>
+            </div>
+        )
     }
 
     return (

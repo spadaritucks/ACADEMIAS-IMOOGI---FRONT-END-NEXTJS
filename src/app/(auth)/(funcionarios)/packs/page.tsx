@@ -15,7 +15,7 @@ import '../../../../Assets/css/pages-styles/crud.css'
 import Create from './create';
 import Update from './update';
 import Delete from './delete';
-import {getPacks,createPack,deletePack,updatePack} from '@/Components/api/PlanosRequest';
+import { getPacks, createPack, deletePack, updatePack } from '@/Components/api/PlanosRequest';
 import { useModal } from '@/Components/errors/errorContext';
 import { AdmMain } from '@/Layouts/AdmMain';
 import UserSession from '@/Components/api/UserSession';
@@ -29,6 +29,7 @@ export default function Packs() {
     const [showRead, setShowRead] = useState<any[]>([]);
     const [showDelete, setShowDelete] = useState<Boolean>(false);
     const { user, setUser } = UserSession();
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const formRef = useRef<HTMLFormElement>(null)
     const { modalServer } = useModal();
@@ -52,14 +53,20 @@ export default function Packs() {
     }
 
     const handleShowRead = () => {
+setIsLoading(true)
+        try {
+            const request = async () => {
+                const response = await getPacks()
+                setShowRead(response)
 
-        const request = async () => {
-            const response = await getPacks()
-            setShowRead(response)
+            }
 
+            request()
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setIsLoading(false)
         }
-
-        request()
     }
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -71,7 +78,7 @@ export default function Packs() {
                 const response: any = await createPack(formdata)
                 modalServer('Sucesso', response)
                 console.log(response)
-                
+
             }
 
             sendFormdata()
@@ -127,6 +134,15 @@ export default function Packs() {
     useEffect(() => {
         handleShowRead()
     }, [])
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
+                <p className="ml-2">Carregando dados...</p>
+            </div>
+        )
+    }
 
 
 

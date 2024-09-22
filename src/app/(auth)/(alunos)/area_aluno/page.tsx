@@ -31,36 +31,44 @@ export default function AreaDoAluno() {
         const formRef = useRef<HTMLFormElement>(null);
         const { modalServer } = useModal()
         const { showModal } = useUserEditModal()
+        const [isLoading, setIsLoading] = useState<boolean>(true)
 
 
 
         useEffect(() => {
+            setIsLoading(true)
 
-            const handleContratos = async () => {
-                const response = await getUsers()
-                setContratos(response.contratos)
-                setModalidades(response.modalidades)
-
-            }
-            handleContratos();
-
-            const handleReservas = async () => {
-                if (!user) return;
-
-                const reservasResponse = await getReservas();
-                const userReserva = reservasResponse.find((reserva: Reserva) => reserva.usuario_id === user.id)
-                setReservas(userReserva)
-            }
-
-            const handlePagamentos = async () => {
-                const response = await getPagamentosMensais()
-                const pagamentosUsuario = response.filter((pagamento: PagamentoMensal) => pagamento.usuario_id == user.id);
-                setPagamentos(pagamentosUsuario)
-            }
-
-            if (user) {
-                handleReservas()
-                handlePagamentos()
+            try{
+                const handleContratos = async () => {
+                    const response = await getUsers()
+                    setContratos(response.contratos)
+                    setModalidades(response.modalidades)
+    
+                }
+                handleContratos();
+    
+                const handleReservas = async () => {
+                    if (!user) return;
+    
+                    const reservasResponse = await getReservas();
+                    const userReserva = reservasResponse.find((reserva: Reserva) => reserva.usuario_id === user.id)
+                    setReservas(userReserva)
+                }
+    
+                const handlePagamentos = async () => {
+                    const response = await getPagamentosMensais()
+                    const pagamentosUsuario = response.filter((pagamento: PagamentoMensal) => pagamento.usuario_id == user.id);
+                    setPagamentos(pagamentosUsuario)
+                }
+    
+                if (user) {
+                    handleReservas()
+                    handlePagamentos()
+                }
+            }catch(error){
+                console.log(error)
+            }finally{
+                setIsLoading(false)
             }
 
         }, [user])
@@ -184,7 +192,11 @@ export default function AreaDoAluno() {
             }
         };
 
-
+        
+        
+    if (!user) {
+        return null;
+    }
 
 
 
@@ -194,7 +206,15 @@ export default function AreaDoAluno() {
         let nomeCompleto = user.nome;
         let partesNome = nomeCompleto.split(' ')
         let nome = partesNome.slice(0, 2).join(' ')
-
+        
+        if(isLoading){
+            return(
+                <div className="flex justify-center items-center h-screen">
+                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
+                    <p className="ml-2">Carregando dados...</p>
+                </div>
+            )
+        }
 
         return (
             <ClientMain>

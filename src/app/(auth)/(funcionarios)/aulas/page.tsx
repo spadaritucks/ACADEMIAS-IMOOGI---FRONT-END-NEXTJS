@@ -34,27 +34,36 @@ export default function Aulas() {
     const formRef = useRef<HTMLFormElement>(null);
     const { modalServer } = useModal();
     const { user, setUser } = UserSession();
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        const fetchAulas = async () => {
-            const response = await getAulas();
+        setIsLoading(true)
+        try {
+            const fetchAulas = async () => {
+                const response = await getAulas();
 
-            // Ordenar as aulas por dia da semana e horário
-            const sortedAulas = response.sort((a: Aula, b: Aula) => {
-                const diaA = diasDaSemana.indexOf(a.dia_semana);
-                const diaB = diasDaSemana.indexOf(b.dia_semana);
+                // Ordenar as aulas por dia da semana e horário
+                const sortedAulas = response.sort((a: Aula, b: Aula) => {
+                    const diaA = diasDaSemana.indexOf(a.dia_semana);
+                    const diaB = diasDaSemana.indexOf(b.dia_semana);
 
-                if (diaA === diaB) {
-                    // Comparar horários se os dias forem iguais
-                    return convertToMinutes(a.horario) - convertToMinutes(b.horario);
-                }
-                return diaA - diaB; // Ordenar pelos dias da semana
-            });
+                    if (diaA === diaB) {
+                        // Comparar horários se os dias forem iguais
+                        return convertToMinutes(a.horario) - convertToMinutes(b.horario);
+                    }
+                    return diaA - diaB; // Ordenar pelos dias da semana
+                });
 
-            setAulas(sortedAulas);
-        };
+                setAulas(sortedAulas);
+            };
 
-        fetchAulas();
+            fetchAulas();
+
+        } catch (error) {
+            console.error("Erro ao carregar dados:", error);
+        } finally {
+            setIsLoading(false)
+        }
 
     }, []);
 
@@ -62,21 +71,21 @@ export default function Aulas() {
         return null;
     }
 
-    
+
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        
-        if(formRef.current){
+
+        if (formRef.current) {
             const formdata = new FormData(formRef.current)
 
             const response = await createAula(formdata)
 
             modalServer('Sucesso', response)
-            
-            
+
+
         }
-        
+
 
     }
 
@@ -88,22 +97,31 @@ export default function Aulas() {
         };
     });
 
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
+                <p className="ml-2">Carregando dados...</p>
+            </div>
+        )
+    }
+
     return (
         <AdmMain>
             <section className='aulas-menu'>
-            <h1>Gerenciamento de Aulas</h1>
+                <h1>Gerenciamento de Aulas</h1>
                 <div className='gerenciamento-aulas'>
                     <div className='aulas-list'>
                         {aulasPorDia.map(({ dia, aulas }) => (
                             <div className='aulas-area'>
                                 {aulas ? aulas.map(aula => (
                                     <div className='aula-component' key={aula.modalidade_id}>
-                                        <h3 className='modalidade_aula' style={{margin: '0 5px'}}>{aula.nome_modalidade}</h3>
-                                        <p className='dia_semana' style={{margin: '0 5px'}}>{dia}</p>
-                                        <p className='horario' style={{margin: '0 5px'}}>{aula.horario.substring(0, 5)}</p>
-                                        <p className='limites_alunos' style={{margin: '0 5px'}}>Limite: {aula.limite_alunos} Alunos</p>
+                                        <h3 className='modalidade_aula' style={{ margin: '0 5px' }}>{aula.nome_modalidade}</h3>
+                                        <p className='dia_semana' style={{ margin: '0 5px' }}>{dia}</p>
+                                        <p className='horario' style={{ margin: '0 5px' }}>{aula.horario.substring(0, 5)}</p>
+                                        <p className='limites_alunos' style={{ margin: '0 5px' }}>Limite: {aula.limite_alunos} Alunos</p>
                                     </div>
-                                )): <p>Nenhuma Aula Encontrada</p>}
+                                )) : <p>Nenhuma Aula Encontrada</p>}
                             </div>
                         ))}
 

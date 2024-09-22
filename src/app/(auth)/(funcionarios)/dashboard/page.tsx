@@ -93,19 +93,28 @@ const DashboardContent = () => {
     const [vencidos, setVencidos] = useState<number>(0)
     const [numAlunos, setNumAlunos] = useState<number>(0)
     const { user, setUser } = UserSession();
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const getUsersFunction = async () => {
-        const response = await getUsers();
-        const responsePacks = await getPacks();
-        const responsePlanos = await getPlanos();
-        const responsePagamentos = await getPagamentosMensais();
-        setUsers(response.usuarios)
-        setContratos(response.contratos)
-        setUserModalidade(response.modalidades)
-        setFuncionarios(response.funcionarios)
-        setPacks(responsePacks)
-        setPlanos(responsePlanos)
-        setPagamentos(responsePagamentos)
+        setIsLoading(true);
+        try {
+            const response = await getUsers();
+            const responsePacks = await getPacks();
+            const responsePlanos = await getPlanos();
+            const responsePagamentos = await getPagamentosMensais();
+            setUsers(response.usuarios)
+            setContratos(response.contratos)
+            setUserModalidade(response.modalidades)
+            setFuncionarios(response.funcionarios)
+            setPacks(responsePacks)
+            setPlanos(responsePlanos)
+            setPagamentos(responsePagamentos)
+        } catch (error) {
+            console.error("Erro ao carregar dados:", error);
+            // Aqui você pode adicionar uma lógica para mostrar uma mensagem de erro
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     useEffect(() => {
@@ -253,7 +262,7 @@ const DashboardContent = () => {
                 <div key={contrato.id} className={`mensal-container ${dias <= 10 ? 'bg-red-200' : 'bg-stone-50'}`}>
                     <p className='mensal-nome'>{user?.nome.split(' ').slice(0, 2).join(' ')}</p>
                     <Button variant='imoogi' onClick={() => modalAlunosMensais(planoMensal, dataVencimento, dias)}>Informações</Button>
-                    <Button variant='imoogi'><Link href={`https://wa.me/${user?.telefone}`}>Telefone</Link></Button>
+                    <Button variant='imoogi'><Link className='text-white decoration-none' href={`https://wa.me/${user?.telefone}`}>Telefone</Link></Button>
                 </div>
             );
         });
@@ -428,6 +437,15 @@ const DashboardContent = () => {
     const filteredUsers = users.filter(user =>
         user.nome.toLowerCase().includes(search.toLowerCase())
     );
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
+                <p className="ml-2">Carregando dados...</p>
+            </div>
+        );
+    }
 
     return (
         <section className="dashboard">

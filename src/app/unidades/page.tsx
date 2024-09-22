@@ -11,13 +11,31 @@ import { Main } from "@/Layouts/Main";
 export default function unidades() {
 
     const [unidades, setUnidades] = useState<Unidade[]>([])
+    const [isLoading, setIsLoading] = useState<boolean>(true)
 
-    const fetchUnidades = async () => {
-        const response = await getUnidades();
-        setUnidades(response)
+    useEffect(() => {
+        setIsLoading(true)
+        try{
+            const fetchUnidades = async () => {
+                const response = await getUnidades();
+                setUnidades(response)
+            }
+            fetchUnidades()
+        }catch(error){
+            console.log(error)
+        }finally{
+            setIsLoading(false)
+        }
+    })
+
+    if(isLoading){
+        return(
+            <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
+                <p className="ml-2">Carregando dados...</p>
+            </div>
+        )
     }
-
-    fetchUnidades();
 
     return (
         <Main>

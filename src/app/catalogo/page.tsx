@@ -11,16 +11,34 @@ import Link from "next/link"
 export default function Catalogo() {
 
     const [planos, setPlanos] = useState<Plano[]>([])
-
-    const fetchPlanos = async () => {
-        const listaPlanos = await getPlanos();
-        const plano = listaPlanos.filter(listaPlanos => listaPlanos.status == "Ativo")
-        setPlanos(plano)
-    }
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+   
 
     useEffect(() => {
-        fetchPlanos()
+        setIsLoading(true)
+        try{
+            const fetchPlanos = async () => {
+                const listaPlanos = await getPlanos();
+                const plano = listaPlanos.filter(listaPlanos => listaPlanos.status == "Ativo")
+                setPlanos(plano)
+            }
+            fetchPlanos()
+        }catch(error){
+            console.log(error)
+        }finally{
+            setIsLoading(false)
+        }
+        
     }, [])
+
+    if(isLoading){
+        return(
+            <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
+                <p className="ml-2">Carregando dados...</p>
+            </div>
+        )
+    }
 
     return (
         <Main>

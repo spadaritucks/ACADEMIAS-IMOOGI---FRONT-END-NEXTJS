@@ -39,6 +39,7 @@ export default function GradeReservas() {
     const { modalServer } = useModal();
     const [userModalidades, setUserModalidades] = useState<UsuarioModalidade[]>([])
     const [contratos, setContratos] = useState<Contrato[]>([])
+    const [isLoading, setIsLoading] = useState(true)
 
     
  
@@ -47,43 +48,50 @@ export default function GradeReservas() {
 
     // Fetch aulas do banco de dados e ordenar e determinar verificações envolvendo as condições do usuario
     useEffect(() => {
-        const fetchAulas = async () => {
+        setIsLoading(true)
+        try{
+            const fetchAulas = async () => {
 
-            const response = await getAulas();
-            const userResponse = await getUsers();
-
-            //Verificação das Modalidades Vinculadas
-            const modalidadesVinculadas = userResponse.modalidades.filter(
-                (modalidade: UsuarioModalidade) => modalidade.usuario_id === user?.id
-            );
-            setUserModalidades(modalidadesVinculadas);
-
-
-            const modalidadeIds = modalidadesVinculadas.map((modalidade: UsuarioModalidade) => modalidade.modalidade_id);
-
-
-            const filteredAulas = response.filter((aula: Aula) =>
-                modalidadeIds.includes(aula.modalidade_id)
-            );
-
-            //Hook contendo os contratos para verificação
-            setContratos(userResponse.contratos);
-
-            // Ordena as aulas por dia da semana e horário
-            const sortedAulas = filteredAulas.sort((a: Aula, b: Aula) => {
-                const diaA = diasDaSemana.indexOf(a.dia_semana);
-                const diaB = diasDaSemana.indexOf(b.dia_semana);
-
-                if (diaA === diaB) {
-                    return convertToMinutes(a.horario) - convertToMinutes(b.horario);
-                }
-                return diaA - diaB;
-            });
-
-            setAulas(sortedAulas);
-        };
-
-        fetchAulas();
+                const response = await getAulas();
+                const userResponse = await getUsers();
+    
+                //Verificação das Modalidades Vinculadas
+                const modalidadesVinculadas = userResponse.modalidades.filter(
+                    (modalidade: UsuarioModalidade) => modalidade.usuario_id === user?.id
+                );
+                setUserModalidades(modalidadesVinculadas);
+    
+    
+                const modalidadeIds = modalidadesVinculadas.map((modalidade: UsuarioModalidade) => modalidade.modalidade_id);
+    
+    
+                const filteredAulas = response.filter((aula: Aula) =>
+                    modalidadeIds.includes(aula.modalidade_id)
+                );
+    
+                //Hook contendo os contratos para verificação
+                setContratos(userResponse.contratos);
+    
+                // Ordena as aulas por dia da semana e horário
+                const sortedAulas = filteredAulas.sort((a: Aula, b: Aula) => {
+                    const diaA = diasDaSemana.indexOf(a.dia_semana);
+                    const diaB = diasDaSemana.indexOf(b.dia_semana);
+    
+                    if (diaA === diaB) {
+                        return convertToMinutes(a.horario) - convertToMinutes(b.horario);
+                    }
+                    return diaA - diaB;
+                });
+    
+                setAulas(sortedAulas);
+            };
+    
+            fetchAulas();
+        }catch(error){
+            console.log(error)
+        }finally{
+            setIsLoading(false)
+        }
     }, [user]);
 
 
@@ -193,9 +201,20 @@ export default function GradeReservas() {
         };
     });
 
+    if(isLoading){
+        return(
+            <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
+                <p className="ml-2">Carregando dados...</p>
+            </div>
+        )
+    }
+
     if (!user) {
         return null;
     }
+
+ 
 
     return (
         <ClientMain>

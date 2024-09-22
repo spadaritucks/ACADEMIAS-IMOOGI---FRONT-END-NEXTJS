@@ -19,21 +19,29 @@ export default function carteiraAluno() {
     const [contratos, setContratos] = useState<Contrato[]>([])
     const [modalidades, setModalidades] = useState<UsuarioModalidade[]>([])
     const [imgData, setImageData] = useState<any>()
+    const [isLoading, setIsLoading] = useState<boolean>(true)
 
     useEffect(() => {
-        const convertBase64 = async () => {
-            if (user) {
-                const filename = user.foto_usuario.replace(/^uploads\//, ''); // Remove 'uploads/' do início
-                const fotoUsuario = `${process.env.NEXT_PUBLIC_API_URL}/api/image/${encodeURIComponent(filename)}`;
-                const response = await fetch(fotoUsuario);
-                const data = await response.json();
-
-                const imgData = data.image;
-                setImageData(imgData)
+        setIsLoading(true)
+        try{
+            const convertBase64 = async () => {
+                if (user) {
+                    const filename = user.foto_usuario.replace(/^uploads\//, ''); // Remove 'uploads/' do início
+                    const fotoUsuario = `${process.env.NEXT_PUBLIC_API_URL}/api/image/${encodeURIComponent(filename)}`;
+                    const response = await fetch(fotoUsuario);
+                    const data = await response.json();
+    
+                    const imgData = data.image;
+                    setImageData(imgData)
+                }
+    
             }
-
+            convertBase64()
+        } catch (error) {
+            console.error('Erro ao converter a imagem para base64:', error);
+        } finally {
+            setIsLoading(false)
         }
-        convertBase64()
 
     }, [user])
 
@@ -79,6 +87,12 @@ const downloadPDF = () => {
     let partesNome = nomeCompleto.split(' ')
     let nome = partesNome.slice(0, 2).join(' ')
 
+    if (isLoading) {
+        return <div className="flex justify-center items-center h-screen">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
+            <p className="ml-2">Carregando dados...</p>
+        </div>
+    }
 
 
 
