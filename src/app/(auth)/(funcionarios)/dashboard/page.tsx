@@ -227,6 +227,7 @@ const DashboardContent = () => {
         const contratosMensais = contratos.filter(contrato => contrato.planos_id === planoMensal?.id);
 
         if (contratosMensais && planoMensal) {
+            console.log(contratosMensais);
             return contratosMensais.map((contrato) => {
                 const user = users.find(user => user.id === contrato.usuario_id)
                 const dataVencimento = new Date(contrato.data_vencimento || '')
