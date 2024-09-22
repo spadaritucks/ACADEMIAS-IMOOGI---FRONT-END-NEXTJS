@@ -223,31 +223,40 @@ const DashboardContent = () => {
     };
 
     const handleMensalidade = () => {
-        const planoMensal = planos.filter(plano => plano.duracao == 1);
-        const contratosMensais = contratos.filter(contrato => contrato.planos_id === planoMensal[0].id);
+        
 
-        if (contratosMensais && planoMensal) {
-            console.log(contratosMensais);
-            return contratosMensais.map((contrato) => {
-                const user = users.find(user => user.id === contrato.usuario_id)
-                const dataVencimento = new Date(contrato.data_vencimento || '')
-                const dataAtual = new Date()
-                const diffInTime = dataVencimento.getTime() - dataAtual.getTime();
-                const dias = Math.ceil(diffInTime / (1000 * 3600 * 24));
-                return (
-                    <div key={contrato.id} className={`mensal-container ${dias <= 10 ? 'bg-red-200' : 'bg-stone-50'}`}>
-                        <p className='mensal-nome'>{user?.nome.split(' ').slice(0, 2).join(' ')}</p>
-                        <Button variant='imoogi' onClick={() => modalAlunosMensais(planoMensal[0], dataVencimento, dias)}>Informações</Button>
-                        <Button variant='imoogi'><Link href={`https://wa.me/${user?.telefone}`}>Telefone</Link></Button>
+        const planosMensais = planos.filter(plano => Number(plano.duracao) === 1);
+      
 
-
-
-                    </div>
-                )
-            })
+        if (planosMensais.length === 0) {
+            return <p>Nenhum plano mensal disponível.</p>;
         }
 
-        return null; // Retorna null se não houver contratos mensais ou plano mensal
+        const contratosMensais = contratos.filter(contrato => 
+            planosMensais.some(plano => plano.id === contrato.planos_id)
+        );
+      
+
+        if (contratosMensais.length === 0) {
+            return <p>Nenhum contrato mensal encontrado.</p>;
+        }
+
+        return contratosMensais.map((contrato) => {
+            const user = users.find(user => user.id === contrato.usuario_id);
+            const planoMensal = planosMensais.find(plano => plano.id === contrato.planos_id);
+            const dataVencimento = new Date(contrato.data_vencimento || '');
+            const dataAtual = new Date();
+            const diffInTime = dataVencimento.getTime() - dataAtual.getTime();
+            const dias = Math.ceil(diffInTime / (1000 * 3600 * 24));
+
+            return (
+                <div key={contrato.id} className={`mensal-container ${dias <= 10 ? 'bg-red-200' : 'bg-stone-50'}`}>
+                    <p className='mensal-nome'>{user?.nome.split(' ').slice(0, 2).join(' ')}</p>
+                    <Button variant='imoogi' onClick={() => modalAlunosMensais(planoMensal, dataVencimento, dias)}>Informações</Button>
+                    <Button variant='imoogi'><Link href={`https://wa.me/${user?.telefone}`}>Telefone</Link></Button>
+                </div>
+            );
+        });
     };
 
     const handleComprovantes = (id: number) => {
@@ -317,16 +326,14 @@ const DashboardContent = () => {
 
     
 
-    const modalAlunosMensais = (planoMensal: Plano, dataVencimento: Date, dias: number) => {
-
-
+    const modalAlunosMensais = (planoMensal: Plano | undefined, dataVencimento: Date, dias: number) => {
         showModal('Informações',
             <div className='alunos_mensais_info'>
-                <p className='mensal-plano'>{planoMensal.nome_plano}</p>
+                <p className='mensal-plano'>{planoMensal?.nome_plano || 'Plano não encontrado'}</p>
                 <p className='mensal-vencimento'>Vence em {dataVencimento.toLocaleDateString()}</p>
                 <p className='mensal-dias'>{dias} dias restantes</p>
             </div>
-        )
+        );
     }
 
 
