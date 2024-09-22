@@ -223,8 +223,8 @@ const DashboardContent = () => {
     };
 
     const handleMensalidade = () => {
-        const planoMensal = planos.find(plano => plano.duracao == 1);
-        const contratosMensais = contratos.filter(contrato => contrato.planos_id === planoMensal?.id);
+        const planoMensal = planos.filter(plano => plano.duracao == 1);
+        const contratosMensais = contratos.filter(contrato => contrato.planos_id === planoMensal[0].id);
 
         if (contratosMensais && planoMensal) {
             console.log(contratosMensais);
@@ -237,7 +237,7 @@ const DashboardContent = () => {
                 return (
                     <div key={contrato.id} className={`mensal-container ${dias <= 10 ? 'bg-red-200' : 'bg-stone-50'}`}>
                         <p className='mensal-nome'>{user?.nome.split(' ').slice(0, 2).join(' ')}</p>
-                        <Button variant='imoogi' onClick={() => modalAlunosMensais(planoMensal, dataVencimento, dias)}>Informações</Button>
+                        <Button variant='imoogi' onClick={() => modalAlunosMensais(planoMensal[0], dataVencimento, dias)}>Informações</Button>
                         <Button variant='imoogi'><Link href={`https://wa.me/${user?.telefone}`}>Telefone</Link></Button>
 
 
