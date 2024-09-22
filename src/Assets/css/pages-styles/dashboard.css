@@ -133,7 +133,13 @@ a {
     font-size: 120px;
 }
 
-.mensal-area{
+.dadosPlanosAlunos{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mensal-area , .planosVencimentoArea{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -146,7 +152,7 @@ a {
     padding: 10px 10px;
 }
 
-.mensal-list{
+.mensal-list, .planosVencimentoList{
     display: flex;
     flex-direction: column;
     align-items: first baseline;
@@ -155,7 +161,7 @@ a {
     height: 100%;
 }
 
-.mensal-container{
+.mensal-container, .planosVencimento-container{
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -165,18 +171,18 @@ a {
     margin: 10px;
 }
 
-.mensal-container p{
+.mensal-container p, .planosVencimento-container p{
     margin: 0 10px; 
 }
 
-.alunos_mensais_info{
+.alunos_mensais_info, .planosVencimento-info{
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
 }
 
-.alunos_mensais_info p{
+.alunos_mensais_info p, .planosVencimento-info p{
     margin: 10px;
 }
 
@@ -230,6 +236,10 @@ Link {
         flex-direction: column;
     }
 
+    .dadosPlanosAlunos{
+        flex-direction: column;
+    }
+
 }
 
 
@@ -241,4 +251,6 @@ Link {
         align-items: center;
         justify-content: center;
     }
+
+
 }

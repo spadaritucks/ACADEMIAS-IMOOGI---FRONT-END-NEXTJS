@@ -213,11 +213,11 @@ const DashboardContent = () => {
         const contrato = contratos.find(contrato => contrato.usuario_id === id);
         if (contrato) {
             const dataHoje = new Date();
-            const data_renovacao = new Date(contrato.data_renovacao || '');
-            if (isNaN(data_renovacao.getTime())) {
+            const data_vencimento = new Date(contrato.data_vencimento || '');
+            if (isNaN(data_vencimento.getTime())) {
                 return 'Data inválida';
             }
-            const diffInTime = data_renovacao.getTime() - dataHoje.getTime();
+            const diffInTime = data_vencimento.getTime() - dataHoje.getTime();
             const dias = Math.ceil(diffInTime / (1000 * 3600 * 24));
             if (dias > 30) {
                 return <p>{dias} dias restantes <br />Ativo</p>;
@@ -232,19 +232,19 @@ const DashboardContent = () => {
     };
 
     const handleMensalidade = () => {
-        
+
 
         const planosMensais = planos.filter(plano => Number(plano.duracao) === 1);
-      
+
 
         if (planosMensais.length === 0) {
             return <p>Nenhum plano mensal disponível.</p>;
         }
 
-        const contratosMensais = contratos.filter(contrato => 
+        const contratosMensais = contratos.filter(contrato =>
             planosMensais.some(plano => plano.id === contrato.planos_id)
         );
-      
+
 
         if (contratosMensais.length === 0) {
             return <p>Nenhum contrato mensal encontrado.</p>;
@@ -266,74 +266,11 @@ const DashboardContent = () => {
                 </div>
             );
         });
+
+
+
     };
 
-    const handleComprovantes = (id: number) => {
-        const userPagamentos = pagamentos.filter(pagamento => pagamento.usuario_id === id)
-        showModal('Comprovantes',
-            <div>
-                {userPagamentos.map(pagamento => (
-                    <div key={pagamento.id} className='aluno-pagamentosModal'>
-                        <Button variant='imoogi'><Link href={`${process.env.NEXT_PUBLIC_API_URL}/storage/${pagamento.comprovante}`}>Comprovante</Link></Button>
-                        
-                        <p className="dado-pagamento m-4 text-center w-40 "> <span> Valor Pago </span> R$ {pagamento.valor_pago}</p>
-                        <p className="dado-pagamento m-4 text-center w-40 "> <span>Data do Pagamento </span> {pagamento.data_pagamento}</p>
-                        <p className="dado-pagamento m-4 text-center w-25 "><span>Comentario </span>{pagamento.comentario}  <Button variant = 'link' onClick={() => handleAddComentario(pagamento.id)}>Adicionar Comentario</Button></p>
-                       
-                    </div>
-
-                ))}
-            </div>
-        )
-    }
-
-    const handleAddComentario  = (pagamento_id: number) => {
-        showModal('Adicionar Comentario',  
-            <form onSubmit={handleSubmitComentario(pagamento_id)} ref={formRef}>
-               <div className="form-name-input">
-                   <span>Comentario sobre Pagamento</span>
-                   <textarea name="comentario_adm" id="comentario_adm" rows={4} cols={25}></textarea>
-               </div>
-
-               <div className="form-name-input" style={{ gridColumn: '1 / -1' }}>
-                   <button type='submit' className='submit-button'>Enviar</button>
-               </div>
-            </form>
-        )
-    }
-
-    const handleSubmitComentario = (pagamento_id: number) => async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-        if (formRef.current) {
-            const formdata = new FormData(formRef.current);
-            formdata.append('_method', 'PUT');
-            
-            try {
-                const response = await putPagamentosMensais(pagamento_id, formdata);
-                if(response){
-                    if(response.status == 'false'){
-                        if( typeof response.message == 'object'){
-                            modalServer('Erro', 'Preencha todos os campos')
-                    }if(typeof response.message == 'string'){
-                        modalServer('Erro', response.message)
-                    }
-                }else{
-                    console.log(pagamento_id)
-                    console.log(formdata)
-                    modalServer('Sucesso', response.message)
-                }
-
-            }
-                getUsersFunction();
-
-            } catch (error) {
-                console.error('Erro ao enviar comentário:', error);
-            }
-        }
-    };
-
-    
 
     const modalAlunosMensais = (planoMensal: Plano | undefined, dataVencimento: Date, dias: number) => {
         showModal('Informações',
@@ -344,6 +281,123 @@ const DashboardContent = () => {
             </div>
         );
     }
+
+
+    const handlePlanosVencimento = () => {
+        const planosFidelidade = planos.filter(plano => plano.duracao > 1)
+
+        if (planosFidelidade.length === 0) {
+            return <p>Nenhum plano fidelidade disponível.</p>
+        }
+
+        const contratosFidelidade = contratos.filter(contrato =>
+            planosFidelidade.some(plano => plano.id === contrato.planos_id)
+        )
+
+        if (contratosFidelidade.length === 0) {
+            return <p>Nenhum contrato fidelidade encontrado.</p>
+        }
+
+        return contratosFidelidade.map((contrato) => {
+            const user = users.find(user => user.id === contrato.usuario_id);
+            const planoFidelidade = planosFidelidade.find(plano => plano.id === contrato.planos_id);
+            const dataRenovacao = new Date(contrato.data_renovacao || '');
+            const dataAtual = new Date();
+            const diffInTime = dataRenovacao.getTime() - dataAtual.getTime();
+            const dias = Math.ceil(diffInTime / (1000 * 3600 * 24));
+
+            return (
+                <div key={contrato.id} className={`planosVencimento-container ${dias <= 30 ? 'bg-red-200' : 'bg-stone-50'}`}>
+                    <p className='planosVencimento-nome'>{user?.nome.split(' ').slice(0, 2).join(' ')}</p>
+                    <Button variant='imoogi' onClick={() => modalPlanosVencimento(planoFidelidade, dataRenovacao, dias)}>Informações</Button>
+                    <Button variant='imoogi'><Link className='text-white decoration-none' href={`https://wa.me/${user?.telefone}`}>Telefone</Link></Button>
+                </div>
+            );
+        });
+    };
+
+    const modalPlanosVencimento = (planoFidelidade: Plano | undefined, dataRenovacao: Date, dias: number) => {
+        showModal('Informações',
+            <div className='planosVencimento-info'>
+                <p className='planosVencimento-plano'>{planoFidelidade?.nome_plano || 'Plano não encontrado'}</p>
+                <p className='planosVencimento-vencimento'>Vence em {dataRenovacao.toLocaleDateString()}</p>
+                <p className='planosVencimento-dias'>{dias} dias restantes</p>
+            </div>
+        );
+
+
+
+
+
+    }
+
+    const handleComprovantes = (id: number) => {
+        const userPagamentos = pagamentos.filter(pagamento => pagamento.usuario_id === id)
+        showModal('Comprovantes',
+            <div>
+                {userPagamentos.map(pagamento => (
+                    <div key={pagamento.id} className='aluno-pagamentosModal'>
+                        <Button variant='imoogi'><Link href={`${process.env.NEXT_PUBLIC_API_URL}/storage/${pagamento.comprovante}`}>Comprovante</Link></Button>
+
+                        <p className="dado-pagamento m-4 text-center w-40 "> <span> Valor Pago </span> R$ {pagamento.valor_pago}</p>
+                        <p className="dado-pagamento m-4 text-center w-40 "> <span>Data do Pagamento </span> {pagamento.data_pagamento}</p>
+                        <p className="dado-pagamento m-4 text-center w-25 "><span>Comentario </span>{pagamento.comentario}  <Button variant='link' onClick={() => handleAddComentario(pagamento.id)}>Adicionar Comentario</Button></p>
+
+                    </div>
+
+                ))}
+            </div>
+        )
+    }
+
+    const handleAddComentario = (pagamento_id: number) => {
+        showModal('Adicionar Comentario',
+            <form onSubmit={handleSubmitComentario(pagamento_id)} ref={formRef}>
+                <div className="form-name-input">
+                    <span>Comentario sobre Pagamento</span>
+                    <textarea name="comentario_adm" id="comentario_adm" rows={4} cols={25}></textarea>
+                </div>
+
+                <div className="form-name-input" style={{ gridColumn: '1 / -1' }}>
+                    <button type='submit' className='submit-button'>Enviar</button>
+                </div>
+            </form>
+        )
+    }
+
+    const handleSubmitComentario = (pagamento_id: number) => async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        if (formRef.current) {
+            const formdata = new FormData(formRef.current);
+            formdata.append('_method', 'PUT');
+
+            try {
+                const response = await putPagamentosMensais(pagamento_id, formdata);
+                if (response) {
+                    if (response.status == 'false') {
+                        if (typeof response.message == 'object') {
+                            modalServer('Erro', 'Preencha todos os campos')
+                        } if (typeof response.message == 'string') {
+                            modalServer('Erro', response.message)
+                        }
+                    } else {
+                        console.log(pagamento_id)
+                        console.log(formdata)
+                        modalServer('Sucesso', response.message)
+                    }
+
+                }
+                getUsersFunction();
+
+            } catch (error) {
+                console.error('Erro ao enviar comentário:', error);
+            }
+        }
+    };
+
+
+
 
 
     //Prenchimento dos Graficos
@@ -514,12 +568,21 @@ const DashboardContent = () => {
                 </div>
             </div>
 
-            <div className='mensal-area'>
-                <h2>Alunos Mensalistas</h2>
-                <div className='mensal-list'>
-                    {handleMensalidade()}
+            <div className='dadosPlanosAlunos'>
+                <div className='mensal-area'>
+                    <h2>Alunos Mensalistas</h2>
+                    <div className='mensal-list'>
+                        {handleMensalidade()}
+                    </div>
+
                 </div>
 
+                <div className='planosVencimentoArea'>
+                    <h2>Planos em Renovação</h2>
+                    <div className='planosVencimentoList'>
+                        {handlePlanosVencimento()}
+                    </div>
+                </div>
             </div>
         </section>
     );
