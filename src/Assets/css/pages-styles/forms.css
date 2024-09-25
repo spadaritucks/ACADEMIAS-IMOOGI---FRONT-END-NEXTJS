@@ -14,7 +14,6 @@ body {
     box-shadow: 6px 6px 6px 6px #ccc;
     border-radius: 10px;
     margin-top: 50px;
-
 }
 
 .crud-inputs{
@@ -104,6 +103,35 @@ body {
 
 .submit-button:hover{
     background-color: blue;
+}
+
+.grid-checkbox{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    
+}
+
+.grid-checkbox-item{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 160px;
+    font-size: 14px;
+    text-align: justify;
+}
+
+.grid-checkbox-item input{
+    margin:0;
+    padding: 0;
+    gap: 0;
+    width: 50px;
+}
+
+.checkbox-text{
+    margin: 0;
+    padding: 0;
+    gap: 0;
+    width: 140px;
 }
 
 @media (max-width:1300px) {

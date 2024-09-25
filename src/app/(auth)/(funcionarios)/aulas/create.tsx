@@ -34,20 +34,32 @@ export default function Create({ handleSubmit, formRef, diasDaSemana }: createPr
                 <div className="form-name-input">
                     <span>Modalidade Praticada</span>
                     <select name="modalidade_id" id="modalidade_id">
-                    <option value="" disabled selected >Selecione</option>
+                        <option value="" disabled selected >Selecione</option>
                         {modalidades.map(modalidade => (
                             <option value={modalidade.id}>{modalidade.nome_modalidade}</option>
                         ))}
                     </select>
                 </div>
+                
                 <div className="form-name-input">
                     <span>Selecione o Dia da Semana</span>
-                    <select name="dia_semana" id="dia_semana">
-                    <option value="" disabled selected >Selecione</option>
-                        {diasDaSemana?.map(dia => (
-                            <option value= {dia}>{dia}</option>
+                    <div className="grid-checkbox">
+                        {diasDaSemana?.map((dia, index) => (
+                            <label key={index} className='grid-checkbox-item' >
+                                <input type="checkbox" name='dia_semana' value={index} /><p className='checkbox-text'>{dia}</p>
+                            </label>
                         ))}
-                    </select>
+                    </div>
+                </div>
+
+                <div className="form-name-input">
+                    <span>Data de Inicio</span>
+                    <input type="date" name="data_inicio" id='data_inicio' />
+                </div>
+
+                <div className="form-name-input">
+                    <span>Data Final</span>
+                    <input type="date" name="data_fim" id='data_fim' />
                 </div>
                 <div className="form-name-input">
                     <span>Horario da Aula</span>

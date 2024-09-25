@@ -12,16 +12,12 @@ import { useModal } from '@/Components/errors/errorContext';
 import '../../../../Assets/css/pages-styles/dashboard.css'
 import Create from './create';
 import UserSession from '@/Components/api/UserSession';
+import { format, addWeeks, startOfWeek, endOfWeek, parseISO, isSameWeek, isBefore, isAfter } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { Button } from '@/Components/ui/button';
 
 // Definindo a ordem dos dias da semana
-const diasDaSemana = [
-    'Segunda-Feira',
-    'Terça-Feira',
-    'Quarta-Feira',
-    'Quinta-Feira',
-    'Sexta-Feira',
-    'Sabado'
-];
+const diasDaSemana = ['Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado'];
 
 // Função para converter horários no formato "HH:MM" para minutos desde a meia-noite
 const convertToMinutes = (time: string) => {
@@ -35,49 +31,47 @@ export default function Aulas() {
     const { modalServer } = useModal();
     const { user, setUser } = UserSession();
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [semanaAtual, setSemanaAtual] = useState(new Date());
 
     useEffect(() => {
         setIsLoading(true)
         try {
             const fetchAulas = async () => {
-                const response = await getAulas();
+                const inicio = startOfWeek(semanaAtual, { weekStartsOn: 1 });
+                const fim = endOfWeek(semanaAtual, { weekStartsOn: 1 });
+                const response = await getAulas(format(inicio, 'yyyy-MM-dd'), format(fim, 'yyyy-MM-dd'));
 
-                // Ordenar as aulas por dia da semana e horário
-                const sortedAulas = response.sort((a: Aula, b: Aula) => {
-                    const diaA = diasDaSemana.indexOf(a.dia_semana);
-                    const diaB = diasDaSemana.indexOf(b.dia_semana);
-
-                    if (diaA === diaB) {
-                        // Comparar horários se os dias forem iguais
-                        return convertToMinutes(a.horario) - convertToMinutes(b.horario);
-                    }
-                    return diaA - diaB; // Ordenar pelos dias da semana
+                // Filtrar apenas as aulas da semana atual
+                const aulasDaSemana = response.filter((aula: Aula) => {
+                    const dataInicio = parseISO(aula.data_inicio);
+                    const dataFim = parseISO(aula.data_fim);
+                    return (isBefore(dataInicio, fim) || isSameWeek(dataInicio, semanaAtual, { weekStartsOn: 1 })) &&
+                           (isAfter(dataFim, inicio) || isSameWeek(dataFim, semanaAtual, { weekStartsOn: 1 }));
                 });
 
-                setAulas(sortedAulas);
+                setAulas(aulasDaSemana);
             };
 
             fetchAulas();
-
         } catch (error) {
             console.error("Erro ao carregar dados:", error);
         } finally {
             setIsLoading(false)
         }
-
-    }, []);
+    }, [semanaAtual]);
 
     if (!user) {
         return null;
     }
-
-
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
         if (formRef.current) {
             const formdata = new FormData(formRef.current)
+            const diasSemana = Array.from(formdata.getAll('dia_semana')).join(',');
+            formdata.delete('dia_semana');
+            formdata.append('dia_semana', diasSemana);
 
             const response = await createAula(formdata)
 
@@ -85,15 +79,27 @@ export default function Aulas() {
 
 
         }
-
-
     }
 
+    // Função para verificar se a aula ocorre em um determinado dia da semana atual
+    const aulaOcorreNoDia = (aula: Aula, diaSemana: string) => {
+        const dataInicio = parseISO(aula.data_inicio);
+        const dataFim = parseISO(aula.data_fim);
+        const diaAtual = diasDaSemana.indexOf(diaSemana);
+        const diasAula = aula.dia_semana.split(',').map(Number);
+        const inicioSemana = startOfWeek(semanaAtual, { weekStartsOn: 1 });
+        const fimSemana = endOfWeek(semanaAtual, { weekStartsOn: 1 });
+        
+        return diasAula.includes(diaAtual) &&
+               isBefore(dataInicio, fimSemana) &&
+               isAfter(dataFim, inicioSemana);
+    };
+
     // Agrupando as aulas por dia da semana
-    const aulasPorDia = diasDaSemana.map(dia => {
+    const aulasPorDia = diasDaSemana.map((dia) => {
         return {
             dia,
-            aulas: aulas.filter(aula => aula.dia_semana === dia)
+            aulas: aulas.filter(aula => aulaOcorreNoDia(aula, dia))
         };
     });
 
@@ -110,14 +116,19 @@ export default function Aulas() {
         <AdmMain>
             <section className='aulas-menu'>
                 <h1>Gerenciamento de Aulas</h1>
+                <div className='buttons-datas'>
+                    <Button variant = 'imoogi' onClick={() => setSemanaAtual(addWeeks(semanaAtual, -1))}>Semana Anterior</Button>
+                    <span>{format(semanaAtual, "'Semana de' dd 'de' MMMM", { locale: ptBR })}</span>
+                   <Button variant = 'imoogi' onClick={() => setSemanaAtual(addWeeks(semanaAtual, 1))}>Próxima Semana</Button>
+                </div>
                 <div className='gerenciamento-aulas'>
                     <div className='aulas-list'>
                         {aulasPorDia.map(({ dia, aulas }) => (
-                            <div className='aulas-area'>
-                                {aulas ? aulas.map(aula => (
-                                    <div className='aula-component' key={aula.modalidade_id}>
+                            <div className='aulas-area' key={dia}>
+                                <h2>{dia}</h2>
+                                {aulas.length > 0 ? aulas.map(aula => (
+                                    <div className='aula-component' key={aula.id}>
                                         <h3 className='modalidade_aula' style={{ margin: '0 5px' }}>{aula.nome_modalidade}</h3>
-                                        <p className='dia_semana' style={{ margin: '0 5px' }}>{dia}</p>
                                         <p className='horario' style={{ margin: '0 5px' }}>{aula.horario.substring(0, 5)}</p>
                                         <p className='limites_alunos' style={{ margin: '0 5px' }}>Limite: {aula.limite_alunos} Alunos</p>
                                     </div>
@@ -136,13 +147,15 @@ export default function Aulas() {
                         {aulasPorDia.map(({ dia, aulas }) => (
                             <div className='coluna-aulas' key={dia}>
                                 <h2 className='dia_semana'>{dia}</h2>
-                                {aulas.length > 0 ? aulas.map(aula => (
-                                    <div className='aula' key={aula.modalidade_id}>
-                                        <h3 className='modalidade_aula'>{aula.nome_modalidade}</h3>
-                                        <p className='horario'>{aula.horario.substring(0, 5)}</p>
-                                        <p className='limites_alunos'>Limite: {aula.limite_alunos} Alunos</p>
-                                    </div>
-                                )) : <p>Nenhuma Aula</p>}
+                                <div className='aulas-lista'>
+                                    {aulas.length > 0 ? aulas.map(aula => (
+                                        <div className='aula' key={aula.modalidade_id}>
+                                            <h3 className='modalidade_aula'>{aula.nome_modalidade}</h3>
+                                            <p className='horario'>{aula.horario.substring(0, 5)}</p>
+                                            <p className='limites_alunos'>Limite: {aula.limite_alunos} Alunos</p>
+                                        </div>
+                                    )) : <p>Nenhuma Aula</p>}
+                                </div>
                             </div>
                         ))}
                     </div>

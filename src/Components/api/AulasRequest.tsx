@@ -1,25 +1,27 @@
 import api from './api'
 
 export interface Aula {
+    
     id:number;
     modalidade_id: number,
     nome_modalidade: string;
+    data_inicio: string; // Data de início como string
+    data_fim: string; 
     horario: string;
     dia_semana:string;
     limite_alunos: number;
 }
 
-export const getAulas = async () =>{
-
-    try{
-        const response = await api.get('/api/aulas')
-        return response.data.aulas
-
-    }catch(error){
-        console.error('Erro ao consultar as aulas' + error)
+export const getAulas = async (dataInicio: string, dataFim: string) => {
+    try {
+        const response = await api.get('/api/aulas', {
+            params: { data_inicio: dataInicio, data_fim: dataFim }
+        });
+        return response.data.aulas;
+    } catch (error) {
+        console.error('Erro ao consultar as aulas:', error);
         throw error;
     }
-
 }
 
 export const createAula = async (userData: FormData) => {
