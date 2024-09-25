@@ -37,19 +37,26 @@ export default function Aulas() {
         setIsLoading(true)
         try {
             const fetchAulas = async () => {
-                const inicio = startOfWeek(semanaAtual, { weekStartsOn: 1 });
-                const fim = endOfWeek(semanaAtual, { weekStartsOn: 1 });
+                const inicio = startOfWeek(semanaAtual, { weekStartsOn: 1 }); // Começar na segunda-feira
+                const fim = endOfWeek(semanaAtual, { weekStartsOn: 1 }); // Terminar no domingo
                 const response = await getAulas(format(inicio, 'yyyy-MM-dd'), format(fim, 'yyyy-MM-dd'));
 
-                // Filtrar apenas as aulas da semana atual
-                const aulasDaSemana = response.filter((aula: Aula) => {
+                // Filtrar e ordenar as aulas
+                const aulasRelevantes = response.filter((aula: Aula) => {
                     const dataInicio = parseISO(aula.data_inicio);
                     const dataFim = parseISO(aula.data_fim);
-                    return (isBefore(dataInicio, fim) || isSameWeek(dataInicio, semanaAtual, { weekStartsOn: 1 })) &&
-                           (isAfter(dataFim, inicio) || isSameWeek(dataFim, semanaAtual, { weekStartsOn: 1 }));
+                    return dataInicio <= fim && dataFim >= inicio;
+                }).sort((a: Aula, b: Aula) => {
+                    const diaA = diasDaSemana.indexOf(format(parseISO(a.data_inicio), 'EEEE', { locale: ptBR }));
+                    const diaB = diasDaSemana.indexOf(format(parseISO(b.data_inicio), 'EEEE', { locale: ptBR }));
+
+                    if (diaA === diaB) {
+                        return convertToMinutes(a.horario) - convertToMinutes(b.horario);
+                    }
+                    return diaA - diaB;
                 });
 
-                setAulas(aulasDaSemana);
+                setAulas(aulasRelevantes);
             };
 
             fetchAulas();
@@ -81,18 +88,16 @@ export default function Aulas() {
         }
     }
 
-    // Função para verificar se a aula ocorre em um determinado dia da semana atual
+    // Função para verificar se a aula ocorre em um determinado dia
     const aulaOcorreNoDia = (aula: Aula, diaSemana: string) => {
         const dataInicio = parseISO(aula.data_inicio);
         const dataFim = parseISO(aula.data_fim);
         const diaAtual = diasDaSemana.indexOf(diaSemana);
         const diasAula = aula.dia_semana.split(',').map(Number);
-        const inicioSemana = startOfWeek(semanaAtual, { weekStartsOn: 1 });
-        const fimSemana = endOfWeek(semanaAtual, { weekStartsOn: 1 });
         
         return diasAula.includes(diaAtual) &&
-               isBefore(dataInicio, fimSemana) &&
-               isAfter(dataFim, inicioSemana);
+               dataInicio <= endOfWeek(semanaAtual, { weekStartsOn: 1 }) &&
+               dataFim >= startOfWeek(semanaAtual, { weekStartsOn: 1 });
     };
 
     // Agrupando as aulas por dia da semana

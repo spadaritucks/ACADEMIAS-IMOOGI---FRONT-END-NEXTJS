@@ -8,17 +8,12 @@ import { createReservas, deleteReserva, getReservas, Reserva } from "@/Component
 import UserSession from "@/Components/api/UserSession";
 import { useModal } from "@/Components/errors/errorContext";
 import { Contrato, getUsers, UsuarioModalidade } from "@/Components/api/UsuariosRequest";
-import { getModalidade } from "@/Components/api/ModalidadesRequest";
+import { format, addWeeks, startOfWeek, endOfWeek, parseISO, isSameWeek, isBefore, isAfter } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { Button } from '@/Components/ui/button';
 
 // Definindo a ordem dos dias da semana
-const diasDaSemana = [
-    'Segunda-Feira',
-    'Terça-Feira',
-    'Quarta-Feira',
-    'Quinta-Feira',
-    'Sexta-Feira',
-    'Sabado'
-];
+const diasDaSemana = ['Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado'];
 
 // Função para converter horários no formato "HH:MM" para minutos desde a meia-noite
 const convertToMinutes = (time: string) => {
@@ -40,67 +35,65 @@ export default function GradeReservas() {
     const [userModalidades, setUserModalidades] = useState<UsuarioModalidade[]>([])
     const [contratos, setContratos] = useState<Contrato[]>([])
     const [isLoading, setIsLoading] = useState(true)
+    const [semanaAtual, setSemanaAtual] = useState(new Date());
 
-    
- 
-
-
-
-    // Fetch aulas do banco de dados e ordenar e determinar verificações envolvendo as condições do usuario
     useEffect(() => {
         setIsLoading(true)
-        try{
+        try {
             const fetchAulas = async () => {
-
-                const response = await getAulas();
+                const inicio = startOfWeek(semanaAtual, { weekStartsOn: 1 });
+                const fim = endOfWeek(semanaAtual, { weekStartsOn: 1 });
+                const response = await getAulas(format(inicio, 'yyyy-MM-dd'), format(fim, 'yyyy-MM-dd'));
                 const userResponse = await getUsers();
-    
+
+                // Filtrar apenas as aulas da semana atual
+                const aulasDaSemana = response.filter((aula: Aula) =>
+                    aula.dia_semana >= format(startOfWeek(semanaAtual, { weekStartsOn: 1 }), 'yyyy-MM-dd') &&
+                    aula.dia_semana <= format(endOfWeek(semanaAtual, { weekStartsOn: 1 }), 'yyyy-MM-dd')
+                );
+
                 //Verificação das Modalidades Vinculadas
                 const modalidadesVinculadas = userResponse.modalidades.filter(
                     (modalidade: UsuarioModalidade) => modalidade.usuario_id === user?.id
                 );
                 setUserModalidades(modalidadesVinculadas);
-    
-    
+
                 const modalidadeIds = modalidadesVinculadas.map((modalidade: UsuarioModalidade) => modalidade.modalidade_id);
-    
-    
+
                 const filteredAulas = response.filter((aula: Aula) =>
                     modalidadeIds.includes(aula.modalidade_id)
                 );
-    
+
                 //Hook contendo os contratos para verificação
                 setContratos(userResponse.contratos);
-    
+
                 // Ordena as aulas por dia da semana e horário
                 const sortedAulas = filteredAulas.sort((a: Aula, b: Aula) => {
                     const diaA = diasDaSemana.indexOf(a.dia_semana);
                     const diaB = diasDaSemana.indexOf(b.dia_semana);
-    
+
                     if (diaA === diaB) {
                         return convertToMinutes(a.horario) - convertToMinutes(b.horario);
                     }
                     return diaA - diaB;
                 });
-    
+
                 setAulas(sortedAulas);
             };
-    
+
             fetchAulas();
-        }catch(error){
-            console.log(error)
-        }finally{
-            setIsLoading(false)
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsLoading(false);
         }
     }, [user]);
-
-
 
     // Fetch reservas do banco de dados e contar
     useEffect(() => {
         const countAlunosReserva = async () => {
             const reservasResponse = await getReservas();
-            setReservas(reservasResponse)
+            setReservas(reservasResponse);
 
             // Contagem de reservas para cada aula
             const reservasContadas: { [key: string]: number } = {};
@@ -118,8 +111,6 @@ export default function GradeReservas() {
         };
 
         countAlunosReserva();
-
-
     }, []);
 
     const clickReserva = async (modalidade_id: number, horario: string, dia_semana: string, limite_alunos: number) => {
@@ -143,12 +134,11 @@ export default function GradeReservas() {
         }
 
         //Verificação se o Plano esta em vigor
-        const contrato = contratos.find(contrato => contrato.usuario_id === user.id)
+        const contrato = contratos.find(contrato => contrato.usuario_id === user.id);
 
         if (contrato) {
-            const dataHoje = new Date()
-            const dataVencimento = new Date(contrato.data_vencimento)
-
+            const dataHoje = new Date();
+            const dataVencimento = new Date(contrato.data_vencimento);
 
             if (isNaN(dataVencimento.getTime())) {
                 // Se a data de vencimento não for válida
@@ -160,12 +150,10 @@ export default function GradeReservas() {
             const dias = Math.ceil(diffInTime / (1000 * 3600 * 24));
 
             if (dias < 0) {
-                modalServer('Erro', 'Regularize o seu Plano')
-                return
+                modalServer('Erro', 'Regularize o seu Plano');
+                return;
             }
         }
-
-
 
         const formdata = new FormData();
         formdata.append('usuario_id', user.id.toString());
@@ -176,45 +164,36 @@ export default function GradeReservas() {
         const response = await createReservas(formdata);
         if (response.status === 'false') {
             modalServer('Mensagem', response.message); // Aqui você acessa apenas a mensagem
-            
         } else {
             modalServer('Mensagem', response.message); // Aqui também
             setReservasPorAula(prevState => ({
                 ...prevState,
                 [aulaKey]: reservasAtual + 1
             }));
-            
         }
         // Atualiza as reservas após criar nova reserva
-      
     };
-
-    
-
 
     // Agrupando as aulas por dia da semana
     const aulasPorDia = diasDaSemana.map(dia => {
         return {
             dia,
             aulas: aulas.filter(aula => aula.dia_semana === dia)
-
         };
     });
 
-    if(isLoading){
-        return(
+    if (isLoading) {
+        return (
             <div className="flex justify-center items-center h-screen">
                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
                 <p className="ml-2">Carregando dados...</p>
             </div>
-        )
+        );
     }
 
     if (!user) {
         return null;
     }
-
- 
 
     return (
         <ClientMain>
@@ -242,9 +221,7 @@ export default function GradeReservas() {
                                                 {reservasPorAula[aulaKey] || 0}/{aula.limite_alunos}
                                             </p>
 
-
                                         </div>
-                                        
                                     </div>
                                 );
                             }) : <p>Nenhuma Aula</p>}
