@@ -41,6 +41,7 @@ export default function AreaDoAluno() {
             try{
                 const handleContratos = async () => {
                     const response = await getUsers()
+                    
                     setContratos(response.contratos)
                     setModalidades(response.modalidades)
     

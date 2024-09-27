@@ -47,10 +47,11 @@ export default function GradeReservas() {
                 const userResponse = await getUsers();
 
                 // Filtrar apenas as aulas da semana atual
-                const aulasDaSemana = response.filter((aula: Aula) =>
-                    aula.dia_semana >= format(startOfWeek(semanaAtual, { weekStartsOn: 1 }), 'yyyy-MM-dd') &&
-                    aula.dia_semana <= format(endOfWeek(semanaAtual, { weekStartsOn: 1 }), 'yyyy-MM-dd')
-                );
+                const aulasDaSemana = response.filter((aula: Aula) => {
+                    const dataInicio = parseISO(aula.data_inicio);
+                    const dataFim = parseISO(aula.data_fim);
+                    return dataInicio <= fim && dataFim >= inicio;
+                });
 
                 //Verificação das Modalidades Vinculadas
                 const modalidadesVinculadas = userResponse.modalidades.filter(
@@ -60,7 +61,7 @@ export default function GradeReservas() {
 
                 const modalidadeIds = modalidadesVinculadas.map((modalidade: UsuarioModalidade) => modalidade.modalidade_id);
 
-                const filteredAulas = response.filter((aula: Aula) =>
+                const filteredAulas = aulasDaSemana.filter((aula: Aula) =>
                     modalidadeIds.includes(aula.modalidade_id)
                 );
 
@@ -82,36 +83,32 @@ export default function GradeReservas() {
             };
 
             fetchAulas();
+            fetchReservas();
         } catch (error) {
             console.log(error);
         } finally {
             setIsLoading(false);
         }
-    }, [user]);
+    }, [semanaAtual, user]);
 
-    // Fetch reservas do banco de dados e contar
-    useEffect(() => {
-        const countAlunosReserva = async () => {
-            const reservasResponse = await getReservas();
-            setReservas(reservasResponse);
+    const fetchReservas = async () => {
+        const reservasResponse = await getReservas();
+        setReservas(reservasResponse);
 
-            // Contagem de reservas para cada aula
-            const reservasContadas: { [key: string]: number } = {};
+        // Contagem de reservas para cada aula
+        const reservasContadas: { [key: string]: number } = {};
 
-            reservasResponse.forEach((reserva: Reserva) => {
-                const aulaKey = generateKey(reserva.modalidade_id, reserva.horario, reserva.dia_semana);
+        reservasResponse.forEach((reserva: Reserva) => {
+            const aulaKey = generateKey(reserva.modalidade_id, reserva.horario, reserva.dia_semana);
 
-                if (!reservasContadas[aulaKey]) {
-                    reservasContadas[aulaKey] = 0;
-                }
-                reservasContadas[aulaKey]++;
-            });
+            if (!reservasContadas[aulaKey]) {
+                reservasContadas[aulaKey] = 0;
+            }
+            reservasContadas[aulaKey]++;
+        });
 
-            setReservasPorAula(reservasContadas);
-        };
-
-        countAlunosReserva();
-    }, []);
+        setReservasPorAula(reservasContadas);
+    };
 
     const clickReserva = async (modalidade_id: number, horario: string, dia_semana: string, limite_alunos: number) => {
         if (!user) return;
@@ -134,14 +131,13 @@ export default function GradeReservas() {
         }
 
         //Verificação se o Plano esta em vigor
-        const contrato = contratos.find(contrato => contrato.usuario_id === user.id);
+        const contrato = contratos.find(contrato => contrato.usuario_id === user.id)
 
         if (contrato) {
-            const dataHoje = new Date();
-            const dataVencimento = new Date(contrato.data_vencimento);
+            const dataHoje = new Date()
+            const dataVencimento = new Date(contrato.data_vencimento)
 
             if (isNaN(dataVencimento.getTime())) {
-                // Se a data de vencimento não for válida
                 modalServer('Erro', 'Data de vencimento inválida.');
                 return;
             }
@@ -150,8 +146,8 @@ export default function GradeReservas() {
             const dias = Math.ceil(diffInTime / (1000 * 3600 * 24));
 
             if (dias < 0) {
-                modalServer('Erro', 'Regularize o seu Plano');
-                return;
+                modalServer('Erro', 'Regularize o seu Plano')
+                return
             }
         }
 
@@ -163,22 +159,37 @@ export default function GradeReservas() {
 
         const response = await createReservas(formdata);
         if (response.status === 'false') {
-            modalServer('Mensagem', response.message); // Aqui você acessa apenas a mensagem
+            modalServer('Mensagem', response.message);
         } else {
-            modalServer('Mensagem', response.message); // Aqui também
+            modalServer('Mensagem', response.message);
             setReservasPorAula(prevState => ({
                 ...prevState,
                 [aulaKey]: reservasAtual + 1
             }));
         }
-        // Atualiza as reservas após criar nova reserva
+        await fetchReservas();
+    };
+
+    // Função para verificar se a aula ocorre em um determinado dia da semana atual
+    const aulaOcorreNoDia = (aula: Aula, diaSemana: string) => {
+        const dataInicio = parseISO(aula.data_inicio);
+        const dataFim = parseISO(aula.data_fim);
+        const diaAtual = diasDaSemana.indexOf(diaSemana);
+        const diasAula = aula.dia_semana.split(',').map(Number);
+        const inicioSemana = startOfWeek(semanaAtual, { weekStartsOn: 1 });
+        const fimSemana = endOfWeek(semanaAtual, { weekStartsOn: 1 });
+        
+        return diasAula.includes(diaAtual) &&
+               isBefore(dataInicio, fimSemana) &&
+               isAfter(dataFim, inicioSemana);
     };
 
     // Agrupando as aulas por dia da semana
-    const aulasPorDia = diasDaSemana.map(dia => {
+    const aulasPorDia = diasDaSemana.map((dia) => {
+        
         return {
             dia,
-            aulas: aulas.filter(aula => aula.dia_semana === dia)
+            aulas: aulas.filter(aula => aulaOcorreNoDia(aula, dia))
         };
     });
 
@@ -197,38 +208,45 @@ export default function GradeReservas() {
 
     return (
         <ClientMain>
-            <div className='grade-aulas'>
-                <div className='aulas-container'>
-                    {aulasPorDia.map(({ dia, aulas }) => (
-                        <div className='coluna-aulas' key={dia}>
-                            <h2 className='dia_semana'>{dia}</h2>
-                            {aulas.length > 0 ? aulas.map(aula => {
-                                const aulaKey = generateKey(aula.modalidade_id, aula.horario, aula.dia_semana);
-
-                                return (
-                                    <div className='aula' key={aulaKey}>
-                                        <h3 className='modalidade_aula'>{aula.nome_modalidade}</h3>
-                                        <p className='horario'>{aula.horario.substring(0, 5)}</p>
-                                        <div className="container-reserva">
-                                            <button
-                                                className="btn-reserva"
-                                                onClick={() => clickReserva(aula.modalidade_id, aula.horario, aula.dia_semana, aula.limite_alunos)}
-                                            >
-                                                Reservar
-                                            </button>
-
-                                            <p className="limiteAlunos">
-                                                {reservasPorAula[aulaKey] || 0}/{aula.limite_alunos}
-                                            </p>
-
-                                        </div>
-                                    </div>
-                                );
-                            }) : <p>Nenhuma Aula</p>}
-                        </div>
-                    ))}
+            <section className='aulas-menu'>
+                <h1>Grade de Aulas</h1>
+                <div className='buttons-datas'>
+                    <Button variant='imoogi' onClick={() => setSemanaAtual(addWeeks(semanaAtual, -1))}>Semana Anterior</Button>
+                    <span>{format(semanaAtual, "'Semana de' dd 'de' MMMM", { locale: ptBR })}</span>
+                    <Button variant='imoogi' onClick={() => setSemanaAtual(addWeeks(semanaAtual, 1))}>Próxima Semana</Button>
                 </div>
-            </div>
+                <div className='grade-aulas'>
+                    <div className='aulas-container'>
+                        {aulasPorDia.map(({ dia, aulas }) => (
+                            <div className='coluna-aulas' key={dia}>
+                                <h2 className='dia_semana'>{dia}</h2>
+                                <div className='aulas-lista'>
+                                    {aulas.length > 0 ? aulas.map(aula => {
+                                        const aulaKey = generateKey(aula.modalidade_id, aula.horario, aula.dia_semana);
+                                        return (
+                                            <div className='aula' key={aulaKey}>
+                                                <h3 className='modalidade_aula'>{aula.nome_modalidade}</h3>
+                                                <p className='horario'>{aula.horario.substring(0, 5)}</p>
+                                                <div className="container-reserva">
+                                                    <button
+                                                        className="btn-reserva"
+                                                        onClick={() => clickReserva(aula.modalidade_id, aula.horario, aula.dia_semana, aula.limite_alunos)}
+                                                    >
+                                                        Reservar
+                                                    </button>
+                                                    <p className="limiteAlunos">
+                                                        {reservasPorAula[aulaKey] || 0}/{aula.limite_alunos}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        );
+                                    }) : <p>Nenhuma Aula</p>}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
         </ClientMain>
     );
 }
