@@ -99,7 +99,8 @@ export default function GradeReservas() {
         const reservasContadas: { [key: string]: number } = {};
 
         reservasResponse.forEach((reserva: Reserva) => {
-            const aulaKey = generateKey(reserva.modalidade_id, reserva.horario, reserva.dia_semana);
+            const diaSemanaNumero = diasDaSemana.indexOf(reserva.dia_semana);
+            const aulaKey = generateKey(reserva.modalidade_id, reserva.horario, diaSemanaNumero.toString());
 
             if (!reservasContadas[aulaKey]) {
                 reservasContadas[aulaKey] = 0;
@@ -152,10 +153,11 @@ export default function GradeReservas() {
         }
 
         const formdata = new FormData();
+        const diaSemanaNumero = diasDaSemana.indexOf(dia_semana);
         formdata.append('usuario_id', user.id.toString());
         formdata.append('modalidade_id', modalidade_id.toString());
         formdata.append('horario', horario);
-        formdata.append('dia_semana', dia_semana);
+        formdata.append('dia_semana', diaSemanaNumero.toString());
 
         const response = await createReservas(formdata);
         if (response.status === 'false') {
@@ -164,14 +166,26 @@ export default function GradeReservas() {
             modalServer('Mensagem', response.message);
             setReservasPorAula(prevState => ({
                 ...prevState,
-                [aulaKey]: reservasAtual + 1
+                [aulaKey]: (prevState[aulaKey] || 0) + 1
             }));
+            
+            // Adicione esta linha para atualizar o estado das reservas
+            setReservas(prevReservas => [
+                ...prevReservas,
+                {
+                    usuario_id: user.id,
+                    modalidade_id: modalidade_id,
+                    horario: horario,
+                    dia_semana: dia_semana
+                } as Reserva
+            ]);
         }
-        await fetchReservas();
+        
     };
 
     // Função para verificar se a aula ocorre em um determinado dia da semana atual
     const aulaOcorreNoDia = (aula: Aula, diaSemana: string) => {
+        
         const dataInicio = parseISO(aula.data_inicio);
         const dataFim = parseISO(aula.data_fim);
         const diaAtual = diasDaSemana.indexOf(diaSemana);
@@ -186,7 +200,7 @@ export default function GradeReservas() {
 
     // Agrupando as aulas por dia da semana
     const aulasPorDia = diasDaSemana.map((dia) => {
-        
+
         return {
             dia,
             aulas: aulas.filter(aula => aulaOcorreNoDia(aula, dia))
@@ -222,7 +236,7 @@ export default function GradeReservas() {
                                 <h2 className='dia_semana'>{dia}</h2>
                                 <div className='aulas-lista'>
                                     {aulas.length > 0 ? aulas.map(aula => {
-                                        const aulaKey = generateKey(aula.modalidade_id, aula.horario, aula.dia_semana);
+                                        const aulaKey = generateKey(aula.modalidade_id, aula.horario, dia);
                                         return (
                                             <div className='aula' key={aulaKey}>
                                                 <h3 className='modalidade_aula'>{aula.nome_modalidade}</h3>
@@ -230,7 +244,7 @@ export default function GradeReservas() {
                                                 <div className="container-reserva">
                                                     <button
                                                         className="btn-reserva"
-                                                        onClick={() => clickReserva(aula.modalidade_id, aula.horario, aula.dia_semana, aula.limite_alunos)}
+                                                        onClick={() => clickReserva(aula.modalidade_id, aula.horario, dia, aula.limite_alunos)}
                                                     >
                                                         Reservar
                                                     </button>

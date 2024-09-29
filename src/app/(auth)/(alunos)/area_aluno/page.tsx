@@ -33,6 +33,7 @@ export default function AreaDoAluno() {
         const { showModal } = useUserEditModal()
         const [isLoading, setIsLoading] = useState<boolean>(true)
 
+      
 
 
         useEffect(() => {
@@ -54,6 +55,9 @@ export default function AreaDoAluno() {
                     const reservasResponse = await getReservas();
                     const userReserva = reservasResponse.find((reserva: Reserva) => reserva.usuario_id === user.id)
                     setReservas(userReserva)
+
+                    
+
                 }
     
                 const handlePagamentos = async () => {
@@ -207,6 +211,14 @@ export default function AreaDoAluno() {
         let nomeCompleto = user.nome;
         let partesNome = nomeCompleto.split(' ')
         let nome = partesNome.slice(0, 2).join(' ')
+
+        const diasDaSemana = ['Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado'];
+
+        const obterDiaSemana = (numeroDia: number) : string => {
+            return diasDaSemana[numeroDia] || 'dia invalido'
+        }
+
+        
         
         if(isLoading){
             return(
@@ -264,10 +276,13 @@ export default function AreaDoAluno() {
                         <div className="reservasContainer">
                             <h2>Reservas</h2>
                             <div className="reserva-dados">
+                                
                                 {reservas ?
+                                
                                     <>
+                                    
                                         <p className="modalidade-reserva" style={{ margin: "5px" }}>{reservas?.nome_modalidade} - </p>
-                                        <p className="dia_semana_reserva" style={{ margin: "5px" }}>{reservas?.dia_semana} - </p>
+                                        <p className="dia_semana_reserva" style={{ margin: "5px" }}>{obterDiaSemana(Number(reservas?.dia_semana[0]))} - </p>
                                         <p className="horario-reserva" style={{ margin: "5px" }}>{reservas?.horario.substring(0, 5)} - </p>
                                         <button className="btn-delete-reserva" onClick={() => clickDeleteReserva()}>Desfazer</button>
                                     </> :
