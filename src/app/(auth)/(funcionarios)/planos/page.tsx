@@ -19,6 +19,7 @@ import { createPlano, deletePlano, getPlanos, updatePlano } from '@/Components/a
 import { useModal } from '@/Components/errors/errorContext';
 import { AdmMain } from '@/Layouts/AdmMain';
 import UserSession from '@/Components/api/UserSession';
+import { set } from "date-fns";
 
 export default function Planos() {
 
@@ -82,6 +83,7 @@ export default function Planos() {
 
             sendFormdata()
         }
+        setIsLoading(true)
         handleShowRead()
     }
 
@@ -104,6 +106,7 @@ export default function Planos() {
 
 
         }
+        setIsLoading(true)
         handleShowRead()
     }
 
@@ -123,7 +126,9 @@ export default function Planos() {
                 sendFormdata()
             }
 
+            setIsLoading(true)
             handleShowRead()
+           
         }
 
     }
@@ -134,6 +139,7 @@ export default function Planos() {
         handleShowRead()
     }, [])
 
+
     if (isLoading) {
         return (
             <div className="flex justify-center items-center h-screen">
@@ -142,7 +148,6 @@ export default function Planos() {
             </div>
         )
     }
-
 
 
     return (
