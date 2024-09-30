@@ -12,7 +12,7 @@ import { useModal } from '@/Components/errors/errorContext';
 import '../../../../Assets/css/pages-styles/dashboard.css'
 import Create from './create';
 import UserSession from '@/Components/api/UserSession';
-import { format, addWeeks, startOfWeek, endOfWeek, parseISO, isSameWeek, isBefore, isAfter } from 'date-fns';
+import { format, addWeeks, startOfWeek, endOfWeek, parseISO, isSameWeek, isBefore, isAfter, addDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Button } from '@/Components/ui/button';
 
@@ -60,6 +60,8 @@ export default function Aulas() {
             };
 
             fetchAulas();
+
+
         } catch (error) {
             console.error("Erro ao carregar dados:", error);
         } finally {
@@ -94,10 +96,10 @@ export default function Aulas() {
         const dataFim = parseISO(aula.data_fim);
         const diaAtual = diasDaSemana.indexOf(diaSemana);
         const diasAula = aula.dia_semana.split(',').map(Number);
-        
+
         return diasAula.includes(diaAtual) &&
-               dataInicio <= endOfWeek(semanaAtual, { weekStartsOn: 1 }) &&
-               dataFim >= startOfWeek(semanaAtual, { weekStartsOn: 1 });
+            dataInicio <= endOfWeek(semanaAtual, { weekStartsOn: 1 }) &&
+            dataFim >= startOfWeek(semanaAtual, { weekStartsOn: 1 });
     };
 
     // Agrupando as aulas por dia da semana
@@ -122,9 +124,9 @@ export default function Aulas() {
             <section className='aulas-menu'>
                 <h1>Gerenciamento de Aulas</h1>
                 <div className='buttons-datas'>
-                    <Button variant = 'imoogi' onClick={() => setSemanaAtual(addWeeks(semanaAtual, -1))}>Semana Anterior</Button>
+                    <Button variant='imoogi' onClick={() => setSemanaAtual(addWeeks(semanaAtual, -1))}>Semana Anterior</Button>
                     <span>{format(semanaAtual, "'Semana de' dd 'de' MMMM", { locale: ptBR })}</span>
-                   <Button variant = 'imoogi' onClick={() => setSemanaAtual(addWeeks(semanaAtual, 1))}>Próxima Semana</Button>
+                    <Button variant='imoogi' onClick={() => setSemanaAtual(addWeeks(semanaAtual, 1))}>Próxima Semana</Button>
                 </div>
                 <div className='gerenciamento-aulas'>
                     <div className='aulas-list'>
@@ -149,20 +151,23 @@ export default function Aulas() {
                 <h1>Grade de Aulas</h1>
                 <div className='grade-aulas'>
                     <div className='aulas-container'>
-                        {aulasPorDia.map(({ dia, aulas }) => (
-                            <div className='coluna-aulas' key={dia}>
-                                <h2 className='dia_semana'>{dia}</h2>
-                                <div className='aulas-lista'>
-                                    {aulas.length > 0 ? aulas.map(aula => (
-                                        <div className='aula' key={aula.modalidade_id}>
-                                            <h3 className='modalidade_aula'>{aula.nome_modalidade}</h3>
-                                            <p className='horario'>{aula.horario.substring(0, 5)}</p>
-                                            <p className='limites_alunos'>Limite: {aula.limite_alunos} Alunos</p>
-                                        </div>
-                                    )) : <p>Nenhuma Aula</p>}
+                        {aulasPorDia.map(({ dia, aulas }) => {
+                            const dataCorrespondente = format(addDays(semanaAtual, diasDaSemana.indexOf(dia)), 'dd/MM' )
+                            return (
+                                <div className='coluna-aulas' key={dia}>
+                                    <h2 className='dia_semana'>{dia} - {dataCorrespondente} </h2>
+                                    <div className='aulas-lista'>
+                                        {aulas.length > 0 ? aulas.map(aula => (
+                                            <div className='aula' key={aula.modalidade_id}>
+                                                <h3 className='modalidade_aula'>{aula.nome_modalidade}</h3>
+                                                <p className='horario'>{aula.horario.substring(0, 5)}</p>
+                                                <p className='limites_alunos'>Limite: {aula.limite_alunos} Alunos</p>
+                                            </div>
+                                        )) : <p>Nenhuma Aula</p>}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            )
+                        })}
                     </div>
                 </div>
             </section>

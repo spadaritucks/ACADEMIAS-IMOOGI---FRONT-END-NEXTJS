@@ -8,7 +8,7 @@ import { createReservas, deleteReserva, getReservas, Reserva } from "@/Component
 import UserSession from "@/Components/api/UserSession";
 import { useModal } from "@/Components/errors/errorContext";
 import { Contrato, getUsers, UsuarioModalidade } from "@/Components/api/UsuariosRequest";
-import { format, addWeeks, startOfWeek, endOfWeek, parseISO, isSameWeek, isBefore, isAfter } from 'date-fns';
+import { format, addWeeks, startOfWeek, endOfWeek, parseISO, isSameWeek, isBefore, isAfter, addDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Button } from '@/Components/ui/button';
 
@@ -36,6 +36,8 @@ export default function GradeReservas() {
     const [contratos, setContratos] = useState<Contrato[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [semanaAtual, setSemanaAtual] = useState(new Date());
+    const [dataHoje, setDataHoje] = useState<string>();
+
 
     useEffect(() => {
         setIsLoading(true)
@@ -81,6 +83,9 @@ export default function GradeReservas() {
 
                 setAulas(sortedAulas);
             };
+
+            const dataString = format(new Date(), 'MM-dd');
+            setDataHoje(dataString)
 
             fetchAulas();
             fetchReservas();
@@ -207,6 +212,8 @@ export default function GradeReservas() {
         };
     });
 
+
+
     if (isLoading) {
         return (
             <div className="flex justify-center items-center h-screen">
@@ -231,33 +238,36 @@ export default function GradeReservas() {
                 </div>
                 <div className='grade-aulas'>
                     <div className='aulas-container'>
-                        {aulasPorDia.map(({ dia, aulas }) => (
-                            <div className='coluna-aulas' key={dia}>
-                                <h2 className='dia_semana'>{dia}</h2>
-                                <div className='aulas-lista'>
-                                    {aulas.length > 0 ? aulas.map(aula => {
-                                        const aulaKey = generateKey(aula.modalidade_id, aula.horario, dia);
-                                        return (
-                                            <div className='aula' key={aulaKey}>
-                                                <h3 className='modalidade_aula'>{aula.nome_modalidade}</h3>
-                                                <p className='horario'>{aula.horario.substring(0, 5)}</p>
-                                                <div className="container-reserva">
-                                                    <button
-                                                        className="btn-reserva"
-                                                        onClick={() => clickReserva(aula.modalidade_id, aula.horario, dia, aula.limite_alunos)}
-                                                    >
-                                                        Reservar
-                                                    </button>
-                                                    <p className="limiteAlunos">
-                                                        {reservasPorAula[aulaKey] || 0}/{aula.limite_alunos}
-                                                    </p>
+                        {aulasPorDia.map(({ dia, aulas }) => {
+                            const dataCorrespondente = format(addDays(semanaAtual, diasDaSemana.indexOf(dia)), 'dd/MM'); // Adicionando a data correspondente
+                            return (
+                                <div className='coluna-aulas' key={dia}>
+                                    <h2 className='dia_semana'>{dia} - {dataCorrespondente}</h2>
+                                    <div className='aulas-lista'>
+                                        {aulas.length > 0 ? aulas.map(aula => {
+                                            const aulaKey = generateKey(aula.modalidade_id, aula.horario, dia);
+                                            return (
+                                                <div className='aula' key={aulaKey}>
+                                                    <h3 className='modalidade_aula'>{aula.nome_modalidade}</h3>
+                                                    <p className='horario'>{aula.horario.substring(0, 5)}</p>
+                                                    <div className="container-reserva">
+                                                        <button
+                                                            className="btn-reserva"
+                                                            onClick={() => clickReserva(aula.modalidade_id, aula.horario, dia, aula.limite_alunos)}
+                                                        >
+                                                            Reservar
+                                                        </button>
+                                                        <p className="limiteAlunos">
+                                                            {reservasPorAula[aulaKey] || 0}/{aula.limite_alunos}
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        );
-                                    }) : <p>Nenhuma Aula</p>}
+                                            );
+                                        }) : <p>Nenhuma Aula</p>}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             </section>
