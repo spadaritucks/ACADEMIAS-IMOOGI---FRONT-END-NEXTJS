@@ -31,7 +31,7 @@ export interface Packs {
 // Função para buscar todos os planos
 export const getPlanos = async (): Promise<Plano[]> => {
   try {
-    const response = await api.get('/api/planos');
+    const response = await api.get('/api/planos?timestamp=${new Date().getTime()}');
     
     return response.data.planos
     
