@@ -15,7 +15,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { Avatar } from '@chakra-ui/react'
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
-import { destroyToken, updatePassword, updateUserClient, Usuario } from './api/UsuariosRequest';
+import { updatePassword, updateUserClient, Usuario } from './api/UsuariosRequest';
 import { useModal } from '@/Components/errors/errorContext';
 import { useUserEditModal } from './user-modals-edit/EditUserContext';
 import "@/Assets/css/pages-styles/forms.css"
