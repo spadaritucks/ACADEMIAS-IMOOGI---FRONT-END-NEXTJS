@@ -1,7 +1,7 @@
 'use client'
 
 import UserSession from "@/Components/api/UserSession";
-import { Contrato, getUsers, UsuarioModalidade } from "@/Components/api/UsuariosRequest";
+import { Contrato, getUsers, Usuario, UsuarioModalidade } from "@/Components/api/UsuariosRequest";
 import { ClientMain } from "@/Layouts/ClientMain";
 import { FC, useEffect, useState } from "react";
 import '@/Assets/css/pages-styles/area_aluno.css'
@@ -14,12 +14,21 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
 
-export default function carteiraAluno() {
-    const { user, setUser } = UserSession();
+ function carteiraAluno() {
     const [contratos, setContratos] = useState<Contrato[]>([])
     const [modalidades, setModalidades] = useState<UsuarioModalidade[]>([])
     const [imgData, setImageData] = useState<any>()
     const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [user, setUser] = useState<Usuario>()
+
+
+        useEffect(() => {
+            const userResponse = sessionStorage.getItem('user');
+            if (userResponse) {
+                setUser(JSON.parse(userResponse));
+            }
+        }, [])
+
 
     useEffect(() => {
         setIsLoading(true)
@@ -136,3 +145,4 @@ const downloadPDF = () => {
     )
 }
 
+export default UserSession(carteiraAluno)

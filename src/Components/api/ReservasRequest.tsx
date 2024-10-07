@@ -1,12 +1,14 @@
 import api from './api'
 
 export interface Reserva {
+    map(arg0: (reserva: any) => import("react").JSX.Element): import("react").ReactNode;
     id:number;
     modalidade_id: number,
     usuario_id: number
     nome_modalidade: string;
     horario: string;
     dia_semana:string;
+    data: string
 }
 
 export const getReservas = async () =>{

@@ -15,7 +15,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { Avatar } from '@chakra-ui/react'
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
-import { updatePassword, updateUserClient, Usuario } from './api/UsuariosRequest';
+import { destroyToken, updatePassword, updateUserClient, Usuario } from './api/UsuariosRequest';
 import { useModal } from '@/Components/errors/errorContext';
 import { useUserEditModal } from './user-modals-edit/EditUserContext';
 import "@/Assets/css/pages-styles/forms.css"
@@ -27,92 +27,107 @@ interface userForms {
     modalPassword?: () => void
     userModal?: () => void
     formref?: React.RefObject<HTMLFormElement>
-    formRefPassword? :React.RefObject<HTMLFormElement>
+    formRefPassword?: React.RefObject<HTMLFormElement>
     user?: Usuario
-    formErrors?: { [key: string] : string[]}
+    formErrors?: { [key: string]: string[] }
 }
 
 
 export default function ClientMainNavbar() {
-    const { user, setUser } = UserSession();
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const formRef = useRef<HTMLFormElement>(null);
     const formRefPassword = useRef<HTMLFormElement>(null);
     const { modalServer } = useModal();
     const { showModal } = useUserEditModal();
-    const [formErrors, setFormErros] = useState<{ [key: string] : string[]}>({})
+    const [formErrors, setFormErros] = useState<{ [key: string]: string[] }>({})
+    const [user, setUser] = useState<Usuario>()
+
+
+    useEffect(() => {
+        const userResponse = sessionStorage.getItem('user');
+        if (userResponse) {
+            setUser(JSON.parse(userResponse));
+        }
+    }, [])
 
 
     const toggleMenu = () => {
         setOpen(!open);
     }
 
-    if (!user) {
-        return null;
-    }
+
 
     const handleLogout = () => {
-        sessionStorage.removeItem('user');
-        setUser(null);
-        router.push('/login'); // Redireciona para a página de login ou outra página desejada após o logout
+        const token = sessionStorage.getItem('token');
+        if (token) {
+            const destroy = async () => {
+                sessionStorage.removeItem('token');
+                sessionStorage.removeItem('user')
+                sessionStorage.clear();
+                
+            }
+
+            destroy()
+            router.push('/login');
+        }
     };
 
     const handleUpdateSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        if (formRef.current) {
-            
+        if (formRef.current && user) {
+
             const formdata = new FormData(formRef.current)
             formdata.append('_method', 'PUT')
-           
-                
-                const response = await updateUserClient(user.id, formdata)
-                if (response) {
-                    if (response.status === 'false') {
-                        if (typeof response.message === 'object') {
-                            
-                            setFormErros(response.message)
-                            
-                            modalServer("Erro", 'Preencha os campos necessarios!')
-                          
-                        } else {
-                            modalServer("Erro", response.message)
-                        }
+
+
+            const response = await updateUserClient(user.id, formdata)
+            if (response) {
+                if (response.status === 'false') {
+                    if (typeof response.message === 'object') {
+
+                        setFormErros(response.message)
+
+                        modalServer("Erro", 'Preencha os campos necessarios!')
+
                     } else {
                         modalServer("Erro", response.message)
                     }
+                } else {
+                    modalServer("Erro", response.message)
                 }
-            else{
+            }
+            else {
                 modalServer('Erro', 'Confirme corretamente a sua senha')
             }
-           
+
         }
     }
 
     const handleUpdatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        if (formRefPassword.current) {
+        if (formRefPassword.current && user) {
             const formdata = new FormData(formRefPassword.current)
             formdata.append('_method', 'PUT')
-            
-            if(formdata.get('password') === formdata.get('password_confirmation')){
+
+            if (formdata.get('password') === formdata.get('password_confirmation')) {
                 formdata.delete('password_confirmation');
                 const responsePassword = await updatePassword(user.id, formdata)
                 console.log(formdata)
                 if (responsePassword) {
                     if (responsePassword.status === 'false') {
                         modalServer('Mensagem', responsePassword.message); // Aqui você acessa apenas a mensagem
-    
+
                     } else {
                         modalServer('Mensagem', responsePassword.message); // Aqui também
-    
-    
+
+
                     }
                 }
             }
-          
+
         }
 
     }
@@ -132,47 +147,51 @@ export default function ClientMainNavbar() {
 
 
 
+    if (user) {
+        let fotoUsuario = user.foto_usuario;
+        let nomeCompleto = user.nome;
+        let partesNome = nomeCompleto.split(' ')
+        let nome = partesNome.slice(0, 2).join(' ')
 
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/storage/${fotoUsuario}`;
 
-    let fotoUsuario = user.foto_usuario;
-    let nomeCompleto = user.nome;
-    let partesNome = nomeCompleto.split(' ')
-    let nome = partesNome.slice(0, 2).join(' ')
-
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/storage/${fotoUsuario}`;
-    return (
-        <>
-
-            <div className="auth-bar">
-                <Image width={162} height={33} className="nav-bar-logo" src={Logo} alt="Imoogi" />
-                <div className={`authbar-style ${open ? 'open' : ''}`}>
-                    <div className='side-link-routes'>
-                        <Link href='/area_aluno'><div className='side-link'><DashboardIcon />Menu</div></Link>
-                        <Link href='/carteira'><div className='side-link'><AccountBoxIcon />Carteira</div></Link>
-                        <Link href='/grade'><div className='side-link'><SportsMartialArtsIcon />Reservar Aula</div></Link>
-
+        return (
+            <>
+    
+                <div className="auth-bar">
+                    <Image width={162} height={33} className="nav-bar-logo" src={Logo} alt="Imoogi" />
+                    <div className={`authbar-style ${open ? 'open' : ''}`}>
+                        <div className='side-link-routes'>
+                            <Link href='/area_aluno'><div className='side-link'><DashboardIcon />Menu</div></Link>
+                            <Link href='/carteira'><div className='side-link'><AccountBoxIcon />Carteira</div></Link>
+                            <Link href='/grade'><div className='side-link'><SportsMartialArtsIcon />Reservar Aula</div></Link>
+    
+                        </div>
+    
+                        <div className='users-info' >
+                            <p className='session-name' onClick={() => handleUserArea()}><Avatar src={`${url}`} sx={{ margin: 2 }} />{nome}</p>
+                            <p className='logout' onClick={handleLogout}><LogoutIcon sx={{ margin: 0.5, fontSize: 30, cursor: 'pointer' }}></LogoutIcon>Logout</p>
+                        </div>
                     </div>
-
-                    <div className='users-info' >
-                        <p className='session-name' onClick={() => handleUserArea()}><Avatar src={`${url}`} sx={{ margin: 2 }} />{nome}</p>
-                        <p className='logout' onClick={handleLogout}><LogoutIcon sx={{ margin: 0.5, fontSize: 30, cursor: 'pointer' }}></LogoutIcon>Logout</p>
+    
+    
+    
+    
+    
+                    <div className="btn-hamburguer" onClick={toggleMenu}>
+                        {!open ? <MenuIcon sx={{ fontSize: 45 }} /> : <CloseSharpIcon sx={{ fontSize: 45 }} />}
                     </div>
                 </div>
+    
+    
+    
+    
+            </>
+        )
+    }
 
 
-
-
-
-                <div className="btn-hamburguer" onClick={toggleMenu}>
-                    {!open ? <MenuIcon sx={{ fontSize: 45 }} /> : <CloseSharpIcon sx={{ fontSize: 45 }} />}
-                </div>
-            </div>
-
-
-
-
-        </>
-    )
+   
 }
 
 export const UserModal: React.FC<userForms> = ({ handleUpdatePassword, handleUpdateSubmit, formref, modalPassword, userModal }) => {
@@ -206,9 +225,9 @@ export const PasswordForm: React.FC<userForms> = ({ handleUpdatePassword, formRe
     )
 }
 
-export const UserDadosForm: React.FC<userForms> = ({ handleUpdateSubmit, formref, user, formErrors}) => {
+export const UserDadosForm: React.FC<userForms> = ({ handleUpdateSubmit, formref, user, formErrors }) => {
 
-    
+
 
     const handleInputClick = () => {
         if (user && formref?.current) {
@@ -223,7 +242,7 @@ export const UserDadosForm: React.FC<userForms> = ({ handleUpdateSubmit, formref
             (form['logradouro'] as HTMLInputElement).value = user.logradouro.toString();
             (form['numero'] as HTMLInputElement).value = user.numero.toString();
             user.complemento ? (form['complemento'] as HTMLInputElement).value = user.complemento.toString() : ''
-          
+
 
         }
     }
@@ -231,7 +250,7 @@ export const UserDadosForm: React.FC<userForms> = ({ handleUpdateSubmit, formref
     useEffect(() => {
         handleInputClick();
     }, [user])
-  
+
 
 
     return (

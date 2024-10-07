@@ -11,14 +11,12 @@ import UserSession from '@/Components/api/UserSession';
 
 
 
-
-export default function criarUsuarios() {
+function criarUsuarios() {
 
     const formRef = useRef<HTMLFormElement>(null);
     const [selectType, setSelectType] = useState<string>('');
     const [showContratos, setShowContratos] = useState<boolean>(false);
     const [showFuncionario, setShowFuncionario] = useState<boolean>(false);
-    const { user, setUser } = UserSession();
     const [formErrors, setFormErros] = useState<{ [key: string] : string[]}>({})
 
 
@@ -116,6 +114,5 @@ export default function criarUsuarios() {
 
 }
 
-
-
+export default UserSession(criarUsuarios)
 

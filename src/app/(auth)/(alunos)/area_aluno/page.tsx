@@ -1,6 +1,6 @@
 'use client'
 import UserSession from "@/Components/api/UserSession";
-import { Contrato, getUsers, UsuarioModalidade } from "@/Components/api/UsuariosRequest";
+import { Contrato, getUsers, Usuario, UsuarioModalidade } from "@/Components/api/UsuariosRequest";
 import { ClientMain } from "@/Layouts/ClientMain";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -18,12 +18,11 @@ import Link from "next/link";
 
 
 
-export default function AreaDoAluno() {
+function AreaDoAluno() {
 
 
 
     const AreaAlunoContent = () => {
-        const { user, setUser } = UserSession();
         const [contratos, setContratos] = useState<Contrato[]>([])
         const [modalidades, setModalidades] = useState<UsuarioModalidade[]>([])
         const [reservas, setReservas] = useState<Reserva>()
@@ -32,55 +31,67 @@ export default function AreaDoAluno() {
         const { modalServer } = useModal()
         const { showModal } = useUserEditModal()
         const [isLoading, setIsLoading] = useState<boolean>(true)
+        const [reservasPorAula, setReservasPorAula] = useState<{ [key: string]: number }>({});
 
-      
+        const [user, setUser] = useState<Usuario>()
+
+
+        useEffect(() => {
+            const userResponse = sessionStorage.getItem('user');
+            if (userResponse) {
+                setUser(JSON.parse(userResponse));
+            }
+        }, [])
+
+
+
 
 
         useEffect(() => {
             setIsLoading(true)
 
-            try{
+            try {
                 const handleContratos = async () => {
                     const response = await getUsers()
-                    
+
                     setContratos(response.contratos)
                     setModalidades(response.modalidades)
-    
+
                 }
                 handleContratos();
-    
+
                 const handleReservas = async () => {
                     if (!user) return;
-    
+
                     const reservasResponse = await getReservas();
-                    const userReserva = reservasResponse.find((reserva: Reserva) => reserva.usuario_id === user.id)
+                    const userReserva = reservasResponse.filter((reserva: Reserva) => reserva.usuario_id === user.id)
                     setReservas(userReserva)
 
-                    
+
 
                 }
-    
+
                 const handlePagamentos = async () => {
-                    const response = await getPagamentosMensais()
-                    const pagamentosUsuario = response.filter((pagamento: PagamentoMensal) => pagamento.usuario_id == user.id);
-                    setPagamentos(pagamentosUsuario)
+                    if (user) {
+                        const response = await getPagamentosMensais()
+                        const pagamentosUsuario = response.filter((pagamento: PagamentoMensal) => pagamento.usuario_id == user.id);
+                        setPagamentos(pagamentosUsuario)
+                    }
                 }
-    
+
                 if (user) {
                     handleReservas()
                     handlePagamentos()
                 }
-            }catch(error){
+            } catch (error) {
                 console.log(error)
-            }finally{
+            } finally {
                 setIsLoading(false)
             }
 
         }, [user])
 
-        if (!user) {
-            return null;
-        }
+
 
         const clickDeleteReserva = async () => {
             if (!user) return;
@@ -97,9 +108,9 @@ export default function AreaDoAluno() {
         const handlePagamentoSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault()
 
-            if (formRef.current) {
+            if (formRef.current && user) {
                 const formdata = new FormData(formRef.current)
-                formdata.append('usuario_id', user.id)
+                formdata.append('usuario_id', user.id.toString())
                 const response = await postPagamentosMensais(formdata)
                 console.log(formdata)
                 if (response) {
@@ -130,25 +141,25 @@ export default function AreaDoAluno() {
 
             const exibirMensagemAdm = () => {
                 showModal('Mensagem do Administrador',
-                   <>
-                    <p className="text-center">{mensagem_adm}</p>
-                    <Button variant='link' onClick={() => handleResponderMensagemAdm(pagamento.id)}>Responder Administrador</Button>
-                   </>
-                    
+                    <>
+                        <p className="text-center">{mensagem_adm}</p>
+                        <Button variant='link' onClick={() => handleResponderMensagemAdm(pagamento.id)}>Responder Administrador</Button>
+                    </>
+
                 )
             }
 
             const handleResponderMensagemAdm = (pagamento_id: number) => {
-                showModal('Mensagem para o Administrador',  
+                showModal('Mensagem para o Administrador',
                     <form onSubmit={handleSubmitResponderMensagemAdm(pagamento_id)} ref={formRef}>
-                       <div className="form-name-input">
-                           <span>Mensagem para o Administrador</span>
-                           <textarea name="comentario" id="comentario" rows={4} cols={25}></textarea>
-                       </div>
-        
-                       <div className="form-name-input" style={{ gridColumn: '1 / -1' }}>
-                           <button type='submit' className='submit-button'>Enviar</button>
-                       </div>
+                        <div className="form-name-input">
+                            <span>Mensagem para o Administrador</span>
+                            <textarea name="comentario" id="comentario" rows={4} cols={25}></textarea>
+                        </div>
+
+                        <div className="form-name-input" style={{ gridColumn: '1 / -1' }}>
+                            <button type='submit' className='submit-button'>Enviar</button>
+                        </div>
                     </form>
                 )
             }
@@ -160,7 +171,7 @@ export default function AreaDoAluno() {
                         <Button variant='imoogi'><Link href={`${process.env.NEXT_PUBLIC_API_URL}/storage/${pagamento.comprovante}`}>Comprovante</Link></Button>
                         <p className="dado-pagamento m-4"> <span> Valor Pago </span> R$ {pagamento.valor_pago}</p>
                         <p className="dado-pagamento m-4"> <span>Comentario </span> {pagamento.comentario}</p>
-                        {mensagem_adm ? <p><Button variant ='imoogi' onClick={exibirMensagemAdm} >Mensagem do Administrador</Button></p> : ""}
+                        {mensagem_adm ? <p><Button variant='imoogi' onClick={exibirMensagemAdm} >Mensagem do Administrador</Button></p> : ""}
                     </div>
                 </>
             )
@@ -168,40 +179,40 @@ export default function AreaDoAluno() {
 
         const handleSubmitResponderMensagemAdm = (pagamento_id: number) => async (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
-    
+
             if (formRef.current) {
                 const formdata = new FormData(formRef.current);
                 formdata.append('_method', 'PUT');
-                
+
                 try {
                     const response = await putPagamentosMensais(pagamento_id, formdata);
-                    if(response){
-                        if(response.status == 'false'){
-                            if( typeof response.message == 'object'){
+                    if (response) {
+                        if (response.status == 'false') {
+                            if (typeof response.message == 'object') {
                                 modalServer('Erro', 'Preencha todos os campos')
-                        }if(typeof response.message == 'string'){
-                            modalServer('Erro', response.message)
+                            } if (typeof response.message == 'string') {
+                                modalServer('Erro', response.message)
+                            }
+                        } else {
+                            console.log(pagamento_id)
+                            console.log(formdata)
+                            modalServer('Sucesso', response.message)
                         }
-                    }else{
-                        console.log(pagamento_id)
-                        console.log(formdata)
-                        modalServer('Sucesso', response.message)
+
                     }
-    
-                }
-                    
-    
+
+
                 } catch (error) {
                     console.error('Erro ao enviar comentário:', error);
                 }
             }
         };
 
-        
-        
-    if (!user) {
-        return null;
-    }
+
+
+        if (!user) {
+            return null;
+        }
 
 
 
@@ -214,14 +225,14 @@ export default function AreaDoAluno() {
 
         const diasDaSemana = ['Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado'];
 
-        const obterDiaSemana = (numeroDia: number) : string => {
+        const obterDiaSemana = (numeroDia: number): string => {
             return diasDaSemana[numeroDia] || 'dia invalido'
         }
 
-        
-        
-        if(isLoading){
-            return(
+
+
+        if (isLoading) {
+            return (
                 <div className="flex justify-center items-center h-screen">
                     <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
                     <p className="ml-2">Carregando dados...</p>
@@ -272,20 +283,23 @@ export default function AreaDoAluno() {
                                 </>
                             ))}
                         </div>
+                    </div>
+                    <div className="dados">
 
                         <div className="reservasContainer">
-                            <h2>Reservas</h2>
+                            <h2>Historico de Aulas</h2>
                             <div className="reserva-dados">
-                                
-                                {reservas ?
-                                
+
+                                {reservas ? reservas.map(reserva => (
                                     <>
-                                    
-                                        <p className="modalidade-reserva" style={{ margin: "5px" }}>{reservas?.nome_modalidade} - </p>
-                                        <p className="dia_semana_reserva" style={{ margin: "5px" }}>{obterDiaSemana(Number(reservas?.dia_semana[0]))} - </p>
-                                        <p className="horario-reserva" style={{ margin: "5px" }}>{reservas?.horario.substring(0, 5)} - </p>
-                                        <button className="btn-delete-reserva" onClick={() => clickDeleteReserva()}>Desfazer</button>
-                                    </> :
+                                        <div className="reserva">
+                                            <p className="modalidade-reserva" style={{ margin: "5px" }}>{reserva?.nome_modalidade} - </p>
+                                            <p className="dia_semana_reserva" style={{ margin: "5px" }}>{obterDiaSemana(Number(reserva?.dia_semana[0]))} - </p>
+                                            <p className="horario-reserva" style={{ margin: "5px" }}>{reserva?.horario.substring(0, 5)} - </p>
+                                            <p className="data-reserva" style={{ margin: "5px" }}>{reserva?.data} - </p>
+                                        </div>
+                                    </>
+                                )) :
                                     <p>Nenhum agendamento feito</p>
                                 }
 
@@ -312,3 +326,5 @@ export default function AreaDoAluno() {
 
 
 }
+
+export default UserSession(AreaDoAluno)

@@ -44,10 +44,7 @@ import { getPagamentosMensais, PagamentoMensal, putPagamentosMensais } from '@/C
 const Dashboard = () => {
     return (
         <AdmMain>
-            <ModalEditUserProvider>
                 <DashboardContent />
-                <EditUserModal />
-            </ModalEditUserProvider>
         </AdmMain>
     );
 };
@@ -92,7 +89,6 @@ const DashboardContent = () => {
     const [renovacao, setRenovacao] = useState<number>(0)
     const [vencidos, setVencidos] = useState<number>(0)
     const [numAlunos, setNumAlunos] = useState<number>(0)
-    const { user, setUser } = UserSession();
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const getUsersFunction = async () => {
@@ -715,4 +711,4 @@ const ModalidadeUserForm = ({ modalidade, handleSubmitUpdateModalidade, formRef 
 
 
 
-export default Dashboard;
+export default UserSession(Dashboard);

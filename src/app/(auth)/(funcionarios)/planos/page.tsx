@@ -21,13 +21,12 @@ import { AdmMain } from '@/Layouts/AdmMain';
 import UserSession from '@/Components/api/UserSession';
 import { set } from "date-fns";
 
-export default function Planos() {
+ function Planos() {
 
     const [showCreate, setShowCreate] = useState<Boolean>(false);
     const [showUpdate, setShowUpdate] = useState<Boolean>(false);
     const [showRead, setShowRead] = useState<any[]>([]);
     const [showDelete, setShowDelete] = useState<Boolean>(false);
-    const { user, setUser } = UserSession();
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const formRef = useRef<HTMLFormElement>(null)
@@ -58,6 +57,7 @@ export default function Planos() {
             const request = async () => {
                 const response = await getPlanos()
                 setShowRead(response)
+                
 
             }
 
@@ -208,3 +208,5 @@ export default function Planos() {
 
 
 }
+
+export default UserSession(Planos)

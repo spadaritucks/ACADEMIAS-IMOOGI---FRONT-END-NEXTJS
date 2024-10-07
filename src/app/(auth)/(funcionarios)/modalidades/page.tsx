@@ -20,14 +20,14 @@ import { createModalidade, deleteModalidade, getModalidade, updateModalidade } f
 import Image from 'next/image';
 import { AdmMain } from '@/Layouts/AdmMain';
 import UserSession from '@/Components/api/UserSession';
+import modalidade from "@/app/modalidade/page";
 
-export default function Modalidade() {
+function Modalidade() {
 
     const [showCreate, setShowCreate] = useState<Boolean>(false);
     const [showUpdate, setShowUpdate] = useState<Boolean>(false);
     const [showRead, setShowRead] = useState<any[]>([]);
     const [showDelete, setShowDelete] = useState<Boolean>(false);
-    const { user, setUser } = UserSession();
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const formRef = useRef<HTMLFormElement>(null)
@@ -72,9 +72,7 @@ export default function Modalidade() {
         handleShowRead()
     },[])
 
-    if (!user) {
-        return null;
-    }
+   
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -190,3 +188,5 @@ export default function Modalidade() {
         </AdmMain>
     )
 }
+
+export default UserSession(Modalidade)

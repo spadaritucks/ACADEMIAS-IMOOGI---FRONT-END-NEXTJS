@@ -1,7 +1,7 @@
 'use client'
 import { use, useEffect, useRef, useState } from 'react'
 import '../../Assets/css/pages-styles/forms.css'
-import { loginUser } from '@/Components/api/UsuariosRequest';
+import { loginUser, Usuario } from '@/Components/api/UsuariosRequest';
 import { useModal } from '@/Components/errors/errorContext';
 import { redirect, usePathname, useRouter } from 'next/navigation';
 import UserSession from '@/Components/api/UserSession';
@@ -15,13 +15,10 @@ import { Modal } from 'react-bootstrap';
 function login() {
 
 
-
-    const { user, setUser } = UserSession();
-
-
     const formRef = useRef<HTMLFormElement>(null);
     const { modalServer } = useModal()
     const router = useRouter();
+    const [user, setUser] = useState<Usuario>()
 
 
     useEffect(() => {
@@ -42,12 +39,14 @@ function login() {
             const doingLogin = async () => {
 
                 const response = await loginUser(formdata)
+                
 
                 if (response) {
                     if (response.status === 'false') {
                         modalServer('Erro', response.message)
                     } else {
                         sessionStorage.setItem('user', JSON.stringify(response.user));
+                        sessionStorage.setItem('token', response.token)
                         modalServer('Sucesso', response.message || 'Usuario Logado com Sucesso')
                         setUser(response.user)
                         response.user.tipo_usuario === 'aluno' ? router.push('/area_aluno') : router.push('/dashboard');
@@ -79,6 +78,7 @@ function login() {
                             <button type='submit' className='submit-button'>Enviar</button>
                         </div>
                     </form>
+
                 </div>
             </section>
 

@@ -1,20 +1,35 @@
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-export default function UserSession (){
+export default function UserSession(WrappedComponent: React.FC) {
 
-    const [user, setUser] = useState<any>(null);
-
-    useEffect(() => {
+    const AuthenticatedComponent = (props: any) => {
+        const [user, setUser] = useState<any>(null);
         
-        const usuarioDados = sessionStorage.getItem('user');
-        if (usuarioDados) {
-            const usuarioDadosParse = JSON.parse(usuarioDados);
-            setUser(usuarioDadosParse);
-        }
-    }, []);
 
-      return {user, setUser} as const;
-    
+        useEffect(() => {
+
+            const usuarioDados = sessionStorage.getItem('user');
+            const token = sessionStorage.getItem('token')
+            if (!token) {
+                if (usuarioDados) {
+                    const usuarioDadosParse = JSON.parse(usuarioDados);
+                    setUser(usuarioDadosParse);
+                }
+            }
+            
+
+        }, [user]);
+
+
+
+        return <WrappedComponent {...props} />;
+
+
+    }
+
+    return AuthenticatedComponent;
+
 
 
 }

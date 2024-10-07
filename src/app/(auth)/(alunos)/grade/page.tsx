@@ -7,13 +7,13 @@ import '@/Assets/css/pages-styles/aulas.css'
 import { createReservas, deleteReserva, getReservas, Reserva } from "@/Components/api/ReservasRequest";
 import UserSession from "@/Components/api/UserSession";
 import { useModal } from "@/Components/errors/errorContext";
-import { Contrato, getUsers, UsuarioModalidade } from "@/Components/api/UsuariosRequest";
+import { Contrato, getUsers, Usuario, UsuarioModalidade } from "@/Components/api/UsuariosRequest";
 import { format, addWeeks, startOfWeek, endOfWeek, parseISO, isSameWeek, isBefore, isAfter, addDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Button } from '@/Components/ui/button';
 
 // Definindo a ordem dos dias da semana
-const diasDaSemana = ['Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado'];
+const diasDaSemana = ['Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado', 'Domingo'];
 
 // Função para converter horários no formato "HH:MM" para minutos desde a meia-noite
 const convertToMinutes = (time: string) => {
@@ -22,21 +22,29 @@ const convertToMinutes = (time: string) => {
 };
 
 // Função para gerar uma chave única para cada aula
-const generateKey = (modalidade_id: number, horario: string, dia_semana: string) => {
-    return `${modalidade_id}-${horario}-${dia_semana}`;
+const generateKey = (modalidade_id: number, horario: string, dia_semana: string, data: string) => {
+    return `${modalidade_id}-${horario}-${dia_semana}-${data}`;
 };
 
-export default function GradeReservas() {
+function GradeReservas() {
     const [aulas, setAulas] = useState<Aula[]>([]);
     const [reservasPorAula, setReservasPorAula] = useState<{ [key: string]: number }>({});
     const [reservas, setReservas] = useState<Reserva[]>([])
-    const { user } = UserSession();
     const { modalServer } = useModal();
     const [userModalidades, setUserModalidades] = useState<UsuarioModalidade[]>([])
     const [contratos, setContratos] = useState<Contrato[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [semanaAtual, setSemanaAtual] = useState(new Date());
-    const [dataHoje, setDataHoje] = useState<string>();
+    const [dataAula, setDataAula] = useState<string>();
+    const [user, setUser] = useState<Usuario>();
+
+
+    useEffect(() => {
+        const userResponse = sessionStorage.getItem('user');
+        if (userResponse) {
+            setUser(JSON.parse(userResponse));
+        }
+    }, [])
 
 
     useEffect(() => {
@@ -84,11 +92,8 @@ export default function GradeReservas() {
                 setAulas(sortedAulas);
             };
 
-            const dataString = format(new Date(), 'MM-dd');
-            setDataHoje(dataString)
-
             fetchAulas();
-            fetchReservas();
+
         } catch (error) {
             console.log(error);
         } finally {
@@ -96,30 +101,40 @@ export default function GradeReservas() {
         }
     }, [semanaAtual, user]);
 
-    const fetchReservas = async () => {
-        const reservasResponse = await getReservas();
-        setReservas(reservasResponse);
+    useEffect(() => {
+        const fetchReservas = async () => {
+            try {
+                const reservasResponse = await getReservas();
+                setReservas(reservasResponse);
 
-        // Contagem de reservas para cada aula
-        const reservasContadas: { [key: string]: number } = {};
+                // Contagem de reservas para cada aula ao carregar a página
+                const reservasContadas: { [key: string]: number } = {};
 
-        reservasResponse.forEach((reserva: Reserva) => {
-            const diaSemanaNumero = diasDaSemana.indexOf(reserva.dia_semana);
-            const aulaKey = generateKey(reserva.modalidade_id, reserva.horario, diaSemanaNumero.toString());
+                reservasResponse.forEach((reserva: Reserva) => {
+                    const diaSemanaNumero = diasDaSemana.indexOf(reserva.dia_semana);
+                    const aulaKey = generateKey(reserva.modalidade_id, reserva.horario, diaSemanaNumero.toString(), reserva.data);
 
-            if (!reservasContadas[aulaKey]) {
-                reservasContadas[aulaKey] = 0;
+                    if (!reservasContadas[aulaKey]) {
+                        reservasContadas[aulaKey] = 0;
+                    }
+                    reservasContadas[aulaKey]++;
+
+                  
+                });
+
+                setReservasPorAula(reservasContadas); // Atualiza o estado com as reservas carregadas do back-end
+
+            } catch (error) {
+                console.log("Erro ao carregar reservas", error);
             }
-            reservasContadas[aulaKey]++;
-        });
+        };
+        fetchReservas();
+    }, [])
 
-        setReservasPorAula(reservasContadas);
-    };
-
-    const clickReserva = async (modalidade_id: number, horario: string, dia_semana: string, limite_alunos: number) => {
+    const clickReserva = async (modalidade_id: number, horario: string, dia_semana: string, limite_alunos: number, dataCorrespondente: string) => {
         if (!user) return;
 
-        const aulaKey = generateKey(modalidade_id, horario, dia_semana);
+        const aulaKey = generateKey(modalidade_id, horario, dia_semana, dataCorrespondente);
         const reservasAtual = reservasPorAula[aulaKey] || 0;
 
         // Verifica se o limite de alunos foi atingido
@@ -128,13 +143,7 @@ export default function GradeReservas() {
             return;
         }
 
-        //Verificação se não há mais de um agendamento
-        const reservaExistente = reservas.find(reserva => reserva.usuario_id === user.id);
 
-        if (reservaExistente) {
-            modalServer('Erro', 'Você já possui uma reserva em outra aula. Cancele a reserva atual antes de fazer uma nova.');
-            return;
-        }
 
         //Verificação se o Plano esta em vigor
         const contrato = contratos.find(contrato => contrato.usuario_id === user.id)
@@ -163,17 +172,19 @@ export default function GradeReservas() {
         formdata.append('modalidade_id', modalidade_id.toString());
         formdata.append('horario', horario);
         formdata.append('dia_semana', diaSemanaNumero.toString());
+        formdata.append('data', dataCorrespondente);
 
         const response = await createReservas(formdata);
         if (response.status === 'false') {
             modalServer('Mensagem', response.message);
         } else {
             modalServer('Mensagem', response.message);
+            console.log(dataAula)
             setReservasPorAula(prevState => ({
                 ...prevState,
                 [aulaKey]: (prevState[aulaKey] || 0) + 1
             }));
-            
+
             // Adicione esta linha para atualizar o estado das reservas
             setReservas(prevReservas => [
                 ...prevReservas,
@@ -181,34 +192,40 @@ export default function GradeReservas() {
                     usuario_id: user.id,
                     modalidade_id: modalidade_id,
                     horario: horario,
-                    dia_semana: dia_semana
+                    dia_semana: dia_semana,
+                    data: dataCorrespondente
                 } as Reserva
             ]);
         }
-        
+
+
+
     };
 
     // Função para verificar se a aula ocorre em um determinado dia da semana atual
     const aulaOcorreNoDia = (aula: Aula, diaSemana: string) => {
-        
+
         const dataInicio = parseISO(aula.data_inicio);
         const dataFim = parseISO(aula.data_fim);
         const diaAtual = diasDaSemana.indexOf(diaSemana);
         const diasAula = aula.dia_semana.split(',').map(Number);
         const inicioSemana = startOfWeek(semanaAtual, { weekStartsOn: 1 });
         const fimSemana = endOfWeek(semanaAtual, { weekStartsOn: 1 });
-        
+
         return diasAula.includes(diaAtual) &&
-               isBefore(dataInicio, fimSemana) &&
-               isAfter(dataFim, inicioSemana);
+            isBefore(dataInicio, fimSemana) &&
+            isAfter(dataFim, inicioSemana);
     };
 
     // Agrupando as aulas por dia da semana
     const aulasPorDia = diasDaSemana.map((dia) => {
+        const diaIndex = diasDaSemana.indexOf(dia); // Obter o índice do dia da semana
+        const dataCorrespondente = format(addDays(semanaAtual, diaIndex + 1), 'yyyy-MM-dd'); // Ajustar o cálculo da data correspondente
 
         return {
             dia,
-            aulas: aulas.filter(aula => aulaOcorreNoDia(aula, dia))
+            aulas: aulas.filter(aula => aulaOcorreNoDia(aula, dia)),
+            dataCorrespondente
         };
     });
 
@@ -223,9 +240,7 @@ export default function GradeReservas() {
         );
     }
 
-    if (!user) {
-        return null;
-    }
+
 
     return (
         <ClientMain>
@@ -238,32 +253,49 @@ export default function GradeReservas() {
                 </div>
                 <div className='grade-aulas'>
                     <div className='aulas-container'>
-                        {aulasPorDia.map(({ dia, aulas }) => {
-                            const dataCorrespondente = format(addDays(semanaAtual, diasDaSemana.indexOf(dia)), 'dd/MM'); // Adicionando a data correspondente
+                        {aulasPorDia.map(({ dia, aulas, dataCorrespondente }) => {
+                           
+
+
                             return (
                                 <div className='coluna-aulas' key={dia}>
                                     <h2 className='dia_semana'>{dia} - {dataCorrespondente}</h2>
                                     <div className='aulas-lista'>
                                         {aulas.length > 0 ? aulas.map(aula => {
-                                            const aulaKey = generateKey(aula.modalidade_id, aula.horario, dia);
-                                            return (
-                                                <div className='aula' key={aulaKey}>
-                                                    <h3 className='modalidade_aula'>{aula.nome_modalidade}</h3>
-                                                    <p className='horario'>{aula.horario.substring(0, 5)}</p>
-                                                    <div className="container-reserva">
-                                                        <button
-                                                            className="btn-reserva"
-                                                            onClick={() => clickReserva(aula.modalidade_id, aula.horario, dia, aula.limite_alunos)}
-                                                        >
-                                                            Reservar
-                                                        </button>
-                                                        <p className="limiteAlunos">
-                                                            {reservasPorAula[aulaKey] || 0}/{aula.limite_alunos}
-                                                        </p>
-                                                    </div>
-                                                </div>
+                                            const diaSemana = diasDaSemana.indexOf(dia); // Converte a string 'dia' para o número correspondente
+                                            const reservaDiadaSemana = reservas.find(reserva =>
+                                                reserva.modalidade_id === aula.modalidade_id &&
+                                                reserva.horario === aula.horario &&
+                                                reserva.dia_semana === diaSemana.toString()  &&
+                                                reserva.data === dataCorrespondente
+                                            
+
                                             );
-                                        }) : <p>Nenhuma Aula</p>}
+
+                                           
+                                            
+                                                const diaSemanaNumero = reservaDiadaSemana ? diasDaSemana.indexOf(reservaDiadaSemana.dia_semana) : -1; // Aqui você deve garantir que 'dia' é o mesmo que você usou no useEffect
+                                                const aulaKey = generateKey(aula.modalidade_id, aula.horario, diaSemanaNumero.toString(), dataCorrespondente);
+                                                console.log(aulaKey)
+                                                return (
+                                                    <div className='aula' key={aulaKey}>
+                                                        <h3 className='modalidade_aula'>{aula.nome_modalidade}</h3>
+                                                        <p className='horario'>{aula.horario.substring(0, 5)}</p>
+                                                        <div className="container-reserva">
+                                                            <button
+                                                                className="btn-reserva"
+                                                                onClick={() => clickReserva(aula.modalidade_id, aula.horario, dia, aula.limite_alunos, dataCorrespondente)}
+                                                            >
+                                                                Reservar
+                                                            </button>
+                                                            <p className="limiteAlunos">
+                                                                {reservasPorAula[aulaKey] || 0}/{aula.limite_alunos}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            }
+                                        ) : <p>Nenhuma Aula</p>}
                                     </div>
                                 </div>
                             );
@@ -275,3 +307,4 @@ export default function GradeReservas() {
     );
 }
 
+export default UserSession(GradeReservas)

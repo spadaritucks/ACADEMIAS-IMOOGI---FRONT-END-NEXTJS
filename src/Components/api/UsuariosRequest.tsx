@@ -171,6 +171,7 @@ export const loginUser = async (userData: FormData) => {
     return {
       status: 'true',
       message: response.data.message,
+      token : response.data.token,
       user: response.data.user,
     };
   } catch (error: any) {
