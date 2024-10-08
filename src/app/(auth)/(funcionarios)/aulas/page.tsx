@@ -171,7 +171,7 @@ const AulasContent = () => {
     // Agrupando as aulas por dia da semana
     const aulasPorDia = diasDaSemana.map((dia) => {
         const diaIndex = diasDaSemana.indexOf(dia); // Obter o índice do dia da semana
-        const dataCorrespondente = format(addDays(semanaAtual, diaIndex ), 'yyyy-MM-dd'); // Ajustar o cálculo da data correspondente
+        const dataCorrespondente = format(addDays(semanaAtual, diaIndex -1 ), 'yyyy-MM-dd'); // Ajustar o cálculo da data correspondente
 
         return {
             dia,
