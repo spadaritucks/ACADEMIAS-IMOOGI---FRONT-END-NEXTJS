@@ -5,7 +5,7 @@ import { ClientMain } from "@/Layouts/ClientMain";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import '@/Assets/css/pages-styles/area_aluno.css'
-import { deleteReserva, getReservas, Reserva } from "@/Components/api/ReservasRequest";
+import { Checkin, deleteReserva, getCheckins, getReservas, Reserva } from "@/Components/api/ReservasRequest";
 import { useModal } from "@/Components/errors/errorContext";
 import { Button } from "@/Components/ui/button";
 import { getPagamentosMensais, PagamentoMensal, postPagamentosMensais, putPagamentosMensais } from "@/Components/api/PagamentosRequest";
@@ -13,6 +13,8 @@ import { BaixaPagamento } from "./BaixaPagamento";
 import EditUserModal from '@/Components/user-modals-edit/EditUserModal';
 import { ModalEditUserProvider, useUserEditModal } from '@/Components/user-modals-edit/EditUserContext';
 import Link from "next/link";
+import { getPlanos, Plano } from "@/Components/api/PlanosRequest";
+import { format, addWeeks, startOfWeek, endOfWeek, parseISO, isSameWeek, isBefore, isAfter, addDays } from 'date-fns';
 
 
 
@@ -32,8 +34,11 @@ function AreaDoAluno() {
         const { showModal } = useUserEditModal()
         const [isLoading, setIsLoading] = useState<boolean>(true)
         const [reservasPorAula, setReservasPorAula] = useState<{ [key: string]: number }>({});
-
+        const [semanaAtual, setSemanaAtual] = useState(new Date());
         const [user, setUser] = useState<Usuario>()
+        const [checkins, setCheckins] = useState<Checkin>()
+        const [planos, setPlanos] = useState<Plano[]>([])
+        const [checkinContado, setCheckinContato] = useState<Number>(0)
 
 
         useEffect(() => {
@@ -50,6 +55,9 @@ function AreaDoAluno() {
         useEffect(() => {
             setIsLoading(true)
 
+            const inicio = startOfWeek(semanaAtual, { weekStartsOn: 1 });
+            const fim = endOfWeek(semanaAtual, { weekStartsOn: 1 });
+
             try {
                 const handleContratos = async () => {
                     const response = await getUsers()
@@ -60,6 +68,13 @@ function AreaDoAluno() {
                 }
                 handleContratos();
 
+                const handlePlanos = async () => {
+                    const responsePlanos = await getPlanos()
+                    setPlanos(responsePlanos);
+                }
+
+                handlePlanos()
+
                 const handleReservas = async () => {
                     if (!user) return;
 
@@ -68,6 +83,21 @@ function AreaDoAluno() {
                     setReservas(userReserva)
 
 
+
+                }
+
+                const handleCheckins = async () => {
+                    const checkinsResponse = await getCheckins();
+                    const userCheckins = checkinsResponse.filter((checkin: Checkin) => {
+                        const checkinDate = new Date(checkin.checkin_at); // Converte o timestamp para Date
+                        return checkin?.usuario_id === user?.id && 
+                               isSameWeek(checkinDate, new Date(), { weekStartsOn: 1 }); // Verifica se está na mesma semana
+                    });
+                    setCheckins(userCheckins);
+
+                    // Contar os check-ins e atualizar o estado
+                    setCheckinContato(userCheckins.length); // Atualiza o estado com a contagem de check-ins
+                    
 
                 }
 
@@ -81,6 +111,7 @@ function AreaDoAluno() {
 
                 if (user) {
                     handleReservas()
+                    handleCheckins()
                     handlePagamentos()
                 }
             } catch (error) {
@@ -219,6 +250,8 @@ function AreaDoAluno() {
         const contrato = contratos.filter(contrato => contrato.usuario_id === user.id)
         const modalidade = modalidades.filter(modalidade => modalidade.usuario_id === user.id)
 
+
+
         let nomeCompleto = user.nome;
         let partesNome = nomeCompleto.split(' ')
         let nome = partesNome.slice(0, 2).join(' ')
@@ -247,18 +280,25 @@ function AreaDoAluno() {
                 <section className="menuAluno">
                     <div className="dados">
                         <h2>Informações do seu Plano</h2>
-                        {contrato.map(userContrato => (
-                            <>
-                                <h3 className="plan-title">{userContrato.nome_plano}</h3>
-                                <div className="user-datas">
-                                    <p className="dado"><span>Inicio </span> {userContrato.data_inicio}</p>
-                                    <p className="dado"><span>Renovação </span> {userContrato.data_renovacao}</p>
-                                    <p className="dado"><span>Vencimento  </span>{userContrato.data_vencimento}</p>
-                                </div>
-                                <Button variant='imoogi' onClick={() => baixaPagamento()}>Anexar Comprovante</Button>
-                            </>
+                        {contrato.map(userContrato => {
 
-                        ))}
+                            const nomePlano = userContrato.nome_plano;
+
+                            const checkinsPlanos = planos.find(plano => plano.nome_plano === nomePlano)
+                            
+                            return (
+                                <>
+                                    <h3 className="plan-title">{userContrato.nome_plano}</h3>
+                                    <div className="user-datas">
+                                        <p className="dado"><span>Inicio </span> {userContrato.data_inicio}</p>
+                                        <p className="dado"><span>Renovação </span> {userContrato.data_renovacao}</p>
+                                        <p className="dado"><span>Vencimento  </span>{userContrato.data_vencimento}</p>
+                                    </div>
+                                    <p><b>Checkins Restantes: </b>{checkinContado.toString()}/{checkinsPlanos?.number_checkins}</p>
+                                    <Button variant='imoogi' onClick={() => baixaPagamento()}>Anexar Comprovante</Button>
+                                </>
+                            )
+                        })}
                     </div>
                     <div className="pagamentos_container">
                         <h2>Pagamentos e Comprovantes</h2>
@@ -293,10 +333,10 @@ function AreaDoAluno() {
                                 {reservas ? reservas.map(reserva => (
                                     <>
                                         <div className="reserva">
-                                            <p className="modalidade-reserva" style={{ margin: "5px" }}>{reserva?.nome_modalidade} - </p>
-                                            <p className="dia_semana_reserva" style={{ margin: "5px" }}>{obterDiaSemana(Number(reserva?.dia_semana[0]))} - </p>
-                                            <p className="horario-reserva" style={{ margin: "5px" }}>{reserva?.horario.substring(0, 5)} - </p>
-                                            <p className="data-reserva" style={{ margin: "5px" }}>{reserva?.data} - </p>
+                                            <p className="modalidade-reserva" style={{ margin: "5px" }}>{reserva?.nome_modalidade}</p>
+                                            <p className="dia_semana_reserva" style={{ margin: "5px" }}>{obterDiaSemana(Number(reserva?.dia_semana[0]))}</p>
+                                            <p className="horario-reserva" style={{ margin: "5px" }}>{reserva?.horario.substring(0, 5)}</p>
+                                            <p className="data-reserva" style={{ margin: "5px" }}>{reserva?.data}</p>
                                         </div>
                                     </>
                                 )) :

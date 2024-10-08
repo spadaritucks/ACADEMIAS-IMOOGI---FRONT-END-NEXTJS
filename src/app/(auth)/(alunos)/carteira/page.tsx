@@ -5,7 +5,7 @@ import { Contrato, getUsers, Usuario, UsuarioModalidade } from "@/Components/api
 import { ClientMain } from "@/Layouts/ClientMain";
 import { FC, useEffect, useState } from "react";
 import '@/Assets/css/pages-styles/area_aluno.css'
-import logo from '../../../../../public/sistema imoogi.jpeg'
+import logo from '../../../../../public/logo imoogi novo sem  fundo.png'
 import Image from "next/image";
 import ReactPDF, { PDFDownloadLink } from '@react-pdf/renderer';
 import { border } from "@chakra-ui/react";
@@ -100,6 +100,7 @@ const downloadPDF = () => {
         return <div className="flex justify-center items-center h-screen">
             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
             <p className="ml-2">Carregando dados...</p>
+
         </div>
     }
 

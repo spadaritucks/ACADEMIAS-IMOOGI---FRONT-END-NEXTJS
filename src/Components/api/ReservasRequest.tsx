@@ -11,6 +11,11 @@ export interface Reserva {
     data: string
 }
 
+export interface Checkin{
+    usuario_id: number,
+    checkin_at: string
+}
+
 export const getReservas = async () =>{
 
     try{
@@ -66,5 +71,18 @@ export const deleteReserva = async (id:number) => {
     }catch(error){
         console.error("Erro ao criar a reserva" + error)
         throw error
+    }
+}
+
+export const getCheckins = async () => {
+    try{
+
+        const response = await api.get('/api/checkins')
+
+        return response.data.checkins
+
+    }catch(error){
+        console.error('Erro ao consultar os checkins' + error)
+        throw error;
     }
 }
