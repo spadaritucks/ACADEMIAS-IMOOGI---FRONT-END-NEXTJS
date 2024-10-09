@@ -218,10 +218,8 @@ function GradeReservas() {
     };
 
     // Agrupando as aulas por dia da semana
-    const aulasPorDia = diasDaSemana.map((dia) => {
-        const diaIndex = diasDaSemana.indexOf(dia); // Obter o índice do dia da semana
-        const dataCorrespondente = format(addDays(semanaAtual, diaIndex -1 ), 'yyyy-MM-dd'); // Ajustar o cálculo da data correspondente
-
+    const aulasPorDia = diasDaSemana.map((dia, index) => {
+        const dataCorrespondente = format(addDays(startOfWeek(semanaAtual, { weekStartsOn: 1 }), index), 'yyyy-MM-dd'); // Calcular a data a partir do início da semana
         return {
             dia,
             aulas: aulas.filter(aula => aulaOcorreNoDia(aula, dia)),
