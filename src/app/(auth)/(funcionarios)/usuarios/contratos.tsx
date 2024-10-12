@@ -27,13 +27,30 @@ export const Contratos: React.FC<UsuariosProps> = ({ formErrors, user, contrato,
     const [packs, setPacks] = useState<Packs[]>([]);
     const [packVisibility, setPackVisibility] = useState<boolean>(false);
 
+    const [contratosInputVisibility, setContratosInputVisibility] = useState<boolean>(false)
+
+
+
+    const dataInputState = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = e.target.options[e.target.selectedIndex];
+        const selectedPlano = value.innerHTML
+
+        if(selectedPlano === "Gympass" || selectedPlano === "Totalpass"){
+            setContratosInputVisibility(true)
+        }else{
+            setContratosInputVisibility(false)
+        }
+
+        
+}
+
     const inputModalidadeVisibility = () => {
         setInputVisibility(!inputVisibility) //Visibilidade do Input das Modalidaddes
     }
 
     const tooglePackVisibility = () => {
         setPackVisibility(!packVisibility)
-        
+
     }
 
 
@@ -69,7 +86,7 @@ export const Contratos: React.FC<UsuariosProps> = ({ formErrors, user, contrato,
             } catch (error) {
                 console.error('Failed to fetch packs:', error);
             }
-            
+
         };
         fetchPacks()
         fetchPlanos();
@@ -82,7 +99,7 @@ export const Contratos: React.FC<UsuariosProps> = ({ formErrors, user, contrato,
         <>
             <div className="form-name-input">
                 <span>Plano</span>
-                <select name="planos_id" id="planos_id">
+                <select name="planos_id" id="planos_id" onChange={dataInputState}>
                     <option value="" disabled selected >Selecione</option>
                     {planos.map((plano) => (
                         <option value={plano.id}>
@@ -90,7 +107,7 @@ export const Contratos: React.FC<UsuariosProps> = ({ formErrors, user, contrato,
                         </option>
                     ))}
                 </select>
-                <button className='insertMoreOne' onClick={tooglePackVisibility} type='button'>Incluir Pack?</button>
+                <button className='insertMoreOne' onClick={tooglePackVisibility} disabled={inputVisibility} type='button'>Incluir Pack?</button>
                 {formErrors && formErrors.planos_id ? <small className="error-message">{formErrors.modalidade_id[0]}</small> : ""}
             </div>
 
@@ -105,7 +122,7 @@ export const Contratos: React.FC<UsuariosProps> = ({ formErrors, user, contrato,
                     ))}
                     {formErrors && formErrors.pack_id ? <small className="error-message">{formErrors.pack_id[0]}</small> : ""}
                 </select>
-                
+
             </div>
 
 
@@ -138,28 +155,40 @@ export const Contratos: React.FC<UsuariosProps> = ({ formErrors, user, contrato,
 
             <div className="form-name-input">
                 <span>Data de Inicio</span>
-                <input type="date" name='data_inicio' id="data_inicio" />
+                <input type="date" name='data_inicio' id="data_inicio" disabled={contratosInputVisibility
+
+                } />
                 {formErrors && formErrors.data_inicio ? <small className="error-message">{formErrors.data_inicio[0]}</small> : ""}
             </div><div className="form-name-input">
                 <span>Data de Renovação</span>
-                <input type="date" name='data_renovacao' id="data_renovacao" />
+                <input type="date" name='data_renovacao' id="data_renovacao" disabled={contratosInputVisibility
+
+                } />
                 {formErrors && formErrors.data_renovacao ? <small className="error-message">{formErrors.data_renovacao[0]}</small> : ""}
             </div><div className="form-name-input">
                 <span>Data de Vencimento</span>
-                <input type="date" name='data_vencimento' id="data_vencimento" />
+                <input type="date" name='data_vencimento' id="data_vencimento" disabled={contratosInputVisibility
+
+                } />
                 {formErrors && formErrors.data_vencimento ? <small className="error-message">{formErrors.data_vencimento[0]}</small> : ""}
             </div><div className="form-name-input">
                 <span>Valor do Plano</span>
-                <input type="text" name='valor_plano' id="valor_plano" />
+                <input type="text" name='valor_plano' id="valor_plano" disabled={contratosInputVisibility
+
+                } />
                 {formErrors && formErrors.valor_plano ? <small className="error-message">{formErrors.valor_plano[0]}</small> : ""}
 
             </div><div className="form-name-input">
                 <span>Desconto (em %)</span>
-                <input type="text" name='desconto' id="desconto" />
+                <input type="text" name='desconto' id="desconto" disabled={contratosInputVisibility
+
+                } />
                 {formErrors && formErrors.desconto ? <small className="error-message">{formErrors.desconto[0]}</small> : ""}
             </div><div className="form-name-input">
                 <span>Parcelas</span>
-                <input type="text" name='parcelas' id="parcelas" />
+                <input type="text" name='parcelas' id="parcelas" disabled={contratosInputVisibility
+
+                } />
                 {formErrors && formErrors.parcelas ? <small className="error-message">{formErrors.parcelas[0]}</small> : ""}
             </div><div className="form-name-input">
                 <span>Observações</span>

@@ -1,4 +1,3 @@
-
 'use client';
 import '../../../../Assets/css/pages-styles/dashboard.css';
 import {
@@ -44,7 +43,7 @@ import { getPagamentosMensais, PagamentoMensal, putPagamentosMensais } from '@/C
 const Dashboard = () => {
     return (
         <AdmMain>
-                <DashboardContent />
+            <DashboardContent />
         </AdmMain>
     );
 };
@@ -207,12 +206,11 @@ const DashboardContent = () => {
 
     const handleStatusUser = (id: number) => {
         const contrato = contratos.find(contrato => contrato.usuario_id === id);
+
         if (contrato) {
             const dataHoje = new Date();
             const data_vencimento = new Date(contrato.data_vencimento || '');
-            if (isNaN(data_vencimento.getTime())) {
-                return 'Data inválida';
-            }
+
             const diffInTime = data_vencimento.getTime() - dataHoje.getTime();
             const dias = Math.ceil(diffInTime / (1000 * 3600 * 24));
             if (dias > 30) {
@@ -221,7 +219,13 @@ const DashboardContent = () => {
                 return <p>{dias} dias restantes <br />Renovação</p>;
             } else if (dias <= 0) {
                 return <p>{dias} dias restantes <br />Vencido</p>;
+            } else if (contrato.nome_plano === "Gympass") {
+                return <p>Gympass</p>
             }
+            else if (contrato.nome_plano === "Totalpass") {
+                return <p>Gympass</p>
+            }
+
         } else {
             return 'Colaborador';
         }
@@ -393,6 +397,25 @@ const DashboardContent = () => {
             } catch (error) {
                 console.error('Erro ao enviar comentário:', error);
             }
+        }
+    };
+
+    const handleAlunoPass = () => {
+        const contrato = contratos.filter(contrato => contrato.nome_plano === "Gympass" || contrato.nome_plano === "Totalpass");
+        
+        if (contrato.length > 0) {
+            return contrato.map(contrato => {
+                const user = users.filter(user => user.id === contrato.usuario_id);
+                return user.map(user => (
+                    <div className='aluno_beneficio' key={user.id}>
+                        <p>{user.nome}</p>
+                        <Button variant='imoogi'><Link className='text-white decoration-none' href={`https://wa.me/${user.telefone}`}>Telefone</Link></Button>
+                        <p>{contrato.nome_plano}</p>
+                    </div>
+                ));
+            });
+        } else {
+            return <p>Nenhum aluno com benefício encontrado</p>; // Retorna um JSX válido
         }
     };
 
@@ -581,6 +604,13 @@ const DashboardContent = () => {
                     <h2>Planos em Renovação</h2>
                     <div className='planosVencimentoList'>
                         {handlePlanosVencimento()}
+                    </div>
+                </div>
+
+                <div className='alunosGympassTotalpass'>
+                    <h2>Gympass & Totalpass</h2>
+                    <div className='alunosGympassTotalpassList'>
+                        {handleAlunoPass()}
                     </div>
                 </div>
             </div>
