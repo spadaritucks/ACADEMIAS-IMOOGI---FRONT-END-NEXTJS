@@ -133,15 +133,37 @@ function GradeReservas() {
 
     const clickReserva = async (modalidade_id: number, horario: string, dia_semana: string, limite_alunos: number, dataCorrespondente: string) => {
         if (!user) return;
-
-        const aulaKey = generateKey(modalidade_id, horario, dia_semana, dataCorrespondente);
+        const dia_semanaIndex = diasDaSemana.indexOf(dia_semana)
+        const aulaKey = generateKey(modalidade_id, horario, dia_semanaIndex.toString(), dataCorrespondente);
         const reservasAtual = reservasPorAula[aulaKey] || 0;
+
+        const reservaExistente = reservas.find(reserva => reserva.usuario_id === user.id
+                                              && reserva.modalidade_id === modalidade_id
+                                              && reserva.horario === horario
+                                              && reserva.dia_semana === dia_semanaIndex.toString()
+                                              && reserva.data === dataCorrespondente
+        )
+        console.log(reservaExistente)
+        if(reservaExistente){
+            const reservaKey = generateKey(reservaExistente.modalidade_id, reservaExistente.horario, reservaExistente.dia_semana, reservaExistente.data)
+            console.log(aulaKey, reservaKey)
+            
+            if(reservaKey === aulaKey){
+                modalServer('Erro', 'Você já reservou essa aula!')
+                return
+            }
+        }
+        
 
         // Verifica se o limite de alunos foi atingido
         if (reservasAtual >= limite_alunos) {
             modalServer('Erro', 'O limite de alunos para esta aula já foi atingido.');
             return;
         }
+
+        
+
+        
 
 
 
