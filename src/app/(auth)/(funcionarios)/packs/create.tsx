@@ -55,7 +55,7 @@ export default function Create({handleSubmit,formRef}:createProps) {
                 </div>
 
                 <div className="form-name-input">
-                    <span>Numero de Check-in Permitidos</span>
+                    <span>Check-in Permitidos p/ mês</span>
                     <input type="text" name="number_checkins_especial" id='number_checkins_especial' />
                 </div>
 

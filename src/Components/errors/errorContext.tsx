@@ -16,7 +16,7 @@ export const ModalProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [modalTitle, setModalTitle] = useState('');
     const [modalBody, setModalBody] = useState('');
 
-    const modalServer = (title: string, body: string) => {
+    const modalServer = (title: string, body: string ) => {
         setModalTitle(title);
         setModalBody(body);
         setModalShow(true);

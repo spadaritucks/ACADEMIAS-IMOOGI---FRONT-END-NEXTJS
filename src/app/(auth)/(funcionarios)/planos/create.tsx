@@ -3,17 +3,17 @@
 import '../../../../Assets/css/pages-styles/forms.css'
 import { Plano } from '@/Components/api/PlanosRequest'
 
-interface createProps{
+interface createProps {
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-    formRef: React.RefObject<HTMLFormElement> 
+    formRef: React.RefObject<HTMLFormElement>
 }
 
 
-export default function Create({handleSubmit,formRef}:createProps) {
+export default function Create({ handleSubmit, formRef }: createProps) {
 
     return (
         <>
-        <h2>Criar Contratos</h2>
+            <h2>Criar Contratos</h2>
             <form action="" className="crud-form" onSubmit={handleSubmit} ref={formRef} >
                 <div className="form-name-input">
                     <span>Nome do Plano</span>
@@ -55,14 +55,14 @@ export default function Create({handleSubmit,formRef}:createProps) {
                 </div>
 
                 <div className="form-name-input">
-                    <span>Numero de Check-in Permitidos</span>
+                    <span>Check-in Permitidos p/ Semana</span>
                     <input type="text" name="number_checkins" id='number_checkins' />
                 </div>
 
-                   <div className="form-name-input" style={{ gridColumn: '1 / -1' }}>
+                <div className="form-name-input" style={{ gridColumn: '1 / -1' }}>
                     <button type='submit' className='submit-button'>Enviar</button>
                 </div>
-                
+
             </form>
         </>
     )

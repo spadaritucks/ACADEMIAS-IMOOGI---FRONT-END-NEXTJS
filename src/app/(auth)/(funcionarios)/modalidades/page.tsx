@@ -21,6 +21,8 @@ import Image from 'next/image';
 import { AdmMain } from '@/Layouts/AdmMain';
 import UserSession from '@/Components/api/UserSession';
 import modalidade from "@/app/modalidade/page";
+import { Contrato, getUsers, UsuarioModalidade } from "@/Components/api/UsuariosRequest";
+import { useUserEditModal } from "@/Components/user-modals-edit/EditUserContext";
 
 function Modalidade() {
 
@@ -29,6 +31,9 @@ function Modalidade() {
     const [showRead, setShowRead] = useState<any[]>([]);
     const [showDelete, setShowDelete] = useState<Boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [userModalidade, setUserModalidades] = useState<UsuarioModalidade[]>([])
+    const [delele, setDelete] = useState<boolean>();
+    const { showModal } = useUserEditModal();
 
     const formRef = useRef<HTMLFormElement>(null)
     const { modalServer } = useModal();
@@ -53,26 +58,29 @@ function Modalidade() {
 
     const handleShowRead = () => {
         setIsLoading(true);
-        try{
+        try {
             const request = async () => {
                 const response = await getModalidade()
                 setShowRead(response)
-    
+
+                const userResponse = await getUsers();
+                setUserModalidades(userResponse.modalidades);
+
             }
-    
+
             request()
-        }catch(error){
+        } catch (error) {
             console.error("Erro ao carregar dados:", error);
-        }finally{
+        } finally {
             setIsLoading(false)
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         handleShowRead()
-    },[])
+    }, [])
 
-   
+
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -116,16 +124,24 @@ function Modalidade() {
         e.preventDefault();
         if (formRef.current) {
             const formdata = new FormData(formRef.current)
-            const id = formdata.get('modalidade_id')
+            const id = formdata.get('modalidade_id') as string
+            const idNumber = parseInt(id)
+
+            const usuariosExistentes = userModalidade.find(modalidade => modalidade.modalidade_id === idNumber)
 
 
-            if (id) {
-                const sendFormdata = async () => {
-                    const response: any = await deleteModalidade(id)
-                    modalServer('Sucesso', response)
-                    console.log(response)
+            if (usuariosExistentes) {
+                modalServer("Erro", 'Já existem usuarios vinculados a essa modalidade')
+                return
+            } else {
+                if (id) {
+                    const sendFormdata = async () => {
+                        const response: any = await deleteModalidade(id)
+                        modalServer('Sucesso', response)
+                        console.log(response)
+                    }
+                    sendFormdata()
                 }
-                sendFormdata()
             }
 
             handleShowRead()

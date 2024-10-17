@@ -20,12 +20,14 @@ import { useModal } from '@/Components/errors/errorContext';
 import { AdmMain } from '@/Layouts/AdmMain';
 import UserSession from '@/Components/api/UserSession';
 import { set } from "date-fns";
+import { Contrato, getUsers } from "@/Components/api/UsuariosRequest";
 
- function Planos() {
+function Planos() {
 
     const [showCreate, setShowCreate] = useState<Boolean>(false);
     const [showUpdate, setShowUpdate] = useState<Boolean>(false);
     const [showRead, setShowRead] = useState<any[]>([]);
+    const [userPlan, setUserPlan] = useState<Contrato[]>([])
     const [showDelete, setShowDelete] = useState<Boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -57,7 +59,10 @@ import { set } from "date-fns";
             const request = async () => {
                 const response = await getPlanos()
                 setShowRead(response)
-                
+
+                const responseUsers = await getUsers()
+                setUserPlan(responseUsers.contratos);
+
 
             }
 
@@ -114,21 +119,29 @@ import { set } from "date-fns";
         e.preventDefault();
         if (formRef.current) {
             const formdata = new FormData(formRef.current)
-            const id = formdata.get('planos_id')
+            const id = formdata.get('planos_id') as string
+            const idNumber = parseInt(id)
+
+            const usuariosVinculados = userPlan.find(contrato => contrato.planos_id === idNumber)
 
 
-            if (id) {
-                const sendFormdata = async () => {
-                    const response: any = await deletePlano(id)
-                    modalServer('Sucesso', response)
-                    console.log(response)
+            if (usuariosVinculados) {
+                modalServer('Erro', 'Existem usuarios vinculados a esse plano')
+                return
+            } else {
+                if (id) {
+                    const sendFormdata = async () => {
+                        const response: any = await deletePlano(id)
+                        modalServer('Sucesso', response)
+                        console.log(response)
+                    }
+                    sendFormdata()
                 }
-                sendFormdata()
             }
 
             setIsLoading(true)
             handleShowRead()
-           
+
         }
 
     }

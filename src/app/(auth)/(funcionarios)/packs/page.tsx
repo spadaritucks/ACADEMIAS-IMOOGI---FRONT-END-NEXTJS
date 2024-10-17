@@ -19,16 +19,18 @@ import { getPacks, createPack, deletePack, updatePack } from '@/Components/api/P
 import { useModal } from '@/Components/errors/errorContext';
 import { AdmMain } from '@/Layouts/AdmMain';
 import UserSession from '@/Components/api/UserSession';
+import { Contrato, getUsers } from "@/Components/api/UsuariosRequest";
 
 
 
- function Packs() {
+function Packs() {
 
     const [showCreate, setShowCreate] = useState<Boolean>(false);
     const [showUpdate, setShowUpdate] = useState<Boolean>(false);
     const [showRead, setShowRead] = useState<any[]>([]);
     const [showDelete, setShowDelete] = useState<Boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [userPack, setUserPack] = useState<Contrato[]>([])
 
     const formRef = useRef<HTMLFormElement>(null)
     const { modalServer } = useModal();
@@ -52,11 +54,15 @@ import UserSession from '@/Components/api/UserSession';
     }
 
     const handleShowRead = () => {
-setIsLoading(true)
+        setIsLoading(true)
         try {
             const request = async () => {
                 const response = await getPacks()
                 setShowRead(response)
+
+                const userResponse = await getUsers()
+                setUserPack(userResponse.contratos)
+
 
             }
 
@@ -111,17 +117,26 @@ setIsLoading(true)
         e.preventDefault();
         if (formRef.current) {
             const formdata = new FormData(formRef.current)
-            const id = formdata.get('pack_id')
+            const id = formdata.get('pack_id') as string
+            const idNumber = parseInt(id)
 
+            const usuariosExistentes = userPack.find(pack => pack.packs_id === idNumber)
 
-            if (id) {
-                const sendFormdata = async () => {
-                    const response: any = await deletePack(id)
-                    modalServer('Sucesso', response)
-                    console.log(response)
+            if (usuariosExistentes) {
+                modalServer('Erro', 'Já existe usuarios vinculados a esse pack')
+                return
+            } else {
+                if (id) {
+                    const sendFormdata = async () => {
+                        const response: any = await deletePack(id)
+                        modalServer('Sucesso', response)
+                        console.log(response)
+                    }
+                    sendFormdata()
                 }
-                sendFormdata()
             }
+
+
 
             handleShowRead()
         }

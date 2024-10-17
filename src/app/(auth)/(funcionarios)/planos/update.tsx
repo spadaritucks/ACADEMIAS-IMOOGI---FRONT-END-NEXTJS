@@ -90,7 +90,7 @@ export default function Update({ planos, handleSubmitUpdate, formRef }: PlanosPr
                 </div>
 
                 <div className="form-name-input">
-                    <span>Numero de Check-in Permitidos</span>
+                    <span>Check-in Permitidos p/ Semana</span>
                     <input type="text" name="number_checkins" id='number_checkins' />
                 </div>
 
