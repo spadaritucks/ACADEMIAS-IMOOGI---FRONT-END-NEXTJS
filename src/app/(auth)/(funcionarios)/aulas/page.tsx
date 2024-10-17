@@ -6,7 +6,7 @@ import {
 import { AdmMain } from "@/Layouts/AdmMain"
 import '@/Assets/css/pages-styles/aulas.css'
 import { useEffect, useRef, useState } from 'react';
-import { Aula, createAula, getAulas } from '@/Components/api/AulasRequest';
+import { Aula, createAula, deleteAula, getAulas } from '@/Components/api/AulasRequest';
 import '../../../../Assets/css/pages-styles/crud.css'
 import { useModal } from '@/Components/errors/errorContext';
 import '../../../../Assets/css/pages-styles/dashboard.css'
@@ -156,6 +156,14 @@ const AulasContent = () => {
         }
     }
 
+    const handleSubmitDelete = async (id: number) => {
+        
+        const response = await deleteAula(id)
+        modalServer('Sucesso', response)
+       
+
+    }
+
     // Função para verificar se a aula ocorre em um determinado dia
     const aulaOcorreNoDia = (aula: Aula, diaSemana: string) => {
         const dataInicio = parseISO(aula.data_inicio);
@@ -287,6 +295,7 @@ const AulasContent = () => {
                                                         <p className='horario'>{aula.horario.substring(0, 5)}</p>
                                                         <Button variant='default' onClick={() => modalAlunosAulas(aula.modalidade_id, aula.horario, dia, dataCorrespondente)}>Alunos</Button>
                                                         {reservasPorAula[aulaKey] || 0}/{aula.limite_alunos}
+                                                        <Button variant='destructive' onClick={() => handleSubmitDelete(aula.id)}>Excluir</Button>
                                                     </div>
                                                 );
                                             }

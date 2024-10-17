@@ -43,6 +43,7 @@ export const updateAula = async (id:number, userData:FormData) => {
 
     }catch(error){
         console.error("Erro ao criar a aula" + error)
+        
         throw error
     }
 }

@@ -22,7 +22,6 @@ import { AdmMain } from '@/Layouts/AdmMain';
 import UserSession from '@/Components/api/UserSession';
 import modalidade from "@/app/modalidade/page";
 import { Contrato, getUsers, UsuarioModalidade } from "@/Components/api/UsuariosRequest";
-import { useUserEditModal } from "@/Components/user-modals-edit/EditUserContext";
 
 function Modalidade() {
 
@@ -32,8 +31,7 @@ function Modalidade() {
     const [showDelete, setShowDelete] = useState<Boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [userModalidade, setUserModalidades] = useState<UsuarioModalidade[]>([])
-    const [delele, setDelete] = useState<boolean>();
-    const { showModal } = useUserEditModal();
+  
 
     const formRef = useRef<HTMLFormElement>(null)
     const { modalServer } = useModal();
