@@ -185,9 +185,9 @@ function Packs() {
                                     <TableRow key={pack.id}>
                                         <TableCell className="text-center">{pack.nome_plano}</TableCell>
                                         <TableCell>{pack.duracao > 1 ? pack.duracao + ' meses' : pack.duracao + ' mês'}</TableCell>
-                                        <TableCell>{'R$' + pack.valor_matricula}</TableCell>
-                                        <TableCell>{'R$' + pack.valor_mensal}</TableCell>
-                                        <TableCell>{'R$' + pack.valor_total}</TableCell>
+                                        <TableCell>{'R$' + pack.valor_matricula.replace('.', ',')}</TableCell>
+                                        <TableCell>{'R$' + pack.valor_mensal.replace('.', ',')}</TableCell>
+                                        <TableCell>{'R$' + pack.valor_total.replace('.', ',')}</TableCell>
                                         <TableCell>{pack.num_modalidades > 1 ? pack.num_modalidades + ' modalidades' : pack.num_modalidades + ' modalidade'}</TableCell>
                                         <TableCell>{pack.status}</TableCell>
                                         <TableCell>{pack.number_checkins}</TableCell>

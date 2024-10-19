@@ -79,6 +79,7 @@ function Planos() {
 
         if (formRef.current) {
             const formdata = new FormData(formRef.current)
+            
             const sendFormdata = async () => {
                 const response: any = await createPlano(formdata)
                 modalServer('Sucesso', response)
@@ -188,9 +189,9 @@ function Planos() {
                                     <TableRow key={planos.id}>
                                         <TableCell className="text-center">{planos.nome_plano}</TableCell>
                                         <TableCell>{planos.duracao > 1 ? planos.duracao + ' meses' : planos.duracao + ' mês'}</TableCell>
-                                        <TableCell>{'R$' + planos.valor_matricula}</TableCell>
-                                        <TableCell>{'R$' + planos.valor_mensal}</TableCell>
-                                        <TableCell>{'R$' + planos.valor_total}</TableCell>
+                                        <TableCell>{'R$' + planos.valor_matricula.replace('.', ',')}</TableCell>
+                                        <TableCell>{'R$' + planos.valor_mensal.replace('.', ',')}</TableCell>
+                                        <TableCell>{'R$' + planos.valor_total.replace('.', ',')}</TableCell>
                                         <TableCell>{planos.num_modalidades > 1 ? planos.num_modalidades + ' modalidades' : planos.num_modalidades + ' modalidade'}</TableCell>
                                         <TableCell>{planos.status}</TableCell>
                                         <TableCell>{planos.number_checkins}</TableCell>

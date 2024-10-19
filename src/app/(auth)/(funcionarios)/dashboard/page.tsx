@@ -641,8 +641,8 @@ const UserForm = ({ selectType, user, contrato, modalidade, funcionario, pack, f
                 (form['data_inicio'] as HTMLInputElement).value = contrato.data_inicio.toString();
                 (form['data_renovacao'] as HTMLInputElement).value = contrato.data_renovacao.toString();
                 (form['data_vencimento'] as HTMLInputElement).value = contrato.data_vencimento.toString();
-                (form['valor_plano'] as HTMLInputElement).value = contrato.valor_plano.toString();
-                (form['desconto'] as HTMLInputElement).value = contrato.desconto.toString();
+                (form['valor_plano'] as HTMLInputElement).value = contrato.valor_plano.toString().replace('.', ',');
+                (form['desconto'] as HTMLInputElement).value = contrato.desconto.toString().replace('.', ',');
                 (form['parcelas'] as HTMLInputElement).value = contrato.parcelas.toString();
                 (form['observacoes'] as HTMLInputElement).value = contrato.observacoes.toString();
             }

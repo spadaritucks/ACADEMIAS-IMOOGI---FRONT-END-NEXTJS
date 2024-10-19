@@ -11,6 +11,7 @@ interface UsuariosProps {
     funcionario?: DadosFuncionario;
     handleInputClick?: () => void
     formErrors?: { [key: string] : string[]}
+    
   
 }
 

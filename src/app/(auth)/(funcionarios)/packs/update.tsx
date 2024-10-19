@@ -22,9 +22,9 @@ export default function Update({ packs, handleSubmitUpdate, formRef }: PlanosPro
             // Atualize os campos do formulário com os dados do plano selecionado
             (form['nome_plano'] as HTMLInputElement).value = selectedPlano.nome_plano.toString();
             (form['duracao'] as HTMLInputElement).value = selectedPlano.duracao.toString();
-            (form['valor_matricula'] as HTMLInputElement).value = selectedPlano.valor_matricula.toString();
-            (form['valor_mensal'] as HTMLInputElement).value = selectedPlano.valor_mensal.toString();
-            (form['valor_total'] as HTMLInputElement).value = selectedPlano.valor_total.toString();
+            (form['valor_matricula'] as HTMLInputElement).value = selectedPlano.valor_matricula.toString().replace('.', ',');
+            (form['valor_mensal'] as HTMLInputElement).value = selectedPlano.valor_mensal.toString().replace('.', ',');
+            (form['valor_total'] as HTMLInputElement).value = selectedPlano.valor_total.toString().replace('.', ',');
             (form['num_modalidades'] as HTMLSelectElement).value = selectedPlano.num_modalidades.toString();
             (form['status'] as HTMLSelectElement).value = selectedPlano.status;
             (form['number_checkins_especial'] as HTMLInputElement).value = selectedPlano.number_checkins_especial.toString();

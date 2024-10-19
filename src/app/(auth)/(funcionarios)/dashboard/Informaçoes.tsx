@@ -24,8 +24,8 @@ export const Informacoes: React.FC<Informacoes> = ({ contrato, modalidade, funci
                     <p className='info'><span className='info-name'>Data de Inicio:  </span>{contrato.data_inicio}</p>
                     <p className='info'><span className='info-name'>Data de Renovação :  </span>{contrato.data_renovacao}</p>
                     <p className='info'><span className='info-name'>Data de Vencimento :  </span>{contrato.data_vencimento}</p>
-                    <p className='info'><span className='info-name'>Valor do Plano :  </span>{contrato.valor_plano}</p>
-                    <p className='info'><span className='info-name'>Desconto :  </span>{contrato.desconto}</p>
+                    <p className='info'><span className='info-name'>Valor do Plano :  </span>{contrato.valor_plano.replace('.', ',')}</p>
+                    <p className='info'><span className='info-name'>Desconto :  </span>{contrato.desconto.replace('.', ',')}</p>
                     <p className='info'><span className='info-name'>Parcelas :  </span>{contrato.parcelas}</p>
                     <p className='info'><span className='info-name'>Observações :  </span>{contrato.observacoes}</p>
                 </div>
