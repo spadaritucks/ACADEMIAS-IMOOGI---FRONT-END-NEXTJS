@@ -420,18 +420,17 @@ const DashboardContent = () => {
     };
 
 
-
-
-
     //Prenchimento dos Graficos
     useEffect(() => {
         let ativosCount = 0;
         let renovacaoCount = 0;
         let vencidosCount = 0;
-        let alunosCount
+        let alunosCount = 0
 
         users.forEach((user) => {
             const contrato = contratos.find(contrato => contrato.usuario_id === user.id);
+            const contratoGympass = contratos.find(contrato => contrato.nome_plano === 'Gympass')
+            const contratoTotalpass = contratos.find(contrato => contrato.nome_plano === 'Totalpass')
 
             if (contrato) {
                 const dataHoje = new Date();
@@ -441,7 +440,7 @@ const DashboardContent = () => {
                     const diffInTime = data_renovacao.getTime() - dataHoje.getTime();
                     const dias = Math.ceil(diffInTime / (1000 * 3600 * 24));
 
-                    if (dias > 30) {
+                    if (dias > 30 ) {
                         ativosCount++;
                     } else if (dias <= 30 && dias > 0) {
                         renovacaoCount++;
@@ -449,7 +448,12 @@ const DashboardContent = () => {
                         vencidosCount++;
                     }
                 }
+                
             }
+            if (contratoGympass || contratoTotalpass) {
+                alunosCount++
+            }
+            
         });
 
         setAtivos(ativosCount);
