@@ -223,7 +223,7 @@ const DashboardContent = () => {
                 return <p>Gympass</p>
             }
             else if (contrato.nome_plano === "Totalpass") {
-                return <p>Gympass</p>
+                return <p>Totalpass</p>
             }
 
         } else {
@@ -426,11 +426,13 @@ const DashboardContent = () => {
         let renovacaoCount = 0;
         let vencidosCount = 0;
         let alunosCount = 0
+        let passCount = 0
+        
 
         users.forEach((user) => {
             const contrato = contratos.find(contrato => contrato.usuario_id === user.id);
-            const contratoGympass = contratos.find(contrato => contrato.nome_plano === 'Gympass')
-            const contratoTotalpass = contratos.find(contrato => contrato.nome_plano === 'Totalpass')
+            const contratoGympass = contratos.find(contrato => contrato.usuario_id === user.id && contrato.nome_plano === 'Gympass')
+            const contratoTotalpass = contratos.find(contrato => contrato.usuario_id === user.id && contrato.nome_plano === 'Totalpass')
 
             if (contrato) {
                 const dataHoje = new Date();
@@ -447,19 +449,23 @@ const DashboardContent = () => {
                     } else if (dias <= 0) {
                         vencidosCount++;
                     }
+                    
+                }
+
+                if(contratoGympass || contratoTotalpass){
+                    passCount++
                 }
                 
+                
             }
-            if (contratoGympass || contratoTotalpass) {
-                alunosCount++
-            }
+            
             
         });
 
         setAtivos(ativosCount);
         setRenovacao(renovacaoCount);
         setVencidos(vencidosCount);
-        alunosCount = ativosCount + renovacaoCount
+        alunosCount = ativosCount + renovacaoCount + passCount;
 
         setNumAlunos(alunosCount)
 
