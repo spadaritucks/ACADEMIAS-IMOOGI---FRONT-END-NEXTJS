@@ -7,6 +7,7 @@ import { ModalProvider } from '@/Components/errors/errorContext';
 import GlobalModal from "@/Components/errors/GlobalModal";
 import { ChakraProvider } from '@chakra-ui/react'
 import { ModalEditUserProvider } from '@/Components/user-modals-edit/EditUserContext';
+import EditUserModal from '@/Components/user-modals-edit/EditUserModal';
 
 
 
@@ -35,6 +36,7 @@ export default function RootLayout({
             <ModalProvider>
               {children}
               <GlobalModal />
+              <EditUserModal />
             </ModalProvider>
           </ModalEditUserProvider>
         </ChakraProvider>

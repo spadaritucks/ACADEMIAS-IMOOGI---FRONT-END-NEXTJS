@@ -41,7 +41,7 @@ export default function Update({ packs, handleSubmitUpdate, formRef }: PlanosPro
 
                 <div className="form-name-input">
                     <span>Selecione o Plano</span>
-                    <select name="planos_id" id="planos_id" onChange={handleInputChange}>
+                    <select name="pack_id" id="pack_id" onChange={handleInputChange}>
                         <option value="" disabled selected >Selecione</option>
                         {packs.map(packs => (
                             <option value={packs.id}>{packs.nome_plano}</option>
