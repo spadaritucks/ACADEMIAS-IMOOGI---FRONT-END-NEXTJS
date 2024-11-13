@@ -109,7 +109,7 @@
 
 .nav-links a{
     color:black;
-    font-size: 28px;
+    font-size: 24px;
     text-decoration: none;
     font-weight: 400;
     margin: 6px;
@@ -127,7 +127,7 @@
 
 .authenticated-nav-links a , .logout{
     color:black;
-    font-size: 28px;
+    font-size: 24px;
     text-decoration: none;
     font-weight: 400;
     margin: 6px;
