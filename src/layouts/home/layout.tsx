@@ -1,5 +1,4 @@
 'use client'
-import MainNavBar from '@/components/MainNavbar'
 import Footer from '@/components/Footer'
 import { FC, ReactNode } from 'react'
 import Navbar from '@/components/navbar/component'

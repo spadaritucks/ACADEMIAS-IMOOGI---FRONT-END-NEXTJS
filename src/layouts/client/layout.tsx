@@ -1,4 +1,3 @@
-import ClientMainNavbar from "@/components/ClientMainNavbar";
 import { FC, ReactNode, useEffect, useRef, useState } from "react";
 import { ModalEditUserProvider, useUserEditModal } from '@/components/user-modals-edit/EditUserContext';
 import EditUserModal from '@/components/user-modals-edit/EditUserModal';
