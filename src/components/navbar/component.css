@@ -1,5 +1,6 @@
 /* Estilização da navbar */
 
+
 .nav-area{
     display: flex;
     align-items: center;
@@ -10,6 +11,11 @@
     height: 70px;
     color: white;
     gap: 10px;
+    
+}
+
+.nav-area h2{
+    font-weight: 500;
 }
 
 
@@ -103,7 +109,7 @@
 
 .nav-links a{
     color:black;
-    font-size: 22px;
+    font-size: 28px;
     text-decoration: none;
     font-weight: 400;
     margin: 6px;
@@ -121,7 +127,7 @@
 
 .authenticated-nav-links a , .logout{
     color:black;
-    font-size: 22px;
+    font-size: 28px;
     text-decoration: none;
     font-weight: 400;
     margin: 6px;

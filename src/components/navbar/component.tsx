@@ -33,7 +33,7 @@ export default function Navbar({ children }: NavbarProps) {
     //Renderização da navbar
     return (
         <nav className="nav-area">
-            <div className="logo-title-click"><Link href="/"><div><Image src={logo} width={80} height={80} alt="" /><h2>ACADEMIAS IMOOGI</h2></div></Link></div>
+            <div className="logo-title-click"><Link href="/"><div><Image src={logo} width={100} height={100} alt="" /><h2>ACADEMIAS IMOOGI</h2></div></Link></div>
             <div className="menu-button" onClick={handleMenuClick} aria-expanded={isMenuOpen}>
                 {isMenuOpen ? <Image src={close} alt="" width={35} height={35} /> : <Image src={menu} alt="" width={35} height={35} />}
             </div>
