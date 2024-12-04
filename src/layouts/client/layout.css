@@ -1,3 +1,7 @@
+body{
+    overflow-x: hidden
+}
+
 .user-area{
     display: flex;
     flex-direction: column;

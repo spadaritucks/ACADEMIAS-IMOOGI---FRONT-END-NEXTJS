@@ -133,8 +133,9 @@ const DashboardContent = () => {
         const funcionario = funcionarios.find(funcionario => funcionario?.usuario_id === id)
         const modalidade = userModalidade.filter(modalidade => modalidade.usuario_id === id)
         const pack = packs.find(pack => pack.id === contrato?.packs_id);
+        const user = users.find(user => user.id === id);
 
-        showModal('Informações do Usuario', <Informacoes pack={pack} contrato={contrato} funcionario={funcionario} modalidade={modalidade} />)
+        showModal('Informações do Usuario - ' + user?.nome.split(' ').slice(0, 2).join(' '), <Informacoes user={user} pack={pack} contrato={contrato} funcionario={funcionario} modalidade={modalidade} />)
     }
 
     const handleEditClickWithType = (id: number, title: string) => {
