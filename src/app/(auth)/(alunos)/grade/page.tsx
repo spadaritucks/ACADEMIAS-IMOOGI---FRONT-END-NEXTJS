@@ -131,6 +131,8 @@ function GradeReservas() {
         fetchReservas();
     }, [])
 
+    
+
     const clickReserva = async (modalidade_id: number, horario: string, dia_semana: string, limite_alunos: number, dataCorrespondente: string) => {
         if (!user) return;
         const dia_semanaIndex = diasDaSemana.indexOf(dia_semana)
@@ -230,6 +232,8 @@ function GradeReservas() {
 
     };
 
+    
+
     // Função para verificar se a aula ocorre em um determinado dia da semana atual
     const aulaOcorreNoDia = (aula: Aula, diaSemana: string) => {
 
@@ -314,6 +318,7 @@ function GradeReservas() {
                                                             >
                                                                 Reservar
                                                             </button>
+         
                                                             <p className="limiteAlunos">
                                                                 {reservasPorAula[aulaKey] || 0}/{aula.limite_alunos}
                                                             </p>

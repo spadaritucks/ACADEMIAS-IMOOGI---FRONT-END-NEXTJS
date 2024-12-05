@@ -124,11 +124,11 @@ function AreaDoAluno() {
 
 
 
-        const clickDeleteReserva = async () => {
+        const clickDeleteReserva = async (id:number) => {
             if (!user) return;
 
             if (reservas) {
-                const response = await deleteReserva(reservas.id);
+                const response = await deleteReserva(id);
                 modalServer("Reserva Excluida", response);
 
                 // Atualize o estado de reservas para forçar a re-renderização
@@ -337,6 +337,7 @@ function AreaDoAluno() {
                                             <p className="dia_semana_reserva" style={{ margin: "5px" }}>{obterDiaSemana(Number(reserva?.dia_semana[0]))}</p>
                                             <p className="horario-reserva" style={{ margin: "5px" }}>{reserva?.horario.substring(0, 5)}</p>
                                             <p className="data-reserva" style={{ margin: "5px" }}>{reserva?.data}</p>
+                                            <Button variant='destructive' type="button" onClick={()=> clickDeleteReserva(reserva.id)}  >Remover</Button>
                                         </div>
                                     </>
                                 )) :

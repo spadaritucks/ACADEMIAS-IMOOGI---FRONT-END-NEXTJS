@@ -1,4 +1,5 @@
 /* Estilização da navbar */
+@import url('https://fonts.googleapis.com/css2?family=Antonio:wght@100..700&display=swap');
 
 
 .nav-area{
@@ -12,6 +13,7 @@
     color: white;
     gap: 10px;
     overflow: hidden;
+  
     
 }
 
