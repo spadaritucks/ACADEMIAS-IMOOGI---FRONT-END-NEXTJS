@@ -617,6 +617,7 @@ const DashboardContent = () => {
 
                                                         </DropdownMenuContent>
                                                     </DropdownMenu>
+
                                                     <Button variant='imoogi' onClick={() => handleDeleteButton(user.id)}>Excluir</Button>
                                                 </>
                                             </div>

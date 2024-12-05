@@ -131,8 +131,7 @@ function AreaDoAluno() {
                 const response = await deleteReserva(id);
                 modalServer("Reserva Excluida", response);
 
-                // Atualize o estado de reservas para forçar a re-renderização
-                setReservas(undefined); // Ou null, dependendo do que você preferir
+                
             }
         }
 
