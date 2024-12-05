@@ -178,12 +178,12 @@ const AulasContent = () => {
 
         showModal('Tem certeza que deseja deletar esta aula?',
             <>
-                <Button variant='imoogi' onClick={async () => {
+                <Button variant='imoogi' onClick={ async () => {
                     if (formRef.current) {
                         const formdata = new FormData(formRef.current);
-                        const id = formdata.get('aula_id') as string;
+                        
                         if (id) {
-                            const response: any = await deleteAula(Number(id));
+                            const response = await deleteAula(Number(id));
                             modalServer('Sucesso', response);
                         }
                     }
