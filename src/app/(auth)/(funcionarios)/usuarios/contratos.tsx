@@ -118,7 +118,7 @@ export const Contratos: React.FC<UsuariosProps> = ({ toogleSecondInputModalidade
                         </option>
                     ))}
                 </select>
-                <button className='insertMoreOne' onClick={tooglePackVisibility} disabled={inputVisibility} type='button'>Incluir Pack?</button>
+                <button className='insertMoreOne' onClick={tooglePackVisibility}  type='button'>Incluir Pack?</button>
                 {formErrors && formErrors.planos_id ? <small className="error-message">{formErrors.modalidade_id[0]}</small> : ""}
             </div>
 
