@@ -704,17 +704,18 @@ const DashboardContent = () => {
 
                                                         <DropdownMenuTrigger><Button variant='imoogi'>Ações</Button></DropdownMenuTrigger>
                                                         <DropdownMenuContent>
+                                    
                                                             <DropdownMenuItem onClick={() => handleDadosPessoais(user.id)}>Dados Pessoais</DropdownMenuItem>
                                                             <DropdownMenuItem onClick={() => handleInformacoes(user.id)}>Informações</DropdownMenuItem>
-                                                            <DropdownMenuItem onClick={() => handleEditClickWithType(user.id, 'Editar Usuarios')}>Editar Usuario</DropdownMenuItem>
+                                                            <DropdownMenuItem onClick={() => handleEditClickWithType(user.id, 'Editar Usuarios - ' + user?.nome.split(' ').slice(0, 2).join(' ') )}>Editar Usuario</DropdownMenuItem>
                                                             {user.tipo_usuario === 'aluno' && (
-                                                                <DropdownMenuItem onClick={() => handleUserModalidadeEdit(user.id, 'Alterar Modalidades')}>Alterar Modalidades</DropdownMenuItem>
+                                                                <DropdownMenuItem onClick={() => handleUserModalidadeEdit(user.id, 'Alterar Modalidades - ' + user?.nome.split(' ').slice(0, 2).join(' ') )}>Alterar Modalidades</DropdownMenuItem>
                                                             )}
                                                             {user.tipo_usuario === 'aluno' && (
-                                                                <DropdownMenuItem onClick={() => handleUserPlanosEdit(user.id, 'Alterar Plano')}>Alterar Plano/Pack</DropdownMenuItem>
+                                                                <DropdownMenuItem onClick={() => handleUserPlanosEdit(user.id, 'Alterar Plano - ' + user?.nome.split(' ').slice(0, 2).join(' ') )}>Alterar Plano</DropdownMenuItem>
                                                             )}
                                                             {user.tipo_usuario === 'aluno' && (
-                                                                <DropdownMenuItem onClick={() => handleUserPackEdit(user.id, 'Adicionar/Alterar Pack')}>Adicionar/Alterar Pack</DropdownMenuItem>
+                                                                <DropdownMenuItem onClick={() => handleUserPackEdit(user.id, 'Adicionar/Alterar Pack - ' + user?.nome.split(' ').slice(0, 2).join(' ') )}>Adicionar/Alterar Pack</DropdownMenuItem>
                                                             )}
 
                                                         </DropdownMenuContent>
