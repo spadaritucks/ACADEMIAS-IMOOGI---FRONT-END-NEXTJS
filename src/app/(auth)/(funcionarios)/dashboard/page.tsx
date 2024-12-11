@@ -17,7 +17,7 @@ import { Usuarios } from '../usuarios/usuarios';
 import { Contratos } from '../usuarios/contratos';
 import { Funcionario } from '../usuarios/funcionario';
 import '../../../../Assets/css/pages-styles/forms.css'
-import { Contrato, DadosFuncionario, deleteUser, getUsers, updateUser, updateUserModalidade, Usuario, UsuarioModalidade } from '@/api/UsuariosRequest';
+import { Contrato, DadosFuncionario, deleteUser, getUsers, updateUser, updateUserModalidade, updateUserPack, updateUserPlano, Usuario, UsuarioModalidade } from '@/api/UsuariosRequest';
 import { DadosPessoais } from './DadosPessoais';
 import { Informacoes } from './Informaçoes';
 import { AdmMain } from "@/layouts/admin/layout"
@@ -64,6 +64,18 @@ interface UserModalidadesProp {
     modalidade: UsuarioModalidade[];
     handleSubmitUpdateModalidade: (e: React.FormEvent<HTMLFormElement>) => void;
     formRef: React.RefObject<HTMLFormElement>;
+}
+
+export interface PlanoUserProp {
+    handleSubmitPlanoEdit : (e: React.FormEvent<HTMLFormElement>) => void;
+    formRef: React.RefObject<HTMLFormElement>;
+
+}
+
+export interface PackUserProp {
+    handleSubmitPackEdit : (e: React.FormEvent<HTMLFormElement>) => void;
+    formRef: React.RefObject<HTMLFormElement>;
+
 }
 
 
@@ -132,7 +144,7 @@ const DashboardContent = () => {
         const contrato = contratos.find(contrato => contrato.usuario_id === id);
         const funcionario = funcionarios.find(funcionario => funcionario?.usuario_id === id)
         const modalidade = userModalidade.filter(modalidade => modalidade.usuario_id === id)
-        const pack = packs.find(pack => pack.id === contrato?.packs_id);
+        const pack = packs.filter(pack => pack.id === contrato?.packs_id);
         const user = users.find(user => user.id === id);
 
         showModal('Informações do Usuario - ' + user?.nome.split(' ').slice(0, 2).join(' '), <Informacoes user={user} pack={pack} contrato={contrato} funcionario={funcionario} modalidade={modalidade} />)
@@ -214,7 +226,7 @@ const DashboardContent = () => {
                                 modalServer('Mensagem', response.message); // Mensagem padrão
                             }
                         } else {
-                             modalServer('Erro', 'Resposta inesperada do servidor.');
+                            modalServer('Erro', 'Resposta inesperada do servidor.');
                         }
                         console.log(formdata)
                     }
@@ -225,6 +237,90 @@ const DashboardContent = () => {
         }
 
         showModal(title, <ModalidadeUserForm modalidade={modalidade} handleSubmitUpdateModalidade={handleSubmitUpdateModalidade} formRef={formRef} />)
+    }
+
+    const handleUserPlanosEdit = (id: number, title: string) => {
+
+        const user = users.find(user => user.id === id)
+        const contrato = contratos.find(contrato => contrato.usuario_id === id)
+
+        const handleSubmitPlanoEdit = (e:React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault()
+            if (formRef.current) {
+                const formdata = new FormData(formRef.current)
+                const id = user?.id
+                console.log(formdata)
+                formdata.append('_method', 'PUT')
+
+                if (id) {
+                    const sendFormdata = async () => {
+                        const response = await updateUserPlano(id, formdata);
+                        if (typeof response === 'object' && response !== null) {
+                            setFormErros(response.message)
+                            console.log(formErrors)
+                            modalServer("Erro", 'Preencha os campos necessarios!')
+                            if (response.message) {
+                                modalServer('Erro', response.message); // Certifique-se de que response.message é uma string
+                            } else {
+                                modalServer('Mensagem', response.message); // Mensagem padrão
+                            }
+                        } else {
+                            modalServer('Erro', 'Resposta inesperada do servidor.');
+                        }
+                        console.log(formdata)
+                    }
+                    sendFormdata()
+                }
+
+            }
+            
+        }
+
+
+        showModal(title, <PlanoUserForm handleSubmitPlanoEdit={handleSubmitPlanoEdit} formRef={formRef}  />)
+
+    }
+
+    const handleUserPackEdit = (id: number, title: string) => {
+
+        const user = users.find(user => user.id === id)
+       
+
+        const handleSubmitPackEdit = (e:React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault()
+            if (formRef.current) {
+                const formdata = new FormData(formRef.current)
+                const id = user?.id
+                console.log(formdata)
+                formdata.append('_method', 'PUT')
+
+                if (id) {
+                    const sendFormdata = async () => {
+                        const response = await updateUserPack(id, formdata);
+                        if (typeof response === 'object' && response !== null) {
+                            setFormErros(response.message)
+                            console.log(formErrors)
+                            modalServer("Erro", 'Preencha os campos necessarios!')
+                            if (response.message) {
+                                modalServer('Erro', response.message); // Certifique-se de que response.message é uma string
+                            } else {
+                                modalServer('Mensagem', response.message); // Mensagem padrão
+                            }
+                        } else {
+                            modalServer('Erro', 'Resposta inesperada do servidor.');
+                        }
+                        console.log(formdata)
+                    }
+                    sendFormdata()
+                }
+
+            }
+            
+        }
+
+
+        showModal(title, <PackUserForm handleSubmitPackEdit={handleSubmitPackEdit} formRef={formRef}  />)
+
     }
 
     const handleDeleteButton = (id: number) => {
@@ -610,9 +706,15 @@ const DashboardContent = () => {
                                                         <DropdownMenuContent>
                                                             <DropdownMenuItem onClick={() => handleDadosPessoais(user.id)}>Dados Pessoais</DropdownMenuItem>
                                                             <DropdownMenuItem onClick={() => handleInformacoes(user.id)}>Informações</DropdownMenuItem>
-                                                            <DropdownMenuItem onClick={() => handleEditClickWithType(user.id, 'Editar Usuarios')}>Editar</DropdownMenuItem>
+                                                            <DropdownMenuItem onClick={() => handleEditClickWithType(user.id, 'Editar Usuarios')}>Editar Usuario</DropdownMenuItem>
                                                             {user.tipo_usuario === 'aluno' && (
-                                                                <DropdownMenuItem onClick={() => handleUserModalidadeEdit(user.id, 'Modalidade Vinculadas')}>Modalidades</DropdownMenuItem>
+                                                                <DropdownMenuItem onClick={() => handleUserModalidadeEdit(user.id, 'Alterar Modalidades')}>Alterar Modalidades</DropdownMenuItem>
+                                                            )}
+                                                            {user.tipo_usuario === 'aluno' && (
+                                                                <DropdownMenuItem onClick={() => handleUserPlanosEdit(user.id, 'Alterar Plano')}>Alterar Plano/Pack</DropdownMenuItem>
+                                                            )}
+                                                            {user.tipo_usuario === 'aluno' && (
+                                                                <DropdownMenuItem onClick={() => handleUserPackEdit(user.id, 'Adicionar/Alterar Pack')}>Adicionar/Alterar Pack</DropdownMenuItem>
                                                             )}
 
                                                         </DropdownMenuContent>
@@ -669,11 +771,12 @@ const DashboardContent = () => {
 
 const UserForm = ({ selectType, user, contrato, modalidade, funcionario, pack, formRef, handleSubmitUpdate }: UserFormProps) => {
     const { applyMaskToCPF } = useCPFMask();
-    
+
     const handleInputClick = () => {
         if (user && formRef?.current) {
             const form = formRef.current;
-            
+            console.log(formRef.current);
+
 
             (form['tipo_usuario'] as HTMLSelectElement).value = user.tipo_usuario.toString();
             (form['nome'] as HTMLInputElement).value = user.nome.toString();
@@ -727,6 +830,123 @@ const UserForm = ({ selectType, user, contrato, modalidade, funcionario, pack, f
             </div>
         </form>
     );
+}
+
+const PlanoUserForm = ({ formRef, handleSubmitPlanoEdit }: PlanoUserProp) => {
+    const [planos, setPlanos] = useState<Plano[]>([])
+
+    useEffect(() => {
+        const fetchPlanos = async () => {
+            try {
+                const planos = await getPlanos();
+                setPlanos(planos);
+            } catch (error) {
+                console.error('Failed to fetch modalidades:', error);
+            }
+        };
+        fetchPlanos()
+    })
+
+    return (
+        <>
+            <form className="register-form" ref={formRef} onSubmit={handleSubmitPlanoEdit}   >
+                <div className="form-component" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+                    <div className="form-name-input">
+                        <span>Selecione o Plano</span>
+                        <select name="planos_id" id="planos_id" >
+                            <option value="" disabled selected >Selecione</option>
+                            {planos.map(planos => (
+                                <option value={planos.id}>{planos.nome_plano}</option>
+
+                            ))}
+                        </select>
+                    </div>
+
+                </div>
+                <div className="form-name-input" style={{ gridColumn: '1 / -1' }}>
+                    <button type='submit' className='submit-button'>Enviar</button>
+                </div>
+            </form>
+
+        </>
+    )
+
+}
+
+const PackUserForm = ({ formRef, handleSubmitPackEdit }: PackUserProp) => {
+    const [packs, setPacks] = useState<Packs[]>([])
+    const [inputPackState, setInputPackState] = useState<boolean>(false)
+    const [secondInputPackState, setSecondInputPackState] = useState<boolean>(false)
+
+
+    const toogleInputPacks = () => {
+        setInputPackState(prevState => !prevState);
+    }
+
+    const toogleSecondInputPack = () => {
+        setSecondInputPackState(!secondInputPackState)
+    }
+
+    useEffect(() => {
+        const fetchPacks = async () => {
+            try {
+                const packs = await getPacks();
+                setPacks(packs);
+            } catch (error) {
+                console.error('Failed to fetch modalidades:', error);
+            }
+        };
+        fetchPacks()
+    })
+
+    return (
+        <>
+            <form className="register-form" ref={formRef} onSubmit={handleSubmitPackEdit}   >
+                <div className="form-component" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+                    <div className="form-name-input">
+                        <span>Selecione o Pack</span>
+                        <select name="packs_id[]" id="packs_id" >
+                            <option value="" disabled selected >Selecione</option>
+                            {packs.map(pack => (
+                                <option value={pack.id}>{pack.nome_plano}</option>
+
+                            ))}
+                        </select>
+                        <button type='button' className='insertMoreOne' onClick={toogleInputPacks}> + 1 Pack</button>
+                    </div>
+
+                    <div className={`form-name-input ${inputPackState ? `flex` : 'none'}`}>
+                        <span>Selecione o Pack</span>
+                        <select name="packs_id[]" id="packs_id" disabled = {!inputPackState} >
+                            <option value="" disabled selected >Selecione</option>
+                            {packs.map(pack => (
+                                <option value={pack.id}>{pack.nome_plano}</option>
+
+                            ))}
+                        </select>
+                        <button type='button' className='insertMoreOne' onClick={toogleSecondInputPack}> + 1 Pack</button>
+                    </div>
+
+                    <div className={`form-name-input ${secondInputPackState? `flex` : 'none'}`}>
+                        <span>Selecione o Pack</span>
+                        <select name="packs_id[]" id="packs_id" disabled = {!secondInputPackState} >
+                            <option value="" disabled selected >Selecione</option>
+                            {packs.map(pack => (
+                                <option value={pack.id}>{pack.nome_plano}</option>
+
+                            ))}
+                        </select>
+                    </div>
+
+                </div>
+                <div className="form-name-input" style={{ gridColumn: '1 / -1' }}>
+                    <button type='submit' className='submit-button'>Enviar</button>
+                </div>
+            </form>
+
+        </>
+    )
+
 }
 
 const ModalidadeUserForm = ({ modalidade, handleSubmitUpdateModalidade, formRef }: UserModalidadesProp) => {

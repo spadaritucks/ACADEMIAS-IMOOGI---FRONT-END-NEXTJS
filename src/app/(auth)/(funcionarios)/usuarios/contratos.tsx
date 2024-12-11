@@ -18,6 +18,7 @@ interface UsuariosProps {
     inputModalidadeState?: boolean;
     secondInputModalidadeState?: boolean;
     setSecondInputModalidadeState?: Dispatch<SetStateAction<boolean>>
+
   
     
     formErrors?: { [key: string]: string[] }
@@ -31,10 +32,19 @@ export const Contratos: React.FC<UsuariosProps> = ({ toogleSecondInputModalidade
     const [inputVisibility, setInputVisibility] = useState<boolean>(false)
     const [packs, setPacks] = useState<Packs[]>([]);
     const [packVisibility, setPackVisibility] = useState<boolean>(false);
+    const [inputPackState, setInputPackState] = useState<boolean>(false)
+    const [secondInputPackState, setSecondInputPackState] = useState<boolean>(false)
 
     const [contratosInputVisibility, setContratosInputVisibility] = useState<boolean>(false)
 
     
+    const toogleInputPacks = () => {
+        setInputPackState(prevState => !prevState);
+    }
+
+    const toogleSecondInputPack = () => {
+        setSecondInputPackState(!secondInputPackState)
+    }
 
 
 
@@ -52,7 +62,8 @@ export const Contratos: React.FC<UsuariosProps> = ({ toogleSecondInputModalidade
 }
 
     const inputModalidadeVisibility = () => {
-        setInputVisibility(!inputVisibility) //Visibilidade do Input das Modalidaddes
+        setInputVisibility(!inputVisibility) //Visibilidade do Input das Modalidaddes e Planos
+        
     }
 
     const tooglePackVisibility = () => {
@@ -108,23 +119,23 @@ export const Contratos: React.FC<UsuariosProps> = ({ toogleSecondInputModalidade
 
 
         <>
-            <div className="form-name-input">
+        
+            <div className={`form-name-input ${inputVisibility ? `disabled` : ''}`}>
                 <span>Plano</span>
-                <select name="planos_id" id="planos_id" onChange={dataInputState}>
-                    <option value="" disabled selected >Selecione</option>
+                <select name="planos_id" id="planos_id" onChange={dataInputState} defaultValue="">
                     {planos.map((plano) => (
-                        <option value={plano.id}>
+                        <option value={plano.id} key={plano.id}>
                             {plano.nome_plano}
                         </option>
                     ))}
                 </select>
-                <button className='insertMoreOne' onClick={tooglePackVisibility}  type='button'>Incluir Pack?</button>
-                {formErrors && formErrors.planos_id ? <small className="error-message">{formErrors.modalidade_id[0]}</small> : ""}
+                <button className='insertMoreOne' onClick={tooglePackVisibility} type='button'>Incluir Pack?</button>
+                {formErrors && formErrors.planos_id ? <small className="error-message">{formErrors.planos_id[0]}</small> : ""}
             </div>
 
             <div className={`form-name-input ${!packVisibility ? `disabled` : ''}`} >
                 <span>Pack</span>
-                <select name="packs_id" id="packs_id">
+                <select name="packs_id[]" id="packs_id">
                     <option value="" disabled selected >Selecione</option>
                     {packs.map((pack) => (
                         <option value={pack.id}>
@@ -133,6 +144,38 @@ export const Contratos: React.FC<UsuariosProps> = ({ toogleSecondInputModalidade
                     ))}
                     {formErrors && formErrors.pack_id ? <small className="error-message">{formErrors.pack_id[0]}</small> : ""}
                 </select>
+                <button type='button' className='insertMoreOne' onClick={toogleInputPacks}> + 1 Pack</button>
+
+            </div>
+
+            <div className={`form-name-input ${inputPackState ? `flex` : 'none'}`} >
+                <span>Pack 2</span>
+                <select name="packs_id[]" id="packs_id" disabled = {!inputPackState}>
+                    <option value="" disabled selected >Selecione</option>
+                    {packs.map((pack) => (
+                        <option value={pack.id}>
+                            {pack.nome_plano}
+                        </option>
+                    ))}
+                    {formErrors && formErrors.pack_id ? <small className="error-message">{formErrors.pack_id[0]}</small> : ""}
+                    
+                </select>
+                <button type='button' className='insertMoreOne' onClick={toogleSecondInputPack}> + 1 Pack</button>
+
+            </div>
+
+            <div className={`form-name-input ${secondInputPackState ? `flex` : 'none'}`} >
+                <span>Pack 3</span>
+                <select name="packs_id[]" id="packs_id" disabled = {!secondInputPackState}>
+                    <option value="" disabled selected >Selecione</option>
+                    {packs.map((pack) => (
+                        <option value={pack.id}>
+                            {pack.nome_plano}
+                        </option>
+                    ))}
+                    {formErrors && formErrors.pack_id ? <small className="error-message">{formErrors.pack_id[0]}</small> : ""}
+                </select>
+              
 
             </div>
 

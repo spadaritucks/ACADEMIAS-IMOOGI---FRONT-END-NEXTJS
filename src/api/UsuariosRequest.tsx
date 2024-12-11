@@ -131,6 +131,44 @@ export const updateUserModalidade = async (id: number, userData: FormData) => {
   }
 }
 
+export const updateUserPlano = async (id: number, userData: FormData) => {
+  try {
+    const response = await api.post(`/api/user_plano/${id}?_method=PUT`, userData);
+    return {
+      status: 'true',
+      message: response.data.message
+    };
+
+
+  } catch (error: any) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return {
+        status: 'false',
+        message: error.response.data.message
+      };
+    }
+  }
+}
+
+export const updateUserPack = async (id: number, userData: FormData) => {
+  try {
+    const response = await api.post(`/api/user_packs/${id}?_method=PUT`, userData);
+    return {
+      status: 'true',
+      message: response.data.message
+    };
+
+
+  } catch (error: any) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return {
+        status: 'false',
+        message: error.response.data.message
+      };
+    }
+  }
+}
+
 
 export const updateUserClient = async (id: number, userData: FormData) => {
   try {

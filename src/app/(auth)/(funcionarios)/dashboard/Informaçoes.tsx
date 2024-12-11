@@ -7,7 +7,7 @@ interface Informacoes {
     modalidade?: UsuarioModalidade[]
     funcionario?: DadosFuncionario
     user?: Usuario;
-    pack?: Packs
+    pack?: Packs[]
 }
 
 export const Informacoes: React.FC<Informacoes> = ({ contrato, modalidade, funcionario, pack, user }) => {
@@ -19,7 +19,10 @@ export const Informacoes: React.FC<Informacoes> = ({ contrato, modalidade, funci
                 <div className="container-info">
                     
                     <p className='info'><span className='info-name'>Plano :  </span>{contrato.nome_plano}</p>
-                    {pack ? <p className='info'><span className='info-name'>Pack Extra :  </span>{pack.nome_plano}</p> : null}
+                    {pack ? pack.map((pack, index) => (
+                        <p key={index} className='info'><span className='info-name'>Pack Extra {index + 1} :  </span>{pack.nome_plano}</p> 
+                    )): null}
+
 
                     {modalidade.map((modalidade, index) => (
                         <p key={index} className='info'><span className='info-name'>Modalidade {index + 1} :  </span>{modalidade.nome_modalidade}</p>

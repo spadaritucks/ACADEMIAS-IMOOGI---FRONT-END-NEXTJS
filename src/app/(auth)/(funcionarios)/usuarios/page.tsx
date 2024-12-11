@@ -20,6 +20,7 @@ function criarUsuarios() {
     const [showFuncionario, setShowFuncionario] = useState<boolean>(false);
     const [formErrors, setFormErros] = useState<{ [key: string] : string[]}>({})
     const [inputModalidadeState, setInputModalidadeState] = useState<boolean>(false);
+    const [inputPlanosState, setInputPlanosState] = useState<boolean>(false)
     const [secondInputModalidadeState, setSecondInputModalidadeState] = useState<boolean>(false)
   
  
@@ -94,6 +95,10 @@ function criarUsuarios() {
         setSecondInputModalidadeState(!secondInputModalidadeState)
     }
 
+    const toogleInputPlano = () => {
+        setInputPlanosState(!inputPlanosState)
+    }
+
 
     
     return (
@@ -107,7 +112,7 @@ function criarUsuarios() {
                     </div>
 
                     <div className="form-component">
-                        {showContratos && <Contratos secondInputModalidadeState={secondInputModalidadeState} setSecondInputModalidadeState={setSecondInputModalidadeState} toogleSecondInputModalidade={toogleSecondInputModalidade} formErrors={formErrors} toogleInputModalidade={toogleInputModalidade} setInputModalidadeState={setInputModalidadeState} inputModalidadeState={inputModalidadeState}  />}
+                        {showContratos && <Contratos  secondInputModalidadeState={secondInputModalidadeState} setSecondInputModalidadeState={setSecondInputModalidadeState} toogleSecondInputModalidade={toogleSecondInputModalidade} formErrors={formErrors} toogleInputModalidade={toogleInputModalidade} setInputModalidadeState={setInputModalidadeState} inputModalidadeState={inputModalidadeState}  />}
                         {showFuncionario && <Funcionario formErrors={formErrors}  />}
 
                     </div>

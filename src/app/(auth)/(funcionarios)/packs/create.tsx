@@ -68,8 +68,8 @@ export default function Create({handleSubmit,formRef, formErrors}:createProps) {
                 </div>
 
                 <div className="form-name-input">
-                    <span>Check-in Permitidos p/ Semana</span>
-                    <input type="text" name="number_checkins" id='number_checkins'  onInput={handleNumericInput} />
+                    <span>Check-in Permitidos p/ Mês</span>
+                    <input type="text" name="number_checkins_especial" id='number_checkins_especial'  onInput={handleNumericInput} />
                     {formErrors && formErrors.number_checkins ? <small className="error-message">{formErrors.number_checkins [0]}</small> : ""}
                 </div>
 
