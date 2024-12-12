@@ -17,7 +17,7 @@ import { Usuarios } from '../usuarios/usuarios';
 import { Contratos } from '../usuarios/contratos';
 import { Funcionario } from '../usuarios/funcionario';
 import '../../../../Assets/css/pages-styles/forms.css'
-import { Contrato, DadosFuncionario, deleteUser, getUsers, updateUser, updateUserModalidade, updateUserPack, updateUserPlano, Usuario, UsuarioModalidade } from '@/api/UsuariosRequest';
+import { Contrato, DadosFuncionario, deleteUser, getUsers, updateUser, updateUserModalidade, updateUserPack, updateUserPlano, Usuario, UsuarioModalidade, UsuarioPacks } from '@/api/UsuariosRequest';
 import { DadosPessoais } from './DadosPessoais';
 import { Informacoes } from './Informaçoes';
 import { AdmMain } from "@/layouts/admin/layout"
@@ -93,6 +93,7 @@ const DashboardContent = () => {
     const [pagamentos, setPagamentos] = useState<PagamentoMensal[]>([])
     const [planos, setPlanos] = useState<Plano[]>([])
     const [packs, setPacks] = useState<Packs[]>([])
+    const [userPacks, setUserPacks] = useState<UsuarioPacks[]>([])
 
     const [search, setSearch] = useState<string>('')
     const [openDadosPessoais, setOpenDadosPessoais] = useState<boolean>(false)
@@ -116,6 +117,7 @@ const DashboardContent = () => {
             setContratos(response.contratos)
             setUserModalidade(response.modalidades)
             setFuncionarios(response.funcionarios)
+            setUserPacks(response.packs)
             setPacks(responsePacks)
             setPlanos(responsePlanos)
             setPagamentos(responsePagamentos)
@@ -147,7 +149,7 @@ const DashboardContent = () => {
         const pack = packs.filter(pack => pack.id === contrato?.packs_id);
         const user = users.find(user => user.id === id);
 
-        showModal('Informações do Usuario - ' + user?.nome.split(' ').slice(0, 2).join(' '), <Informacoes user={user} pack={pack} contrato={contrato} funcionario={funcionario} modalidade={modalidade} />)
+        showModal('Informações do Usuario - ' + user?.nome.split(' ').slice(0, 2).join(' '), <Informacoes userPacks={userPacks} user={user} pack={pack} contrato={contrato} funcionario={funcionario} modalidade={modalidade} />)
     }
 
     const handleEditClickWithType = (id: number, title: string) => {

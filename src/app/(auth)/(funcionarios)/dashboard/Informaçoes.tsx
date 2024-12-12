@@ -1,5 +1,5 @@
 import { Packs } from "@/api/PlanosRequest";
-import { Contrato, DadosFuncionario, Usuario, UsuarioModalidade } from "@/api/UsuariosRequest"
+import { Contrato, DadosFuncionario, Usuario, UsuarioModalidade, UsuarioPacks } from "@/api/UsuariosRequest"
 import Image from "next/image";
 
 interface Informacoes {
@@ -8,20 +8,25 @@ interface Informacoes {
     funcionario?: DadosFuncionario
     user?: Usuario;
     pack?: Packs[]
+    userPacks?: UsuarioPacks[]
 }
 
-export const Informacoes: React.FC<Informacoes> = ({ contrato, modalidade, funcionario, pack, user }) => {
+export const Informacoes: React.FC<Informacoes> = ({ contrato, modalidade, funcionario, pack, user, userPacks }) => {
 
     if (contrato && modalidade && user) {
         return (
             <div className='info-div'>
 
                 <div className="container-info">
-                    
+
                     <p className='info'><span className='info-name'>Plano :  </span>{contrato.nome_plano}</p>
-                    {pack ? pack.map((pack, index) => (
-                        <p key={index} className='info'><span className='info-name'>Pack Extra {index + 1} :  </span>{pack.nome_plano}</p> 
-                    )): null}
+                    {userPacks && pack ? userPacks.map((userPack, index) => {
+                       
+                        return (
+                            <p key={index} className='info'><span className='info-name'>Pack Extra {index + 1} :  </span>{userPack.nome_plano}</p>
+                        )
+
+                    }) : null}
 
 
                     {modalidade.map((modalidade, index) => (

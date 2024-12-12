@@ -29,6 +29,7 @@ export interface UsuarioPacks{
   id:number;
   usuario_id:number;
   packs_id:number;
+  nome_plano: string;
 }
 
 export interface DadosFuncionario {
