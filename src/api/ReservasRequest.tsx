@@ -11,9 +11,16 @@ export interface Reserva {
     data: string
 }
 
+
+
 export interface Checkin{
     usuario_id: number,
     checkin_at: string
+}
+
+export interface EspecialCheckin{
+    usuario_id: number,
+    checkin_at_especial: string
 }
 
 export const getReservas = async () =>{
@@ -78,6 +85,19 @@ export const getCheckins = async () => {
     try{
 
         const response = await api.get('/api/checkins')
+
+        return response.data.checkins
+
+    }catch(error){
+        console.error('Erro ao consultar os checkins' + error)
+        throw error;
+    }
+}
+
+export const getEspecialCheckins = async () => {
+    try{
+
+        const response = await api.get('/api/especial_checkins')
 
         return response.data.checkins
 

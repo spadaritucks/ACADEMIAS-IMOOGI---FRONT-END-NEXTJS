@@ -1,11 +1,11 @@
 'use client'
 import UserSession from "@/api/UserSession";
-import { Contrato, getUsers, Usuario, UsuarioModalidade } from "@/api/UsuariosRequest";
+import { Contrato, getUsers, Usuario, UsuarioModalidade, UsuarioPacks } from "@/api/UsuariosRequest";
 import { ClientMain } from "@/layouts/client/layout";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import '@/Assets/css/pages-styles/area_aluno.css'
-import { Checkin, deleteReserva, getCheckins, getReservas, Reserva } from "@/api/ReservasRequest";
+import { Checkin, deleteReserva, EspecialCheckin, getCheckins, getEspecialCheckins, getReservas, Reserva } from "@/api/ReservasRequest";
 import { useModal } from "@/components/errors/errorContext";
 import { Button } from "@/components/ui/button";
 import { getPagamentosMensais, PagamentoMensal, postPagamentosMensais, putPagamentosMensais } from "@/api/PagamentosRequest";
@@ -13,8 +13,8 @@ import { BaixaPagamento } from "./BaixaPagamento";
 import EditUserModal from '@/components/user-modals-edit/EditUserModal';
 import { ModalEditUserProvider, useUserEditModal } from '@/components/user-modals-edit/EditUserContext';
 import Link from "next/link";
-import { getPlanos, Plano } from "@/api/PlanosRequest";
-import { format, addWeeks, startOfWeek, endOfWeek, parseISO, isSameWeek, isBefore, isAfter, addDays } from 'date-fns';
+import { getPacks, getPlanos, Packs, Plano } from "@/api/PlanosRequest";
+import { format, addWeeks, startOfWeek, endOfWeek, parseISO, isSameWeek, isBefore, isAfter, addDays, isSameMonth } from 'date-fns';
 
 
 
@@ -37,8 +37,14 @@ function AreaDoAluno() {
         const [semanaAtual, setSemanaAtual] = useState(new Date());
         const [user, setUser] = useState<Usuario>()
         const [checkins, setCheckins] = useState<Checkin>()
+        const [especialCheckins, setEspecialCheckins] = useState<EspecialCheckin>()
         const [planos, setPlanos] = useState<Plano[]>([])
+        const [packs, setPacks] = useState<Packs[]>([])
+        const [userPacks, setUserPacks] = useState<UsuarioPacks[]>([])
         const [checkinContado, setCheckinContato] = useState<Number>(0)
+        const [checkinEspecialContado, setCheckEspecialContado] = useState<Number>(0)
+
+
 
 
         useEffect(() => {
@@ -59,6 +65,14 @@ function AreaDoAluno() {
             const fim = endOfWeek(semanaAtual, { weekStartsOn: 1 });
 
             try {
+
+                const handleUsers = async () => {
+                    const response = await getUsers();
+                    setUserPacks(response.packs)
+                }
+
+                handleUsers()
+
                 const handleContratos = async () => {
                     const response = await getUsers()
 
@@ -75,6 +89,14 @@ function AreaDoAluno() {
 
                 handlePlanos()
 
+                const handlePacks = async () => {
+                    const response = await getPacks()
+                    setPacks(response)
+                }
+
+                handlePacks()
+
+
                 const handleReservas = async () => {
                     if (!user) return;
 
@@ -90,14 +112,26 @@ function AreaDoAluno() {
                     const checkinsResponse = await getCheckins();
                     const userCheckins = checkinsResponse.filter((checkin: Checkin) => {
                         const checkinDate = new Date(checkin.checkin_at); // Converte o timestamp para Date
-                        return checkin?.usuario_id === user?.id && 
-                               isSameWeek(checkinDate, new Date(), { weekStartsOn: 1 }); // Verifica se está na mesma semana
+                        return checkin?.usuario_id === user?.id &&
+                            isSameWeek(checkinDate, new Date(), { weekStartsOn: 1 }); // Verifica se está na mesma semana
                     });
-                    setCheckins(userCheckins);
 
-                    // Contar os check-ins e atualizar o estado
-                    setCheckinContato(userCheckins.length); // Atualiza o estado com a contagem de check-ins
-                    
+                    setCheckins(userCheckins);
+                    setCheckinContato(userCheckins.length);
+
+                    const especialCheckinsResponse = await getEspecialCheckins()
+                    const userEspecialCheckins = especialCheckinsResponse.filter((checkin: EspecialCheckin) => {
+                        const checkinDate = new Date(checkin.checkin_at_especial);
+                        return checkin?.usuario_id === user?.id && isSameMonth(checkinDate, new Date())
+                    })
+
+                    setEspecialCheckins(userEspecialCheckins)
+
+                    setCheckEspecialContado(userEspecialCheckins.length)
+
+
+
+
 
                 }
 
@@ -124,14 +158,14 @@ function AreaDoAluno() {
 
 
 
-        const clickDeleteReserva = async (id:number) => {
+        const clickDeleteReserva = async (id: number) => {
             if (!user) return;
 
             if (reservas) {
                 const response = await deleteReserva(id);
                 modalServer("Reserva Excluida", response);
 
-                
+
             }
         }
 
@@ -245,9 +279,20 @@ function AreaDoAluno() {
         }
 
 
-
-        const contrato = contratos.filter(contrato => contrato.usuario_id === user.id)
+        const contrato = contratos.find(contrato => contrato.usuario_id === user.id)
         const modalidade = modalidades.filter(modalidade => modalidade.usuario_id === user.id)
+        const nomePlano = contrato?.nome_plano;
+
+        const checkinsPlanos = planos.find(plano => plano.nome_plano === nomePlano)
+        const userPackConfirmation = userPacks.filter(pack => pack.usuario_id === contrato?.usuario_id)
+
+        const totalCheckins = userPackConfirmation.reduce((total, userPack) => {
+            const pack = packs.find(pack => pack.id === userPack.packs_id);
+            return total + (pack ? pack.number_checkins_especial : 0);
+        }, 0);
+
+
+
 
 
 
@@ -279,25 +324,16 @@ function AreaDoAluno() {
                 <section className="menuAluno">
                     <div className="dados">
                         <h2>Informações do seu Plano</h2>
-                        {contrato.map(userContrato => {
+                        <h3 className="plan-title">{contrato?.nome_plano}</h3>
+                        <div className="user-datas">
+                            <p className="dado"><span>Inicio </span> {contrato?.data_inicio}</p>
+                            <p className="dado"><span>Renovação </span> {contrato?.data_renovacao}</p>
+                            <p className="dado"><span>Vencimento  </span>{contrato?.data_vencimento}</p>
+                        </div>
+                        <p><b>Checkins Restantes: </b>{checkinContado.toString()}/{checkinsPlanos?.number_checkins}</p>
+                        <p><b>Checkins Especiais: </b>{checkinEspecialContado.toString()}/{totalCheckins}</p>
+                        <Button variant='imoogi' onClick={() => baixaPagamento()}>Anexar Comprovante</Button>
 
-                            const nomePlano = userContrato.nome_plano;
-
-                            const checkinsPlanos = planos.find(plano => plano.nome_plano === nomePlano)
-                            
-                            return (
-                                <>
-                                    <h3 className="plan-title">{userContrato.nome_plano}</h3>
-                                    <div className="user-datas">
-                                        <p className="dado"><span>Inicio </span> {userContrato.data_inicio}</p>
-                                        <p className="dado"><span>Renovação </span> {userContrato.data_renovacao}</p>
-                                        <p className="dado"><span>Vencimento  </span>{userContrato.data_vencimento}</p>
-                                    </div>
-                                    <p><b>Checkins Restantes: </b>{checkinContado.toString()}/{checkinsPlanos?.number_checkins}</p>
-                                    <Button variant='imoogi' onClick={() => baixaPagamento()}>Anexar Comprovante</Button>
-                                </>
-                            )
-                        })}
                     </div>
                     <div className="pagamentos_container">
                         <h2>Pagamentos e Comprovantes</h2>
@@ -336,7 +372,7 @@ function AreaDoAluno() {
                                             <p className="dia_semana_reserva" style={{ margin: "5px" }}>{obterDiaSemana(Number(reserva?.dia_semana[0]))}</p>
                                             <p className="horario-reserva" style={{ margin: "5px" }}>{reserva?.horario.substring(0, 5)}</p>
                                             <p className="data-reserva" style={{ margin: "5px" }}>{reserva?.data}</p>
-                                            <Button variant='destructive' type="button" onClick={()=> clickDeleteReserva(reserva.id)}  >Remover</Button>
+                                            <Button variant='destructive' type="button" onClick={() => clickDeleteReserva(reserva.id)}  >Remover</Button>
                                         </div>
                                     </>
                                 )) :

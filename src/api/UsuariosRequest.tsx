@@ -15,6 +15,7 @@ export interface Contrato {
   parcelas: number;
   valor_plano: string;
   nome_plano: string
+
 }
 
 export interface UsuarioModalidade {
@@ -22,6 +23,12 @@ export interface UsuarioModalidade {
   usuario_id: number;
   modalidade_id: number;
   nome_modalidade: string;
+}
+
+export interface UsuarioPacks{
+  id:number;
+  usuario_id:number;
+  packs_id:number;
 }
 
 export interface DadosFuncionario {
