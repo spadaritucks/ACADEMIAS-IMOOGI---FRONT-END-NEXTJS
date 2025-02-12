@@ -94,13 +94,14 @@ function Unidades() {
                         }
                     } else {
                         modalServer("Sucesso", response.message)
+                        handleShowRead()
                     }
                 }
             }
 
             sendFormdata()
         }
-        handleShowRead()
+        
     }
 
     const handleSubmitUpdate = (e: React.FormEvent<HTMLFormElement>) => {
@@ -127,7 +128,8 @@ function Unidades() {
                                 modalServer("Erro", response.message)
                             }
                         } else {
-                            modalServer("Erro", response.message)
+                            modalServer("Mensagem", response.message)
+                            handleShowRead()
                         }
                     }
                 }
@@ -136,7 +138,7 @@ function Unidades() {
 
 
         }
-        handleShowRead()
+     
     }
 
     const handleSubmitDelete = (e: React.FormEvent<HTMLFormElement>) => {
@@ -151,9 +153,10 @@ function Unidades() {
                         if (id) {
                             const response: any = await deleteUnidade(id);
                             modalServer('Sucesso', response);
+                            handleShowRead(); // Atualiza a lista após a deleção
+                            hideModal()
                         }
-                        handleShowRead(); // Atualiza a lista após a deleção
-                        hideModal()
+                       
                     }}>Sim</Button>
                     <Button variant='imoogi' type='button' onClick={() => { hideModal() }}>Não</Button>
                 </>

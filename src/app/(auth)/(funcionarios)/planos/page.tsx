@@ -92,7 +92,7 @@ function Planos() {
                         if (typeof response.message === 'object') {
                             
                             setFormErros(response.message)
-                            console.log(formErrors)
+                            
                             modalServer("Erro", 'Preencha os campos necessarios!')
                           
                         } else {
@@ -100,6 +100,7 @@ function Planos() {
                         }
                     } else {
                         modalServer("Sucesso", response.message)
+                        handleShowRead()
                     }
                 }
 
@@ -135,7 +136,8 @@ function Planos() {
                                 modalServer("Erro", response.message)
                             }
                         } else {
-                            modalServer("Erro", response.message)
+                            modalServer("Mensagem", response.message)
+                            handleShowRead()
                         }
                     }
                 }
@@ -167,8 +169,8 @@ function Planos() {
                             if (id) {
                                 const response: any = await deletePlano(id);
                                 modalServer('Sucesso', response);
+                                handleShowRead()
                             }
-                            handleShowRead(); // Atualiza a lista após a deleção
                             hideModal()
                         }}>Sim</Button>
                         <Button variant='imoogi' type='button' onClick={() => { hideModal() }}>Não</Button>

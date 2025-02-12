@@ -55,39 +55,14 @@ const AulasContent = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [semanaAtual, setSemanaAtual] = useState(new Date());
     const [reservasPorAula, setReservasPorAula] = useState<{ [key: string]: number }>({});
-    const [formErrors, setFormErros] = useState<{ [key: string] : string[]}>({});
-    
+    const [formErrors, setFormErros] = useState<{ [key: string]: string[] }>({});
+
 
 
     useEffect(() => {
         setIsLoading(true)
         try {
-            const fetchAulas = async () => {
-                const inicio = startOfWeek(semanaAtual, { weekStartsOn: 1 }); // Começar na segunda-feira
-                const fim = endOfWeek(semanaAtual, { weekStartsOn: 1 }); // Terminar no domingo
-                const response = await getAulas(format(inicio, 'yyyy-MM-dd'), format(fim, 'yyyy-MM-dd'));
-
-                // Filtrar e ordenar as aulas
-                const aulasRelevantes = response.filter((aula: Aula) => {
-                    const dataInicio = parseISO(aula.data_inicio);
-                    const dataFim = parseISO(aula.data_fim);
-                    return dataInicio <= fim && dataFim >= inicio;
-                }).sort((a: Aula, b: Aula) => {
-                    const diaA = diasDaSemana.indexOf(format(parseISO(a.data_inicio), 'EEEE', { locale: ptBR }));
-                    const diaB = diasDaSemana.indexOf(format(parseISO(b.data_inicio), 'EEEE', { locale: ptBR }));
-
-                    if (diaA === diaB) {
-                        return convertToMinutes(a.horario) - convertToMinutes(b.horario);
-                    }
-                    return diaA - diaB;
-                });
-
-                setAulas(aulasRelevantes);
-            };
-
             fetchAulas();
-
-
         } catch (error) {
             console.error("Erro ao carregar dados:", error);
         } finally {
@@ -96,48 +71,71 @@ const AulasContent = () => {
     }, [semanaAtual]);
 
     useEffect(() => {
-
-        const fetchUsers = async () => {
-
-            const responseUsers = await getUsers();
-            setUsers(responseUsers.usuarios)
-        }
-
-        const fetchReservas = async () => {
-            try {
-                const reservasResponse = await getReservas();
-                setReservas(reservasResponse);
-
-                // Contagem de reservas para cada aula ao carregar a página
-                const reservasContadas: { [key: string]: number } = {};
-
-                reservasResponse.forEach((reserva: Reserva) => {
-                    const diaSemanaNumero = diasDaSemana.indexOf(reserva.dia_semana);
-                    const aulaKey = generateKey(reserva.modalidade_id, reserva.horario, diaSemanaNumero.toString(), reserva.data);
-
-                    if (!reservasContadas[aulaKey]) {
-                        reservasContadas[aulaKey] = 0;
-                    }
-                    reservasContadas[aulaKey]++;
-
-                  
-                });
-
-                setReservasPorAula(reservasContadas); // Atualiza o estado com as reservas carregadas do back-end
-
-            } catch (error) {
-                console.log("Erro ao carregar reservas", error);
-            }
-        };
-       
-        
-
-
-
         fetchUsers()
         fetchReservas()
 
     }, [])
+
+    const fetchAulas = async () => {
+        const inicio = startOfWeek(semanaAtual, { weekStartsOn: 1 }); // Começar na segunda-feira
+        const fim = endOfWeek(semanaAtual, { weekStartsOn: 1 }); // Terminar no domingo
+        const response = await getAulas(format(inicio, 'yyyy-MM-dd'), format(fim, 'yyyy-MM-dd'));
+
+        // Filtrar e ordenar as aulas
+        const aulasRelevantes = response.filter((aula: Aula) => {
+            const dataInicio = parseISO(aula.data_inicio);
+            const dataFim = parseISO(aula.data_fim);
+            return dataInicio <= fim && dataFim >= inicio;
+        }).sort((a: Aula, b: Aula) => {
+            const diaA = diasDaSemana.indexOf(format(parseISO(a.data_inicio), 'EEEE', { locale: ptBR }));
+            const diaB = diasDaSemana.indexOf(format(parseISO(b.data_inicio), 'EEEE', { locale: ptBR }));
+
+            if (diaA === diaB) {
+                return convertToMinutes(a.horario) - convertToMinutes(b.horario);
+            }
+            return diaA - diaB;
+        });
+
+        setAulas(aulasRelevantes);
+    };
+
+    const fetchUsers = async () => {
+
+        const responseUsers = await getUsers();
+        setUsers(responseUsers.usuarios)
+    }
+
+    const fetchReservas = async () => {
+        try {
+            const reservasResponse = await getReservas();
+            setReservas(reservasResponse);
+
+            // Contagem de reservas para cada aula ao carregar a página
+            const reservasContadas: { [key: string]: number } = {};
+
+            reservasResponse.forEach((reserva: Reserva) => {
+                const diaSemanaNumero = diasDaSemana.indexOf(reserva.dia_semana);
+                const aulaKey = generateKey(reserva.modalidade_id, reserva.horario, diaSemanaNumero.toString(), reserva.data);
+
+                if (!reservasContadas[aulaKey]) {
+                    reservasContadas[aulaKey] = 0;
+                }
+                reservasContadas[aulaKey]++;
+
+
+            });
+
+            setReservasPorAula(reservasContadas); // Atualiza o estado com as reservas carregadas do back-end
+
+        } catch (error) {
+            console.log("Erro ao carregar reservas", error);
+        }
+    };
+
+
+
+
+
 
 
 
@@ -153,19 +151,20 @@ const AulasContent = () => {
             const response = await createAula(formdata)
 
             if (response) {
-                    
+
                 if (response.status === 'false') {
                     if (typeof response.message === 'object') {
-                        
+
                         setFormErros(response.message)
                         console.log(formErrors)
                         modalServer("Erro", 'Preencha os campos necessarios!')
-                      
+
                     } else {
                         modalServer("Erro", response.message)
                     }
                 } else {
                     modalServer("Sucesso", response.message)
+                    fetchAulas()
                 }
             }
 
@@ -174,17 +173,17 @@ const AulasContent = () => {
     }
 
     const handleSubmitDelete = (id: number) => {
-    
+
 
         showModal('Tem certeza que deseja deletar esta aula?',
             <>
-                <Button variant='imoogi' onClick={ async () => {
+                <Button variant='imoogi' onClick={async () => {
                     if (formRef.current) {
-                        const formdata = new FormData(formRef.current);
-                        
+
                         if (id) {
                             const response = await deleteAula(Number(id));
                             modalServer('Sucesso', response);
+                            fetchAulas()
                         }
                     }
                     hideModal()
@@ -221,9 +220,9 @@ const AulasContent = () => {
         const aulaKey = generateKey(modalidade_id, horario, indexDiaSemana.toString(), dataCorrespondente)
 
         const alunosDaAula = reservas.filter(reserva => reserva.modalidade_id === modalidade_id &&
-                                                        reserva.horario === horario && 
-                                                        reserva.dia_semana === indexDiaSemana.toString() && 
-                                                        reserva.data === dataCorrespondente
+            reserva.horario === horario &&
+            reserva.dia_semana === indexDiaSemana.toString() &&
+            reserva.data === dataCorrespondente
         );
 
         showModal('Presença na Aula',
@@ -292,55 +291,55 @@ const AulasContent = () => {
             </div>
 
             <h1>Grade de Aulas</h1>
-        
-                <div className='grade-aulas'>
-                    <div className='aulas-container'>
-                        {aulasPorDia.map(({ dia, aulas, dataCorrespondente }) => {
-                           
+
+            <div className='grade-aulas'>
+                <div className='aulas-container'>
+                    {aulasPorDia.map(({ dia, aulas, dataCorrespondente }) => {
 
 
-                            return (
-                                <div className='coluna-aulas' key={dia}>
-                                    <h2 className='dia_semana'>{dia} - {dataCorrespondente}</h2>
-                                    <div className='aulas-lista'>
-                                        {aulas.length > 0 ? aulas.map(aula => {
-                                            const diaSemana = diasDaSemana.indexOf(dia); // Converte a string 'dia' para o número correspondente
-                                            const reservaDiadaSemana = reservas.find(reserva =>
-                                                reserva.modalidade_id === aula.modalidade_id &&
-                                                reserva.horario === aula.horario &&
-                                                reserva.dia_semana === diaSemana.toString()  &&
-                                                reserva.data === dataCorrespondente
-                                            
 
-                                            );
+                        return (
+                            <div className='coluna-aulas' key={dia}>
+                                <h2 className='dia_semana'>{dia} - {dataCorrespondente}</h2>
+                                <div className='aulas-lista'>
+                                    {aulas.length > 0 ? aulas.map(aula => {
+                                        const diaSemana = diasDaSemana.indexOf(dia); // Converte a string 'dia' para o número correspondente
+                                        const reservaDiadaSemana = reservas.find(reserva =>
+                                            reserva.modalidade_id === aula.modalidade_id &&
+                                            reserva.horario === aula.horario &&
+                                            reserva.dia_semana === diaSemana.toString() &&
+                                            reserva.data === dataCorrespondente
 
-                                           
-                                            
-                                                const diaSemanaNumero = reservaDiadaSemana ? diasDaSemana.indexOf(reservaDiadaSemana.dia_semana) : -1; 
-                                                const aulaKey = generateKey(aula.modalidade_id, aula.horario, diaSemanaNumero.toString(), dataCorrespondente);
-                                                console.log(aulaKey)
-                                                return (
-                                                    <div className='aula' key={aulaKey}>
-                                                        <h3 className='modalidade_aula'>{aula.nome_modalidade}</h3>
-                                                        <p className='horario'>{aula.horario.substring(0, 5)}</p>
-                                                        <Button variant='default' onClick={() => modalAlunosAulas(aula.modalidade_id, aula.horario, dia, dataCorrespondente)}>Alunos</Button>
-                                                        {reservasPorAula[aulaKey] || 0}/{aula.limite_alunos}
-                                                        <Button variant='destructive' onClick={() => handleSubmitDelete(aula.id)}>Excluir</Button>
-                                                    </div>
-                                                );
-                                            }
-                                        ) : <p>Nenhuma Aula</p>}
-                                    </div>
+
+                                        );
+
+
+
+                                        const diaSemanaNumero = reservaDiadaSemana ? diasDaSemana.indexOf(reservaDiadaSemana.dia_semana) : -1;
+                                        const aulaKey = generateKey(aula.modalidade_id, aula.horario, diaSemanaNumero.toString(), dataCorrespondente);
+                                        console.log(aulaKey)
+                                        return (
+                                            <div className='aula' key={aulaKey}>
+                                                <h3 className='modalidade_aula'>{aula.nome_modalidade}</h3>
+                                                <p className='horario'>{aula.horario.substring(0, 5)}</p>
+                                                <Button variant='default' onClick={() => modalAlunosAulas(aula.modalidade_id, aula.horario, dia, dataCorrespondente)}>Alunos</Button>
+                                                {reservasPorAula[aulaKey] || 0}/{aula.limite_alunos}
+                                                <Button variant='destructive' onClick={() => handleSubmitDelete(aula.id)}>Excluir</Button>
+                                            </div>
+                                        );
+                                    }
+                                    ) : <p>Nenhuma Aula</p>}
                                 </div>
-                            );
-                        })}
-                    </div>
+                            </div>
+                        );
+                    })}
                 </div>
+            </div>
         </section>
-        
+
     );
 
-    
+
 
 
 }

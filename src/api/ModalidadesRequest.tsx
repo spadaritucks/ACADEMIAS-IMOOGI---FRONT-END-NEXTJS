@@ -70,7 +70,7 @@ export const updateModalidade = async (id: FormDataEntryValue, modalidadeData: F
 export const deleteModalidade = async (id: FormDataEntryValue): Promise<number> => {
   try {
     const response = await api.delete(`/api/modalidades/${id}`);
-    return response.status;
+    return response.data.message
   } catch (error) {
     console.error('Failed to delete modalidade:', error);
     throw error;

@@ -15,18 +15,16 @@ export default function Catalogo() {
     const [checkins, setCheckins] = useState<Checkin[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
+    const fetchPlanos = async () => {
+        const listaPlanos = await getPlanos();
+        const plano = listaPlanos.filter(listaPlanos => listaPlanos.status == "Ativo")
+        setPlanos(plano)
+    }
 
     useEffect(() => {
         setIsLoading(true)
         try {
-            const fetchPlanos = async () => {
-                const listaPlanos = await getPlanos();
-                const plano = listaPlanos.filter(listaPlanos => listaPlanos.status == "Ativo")
-                setPlanos(plano)
-            }
             fetchPlanos()
-
-
         } catch (error) {
             console.log(error)
         } finally {
@@ -65,7 +63,7 @@ export default function Catalogo() {
 
                     <div className="plano">
                         <h2 className="plano-title">Outras Opções <br />(Clique Abaixo)</h2>
-                        
+
 
                         <Link href='https://api.whatsapp.com/send/?phone=11977010020&text&type=phone_number&app_absent=0' className="purchase-btn">Whatsapp</Link>
                     </div>

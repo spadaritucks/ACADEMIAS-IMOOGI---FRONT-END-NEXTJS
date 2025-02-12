@@ -10,26 +10,25 @@ export default function modalidade() {
     const [modalidades, setModalidades] = useState<Modalidade[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
+    const fetchModalidades = async () => {
+        const response = await getModalidade();
+        setModalidades(response);
 
+    }
 
     useEffect(() => {
         setIsLoading(true)
-      try{
-          const fetchModalidades = async () => {
-            const response = await getModalidade();
-            setModalidades(response);
-
+        try {
+            fetchModalidades()
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setIsLoading(false)
         }
-        fetchModalidades()
-      }catch(error){
-        console.log(error)
-      }finally{
-        setIsLoading(false)
-      }
     })
 
-    if(isLoading){
-        return(
+    if (isLoading) {
+        return (
             <div className="flex justify-center items-center h-screen">
                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
                 <p className="ml-2">Carregando dados...</p>

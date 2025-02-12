@@ -20,7 +20,6 @@ import { createModalidade, deleteModalidade, getModalidade, updateModalidade } f
 import Image from 'next/image';
 import { AdmMain } from "@/layouts/admin/layout"
 import UserSession from '@/api/UserSession';
-import modalidade from "@/app/modalidade/page";
 import { Contrato, getUsers, UsuarioModalidade } from "@/api/UsuariosRequest";
 import { useUserEditModal } from "@/components/user-modals-edit/EditUserContext";
 
@@ -109,13 +108,14 @@ function Modalidade() {
                         }
                     } else {
                         modalServer("Sucesso", response.message)
+                        handleShowRead()
                     }
                 }
             }
 
             sendFormdata()
         }
-        handleShowRead()
+   
     }
 
     const handleSubmitUpdate = (e: React.FormEvent<HTMLFormElement>) => {
@@ -142,7 +142,8 @@ function Modalidade() {
                                 modalServer("Erro", response.message)
                             }
                         } else {
-                            modalServer("Erro", response.message)
+                            modalServer("Mensagem", response.message)
+                            handleShowRead()
                         }
                     }
                 }
@@ -174,11 +175,13 @@ function Modalidade() {
                             if (id) {
                                 const response: any = await deleteModalidade(id);
                                 modalServer('Sucesso', response);
-                                console.log(response);
+                                handleShowRead()
+                               
                             }
+                            hideModal()
                         }
                     }
-                    handleShowRead(); // Atualiza a lista após a deleção
+                   
                 }}>Sim</Button>
                 <Button variant='imoogi' type='button' onClick={() => {hideModal()}}>Não</Button>
             </>

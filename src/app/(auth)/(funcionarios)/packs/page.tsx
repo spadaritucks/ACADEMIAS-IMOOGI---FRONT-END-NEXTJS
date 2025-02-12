@@ -98,6 +98,7 @@ function Packs() {
                         }
                     } else {
                         modalServer("Sucesso", response.message)
+                        handleShowRead()
                     }
                 }
 
@@ -133,6 +134,7 @@ function Packs() {
                             }
                         } else {
                             modalServer("Erro", response.message)
+                            handleShowRead()
                         }
                     }
                 }
@@ -141,7 +143,7 @@ function Packs() {
 
 
         }
-        handleShowRead()
+   
     }
 
     const handleSubmitDelete = (e: React.FormEvent<HTMLFormElement>) => {
@@ -163,8 +165,9 @@ function Packs() {
                             if (id) {
                                 const response: any = await deletePack(id);
                                 modalServer('Sucesso', response);
+                                handleShowRead()
                             }
-                            handleShowRead(); // Atualiza a lista após a deleção
+                          
                             hideModal()
                         }}>Sim</Button>
                         <Button variant='imoogi' type='button' onClick={() => { hideModal() }}>Não</Button>

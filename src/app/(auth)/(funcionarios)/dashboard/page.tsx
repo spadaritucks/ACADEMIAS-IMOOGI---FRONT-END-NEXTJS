@@ -10,9 +10,8 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { ModalEditUserProvider, useUserEditModal } from '@/components/user-modals-edit/EditUserContext';
-import EditUserModal from '@/components/user-modals-edit/EditUserModal';
-import { Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from 'react';
+import {useUserEditModal } from '@/components/user-modals-edit/EditUserContext';
+import {useEffect, useRef, useState } from 'react';
 import { Usuarios } from '../usuarios/usuarios';
 import { Contratos } from '../usuarios/contratos';
 import { Funcionario } from '../usuarios/funcionario';
@@ -31,8 +30,6 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { getPagamentosMensais, PagamentoMensal, putPagamentosMensais } from '@/api/PagamentosRequest';
@@ -106,7 +103,7 @@ const DashboardContent = () => {
     const [formErrors, setFormErros] = useState<{ [key: string]: string[] }>({})
     const { applyMaskToCPF } = useCPFMask();
 
-    const getUsersFunction = async () => {
+    const fetchAll = async () => {
         setIsLoading(true);
         try {
             const response = await getUsers();
@@ -130,7 +127,7 @@ const DashboardContent = () => {
     }
 
     useEffect(() => {
-        getUsersFunction()
+        fetchAll()
     }, [])
 
     const handleDadosPessoais = (id: number) => {
@@ -184,13 +181,14 @@ const DashboardContent = () => {
                                 }
                             } else {
                                 modalServer("Sucesso", response.message)
+                                fetchAll()
                             }
                         }
                     }
                     sendFormdata()
                 }
             }
-            getUsersFunction()
+            
         }
 
         if (user) {
@@ -226,6 +224,7 @@ const DashboardContent = () => {
                                 modalServer('Erro', response.message); // Certifique-se de que response.message é uma string
                             } else {
                                 modalServer('Mensagem', response.message); // Mensagem padrão
+                                fetchAll()
                             }
                         } else {
                             modalServer('Erro', 'Resposta inesperada do servidor.');
@@ -235,7 +234,7 @@ const DashboardContent = () => {
                     sendFormdata()
                 }
             }
-            getUsersFunction()
+           
         }
 
         showModal(title, <ModalidadeUserForm modalidade={modalidade} handleSubmitUpdateModalidade={handleSubmitUpdateModalidade} formRef={formRef} />)
@@ -265,6 +264,7 @@ const DashboardContent = () => {
                                 modalServer('Erro', response.message); // Certifique-se de que response.message é uma string
                             } else {
                                 modalServer('Mensagem', response.message); // Mensagem padrão
+                                fetchAll()
                             }
                         } else {
                             modalServer('Erro', 'Resposta inesperada do servidor.');
@@ -307,11 +307,12 @@ const DashboardContent = () => {
                                 modalServer('Erro', response.message); // Certifique-se de que response.message é uma string
                             } else {
                                 modalServer('Mensagem', response.message); // Mensagem padrão
+                                fetchAll()
                             }
                         } else {
                             modalServer('Erro', 'Resposta inesperada do servidor.');
                         }
-                        console.log(formdata)
+                        
                     }
                     sendFormdata()
                 }
@@ -331,7 +332,7 @@ const DashboardContent = () => {
                 <Button variant='imoogi' onClick={async () => {
                     const response = await deleteUser(id);
                     modalServer('Sucesso', response);
-                    getUsersFunction();
+                    fetchAll();
                     hideModal()
                 }}>Sim</Button>
                 <Button variant='imoogi' type='button' onClick={() => { hideModal() }}>Não</Button>
@@ -521,13 +522,12 @@ const DashboardContent = () => {
                             modalServer('Erro', response.message)
                         }
                     } else {
-                        console.log(pagamento_id)
-                        console.log(formdata)
                         modalServer('Sucesso', response.message)
+                        fetchAll()
                     }
 
                 }
-                getUsersFunction();
+        
 
             } catch (error) {
                 console.error('Erro ao enviar comentário:', error);
