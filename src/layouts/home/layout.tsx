@@ -18,7 +18,8 @@ export const Main: FC<{ children: ReactNode }> = ({ children }) => {
             <Navbar>
                 <a href='/unidades'>Unidades</a>
                 <a href='/modalidade'>Modalidades</a>
-                <a href='catalogo'>Planos</a>
+                <a href='/equipe'>Equipe</a>
+                <a href='/catalogo'>Planos</a>
                 <a className="login-link-icon" href='login'><LoginIcon sx={{ margin: 0.5, fontSize: 30 }} />Login</a>
             </Navbar>
             {children}
