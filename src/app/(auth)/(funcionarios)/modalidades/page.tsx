@@ -216,7 +216,7 @@ function Modalidade() {
                                 {showRead.map(modalidades => (
                                     <TableRow key={modalidades.id}>
                                         <TableCell>
-                                            <Image width={70} height={70} src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${modalidades.foto_modalidade}`} alt=""></Image>
+                                            <Image width={70} height={70} src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${modalidades.foto_modalidade.replace('uploads/', '')}`} alt=""></Image>
                                         </TableCell>
                                         <TableCell>{modalidades.nome_modalidade}</TableCell>
                                         <TableCell>{modalidades.descricao_modalidade}</TableCell>

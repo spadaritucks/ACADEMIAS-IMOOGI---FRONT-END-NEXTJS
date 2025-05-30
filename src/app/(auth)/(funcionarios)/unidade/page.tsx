@@ -200,7 +200,7 @@ function Unidades() {
                                 {showRead.map(unidade => (
                                     <TableRow key={unidade.id}>
                                         <TableCell>
-                                            <Image width={70} height={70} src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${unidade.imagem_unidade}`} alt=""></Image></TableCell>
+                                            <Image width={70} height={70} src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${unidade.imagem_unidade.replace('uploads/', '')}`} alt=""></Image></TableCell>
                                         <TableCell>{unidade.nome_unidade}</TableCell>
                                         <TableCell>{unidade.endereco}</TableCell>
                                         <TableCell>
