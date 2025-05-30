@@ -51,7 +51,7 @@ export default function equipe() {
                         const equipe = equipeDados.find(equipe => equipe.usuario_id === user.id);
                         return equipe ? (
                             <div key={user.id} className="membro" defaultValue={user.id}>
-                                <Image className="membro-image" src={`${process.env.NEXT_PUBLIC_API_URL}/storage/upload/${user.foto_usuario.replace('uploads/', '')}`} width={300} height={300} alt="" />
+                                <Image className="membro-image" src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${user.foto_usuario.replace('uploads/', '')}`} width={300} height={300} alt="" />
                                 <h2>{user.nome}</h2>
                                 <p>{equipe.cargo}</p>
                                 <p>{equipe.atividades}</p>
