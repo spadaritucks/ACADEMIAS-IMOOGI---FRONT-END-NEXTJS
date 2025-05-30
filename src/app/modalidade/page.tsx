@@ -43,7 +43,7 @@ export default function modalidade() {
                 <div className="modalidades-container">
                     {modalidades.map(modalidade => (
                         <div className="modalidade">
-                            <Image className="modalidade-imagem" width={400} height={400} alt="" src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${modalidade.foto_modalidade}`}></Image>
+                            <Image className="modalidade-imagem" width={400} height={400} alt="" src={`${process.env.NEXT_PUBLIC_API_URL}/storage/upload/${modalidade.foto_modalidade}`}></Image>
                             <h2 className="modalidade-title">{modalidade.nome_modalidade}</h2>
                             <p className="modalidade-endereco">{modalidade.descricao_modalidade}</p>
                         </div>

@@ -136,7 +136,7 @@ export const ClientMain: FC<{ children: ReactNode }> = ({ children }) => {
         let partesNome = nomeCompleto?.split(' ')
         let nome = partesNome?.slice(0, 2).join(' ')
 
-        const url = `${process.env.NEXT_PUBLIC_API_URL}/storage/${fotoUsuario}`;
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/storage/upload/${fotoUsuario}`;
 
         return {
             nome,
