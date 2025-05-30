@@ -204,7 +204,7 @@ function Unidades() {
                                         <TableCell>{unidade.nome_unidade}</TableCell>
                                         <TableCell>{unidade.endereco}</TableCell>
                                         <TableCell>
-                                            <Link href={`${process.env.NEXT_PUBLIC_API_URL}/storage/${unidade.grade}`}>
+                                            <Link href={`${process.env.NEXT_PUBLIC_API_URL}/storage/${unidade.grade.replace('uploads/', '')}`}>
                                                 <div className='pdf-link' ><PictureAsPdfIcon /> PDF GRADE HORARIA</div></Link>
                                         </TableCell>
                                         <TableCell>{unidade.descricao}</TableCell>
