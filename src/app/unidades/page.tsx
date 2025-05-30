@@ -51,7 +51,7 @@ export default function unidades() {
                             <h2 className="unidade-title">{unidade.nome_unidade}</h2>
                             <p className="unidade-endereco">{unidade.endereco}</p>
                             <p className="unidade-descricao">{unidade.descricao}</p>
-                            <Link href={`${process.env.NEXT_PUBLIC_API_URL}/storage/${unidade.grade}`}>PDF GRADE HORARIA</Link>
+                            <Link href={`${process.env.NEXT_PUBLIC_API_URL}/storage/${unidade.grade?.replace('uploads/', '')}`}>PDF GRADE HORARIA</Link>
                         </div>
                     ))}
 
