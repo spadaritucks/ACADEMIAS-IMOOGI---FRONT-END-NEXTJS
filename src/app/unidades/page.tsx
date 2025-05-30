@@ -47,7 +47,7 @@ export default function unidades() {
 
                     {unidades.map(unidade => (
                         <div className="unidade">
-                            <Image width={300} height={250} className="unidade-imagem" alt="" src={`${process.env.NEXT_PUBLIC_API_URL}/storage/upload/${unidade.imagem_unidade}`}></Image>
+                            <Image width={300} height={250} className="unidade-imagem" alt="" src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${unidade.imagem_unidade?.replace('uploads/', '')}`}></Image>
                             <h2 className="unidade-title">{unidade.nome_unidade}</h2>
                             <p className="unidade-endereco">{unidade.endereco}</p>
                             <p className="unidade-descricao">{unidade.descricao}</p>
